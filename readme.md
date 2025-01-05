@@ -1,4 +1,4 @@
-# README
+# README (WIP)
 
 * For execution of a scenario through a bash CLI:
   ```

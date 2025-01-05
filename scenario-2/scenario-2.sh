@@ -37,10 +37,10 @@ docker container exec workst-2 sh -c 'ip route change default via 172.16.2.2 dev
 docker container exec router-1 sh -c 'ip route add 172.16.1.0/24 via 172.16.255.3 dev eth1 && ping -c 1 -t 2 172.16.1.3'
 docker container exec router-1 sh -c 'ip route add 172.16.2.0/24 via 172.16.255.11 dev eth2 && ping -c 1 -t 2 172.16.2.3'
 # Adds static routes to the firewall
-docker container exec firwll-1 sh -c 'ip route add 172.16.1.0/24 via 172.16.0.2 dev eth0 && ping -c 1 -t 2 172.16.1.3'
-docker container exec firwll-1 sh -c 'ip route add 172.16.2.0/24 via 172.16.0.2 dev eth0 && ping -c 1 -t 2 172.16.2.3'
+docker container exec firwll-1 sh -c 'ip route add 172.16.1.0/24 via 172.16.0.2 dev eth0 && ping -c 1 -t 3 172.16.1.3'
+docker container exec firwll-1 sh -c 'ip route add 172.16.2.0/24 via 172.16.0.2 dev eth0 && ping -c 1 -t 3 172.16.2.3'
 # Final validations
-docker container exec workst-1 sh -c 'ping -c 1 -t 2 172.16.0.6'
-docker container exec workst-2 sh -c 'ping -c 1 -t 2 172.16.0.6'
+docker container exec workst-1 sh -c 'ping -c 1 -t 3 172.16.0.6'
+docker container exec workst-2 sh -c 'ping -c 1 -t 3 172.16.0.6'
 docker container exec workst-1 sh -c 'ping -c 1 -t 4 172.16.2.3'
 docker container exec workst-2 sh -c 'ping -c 1 -t 4 172.16.1.3'
