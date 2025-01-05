@@ -2,7 +2,9 @@
 #
 # Parameters
 # $1 = Scenario Number
+# $2 = Suplementary option
 scenarioNumber=$1
+suplementaryOption=$2
 
 imageName=rede-testes\:1.01
 if [[ -z ${scenarioNumber} ]] ; then 
@@ -10,8 +12,12 @@ if [[ -z ${scenarioNumber} ]] ; then
     exit 1
 fi
 if ! [[ ${scenarioNumber} =~ ^[12]$ ]] ; then
-    echo "ERROR 2\ Parameter \$1 = '$1'; needs to be '1' or '2'." 
+    echo "ERROR 2\ Parameter \$1 = '$1'; needs to be '1' or '2', and optionally followed by '--clean'."
     exit 2
+fi
+if [[ ${suplementaryOption} == "--clean" ]] ; then
+    source ./scenario-${scenarioNumber}/scenario-${scenarioNumber}.clean.sh
+    exit 3
 fi
 docker image build -f ./containerfile -t ${imageName} ./ 
 source ./scenario-${scenarioNumber}/scenario-${scenarioNumber}.sh ${imageName}

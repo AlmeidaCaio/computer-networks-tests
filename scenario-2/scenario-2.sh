@@ -7,7 +7,7 @@
 # Parameters:
 # $1 = Container's Image Name with its version (name\:version)
 #
-imageName=rede-testes\:1.01
+imageName=$1
 # Networks' configurations
 docker network create --driver bridge --subnet 172.16.0.0/29 --attachable subnet-vlan-001
 docker network create --driver bridge --subnet 172.16.1.0/29 --attachable subnet-vlan-011
