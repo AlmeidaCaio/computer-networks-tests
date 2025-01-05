@@ -1,4 +1,4 @@
-# README (WIP)
+# README
 
 * For execution of a scenario through a bash CLI:
   ```
@@ -8,6 +8,5 @@
 
 * For cleanage:
   ```
-  bash ./scenario-1/scenario-1.clean.sh
+  bash main.sh $scenarioVersion --clean
   ```
- 
