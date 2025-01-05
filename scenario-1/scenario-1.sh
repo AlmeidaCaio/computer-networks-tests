@@ -5,7 +5,7 @@
 # Currently, this setup only have layer 3 configurations with static routes.
 #
 # Parameters:
-# -
+# $1 = Container's Image Name with its version (name\:version)
 #
 imageName=rede-testes\:1.01
 # Networks' configurations

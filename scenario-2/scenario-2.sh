@@ -5,7 +5,7 @@
 # Currently, this setup is based on scenario-1 with an addition to a firewall attached to router-1.
 #
 # Parameters:
-# -
+# $1 = Container's Image Name with its version (name\:version)
 #
 imageName=rede-testes\:1.01
 # Networks' configurations
