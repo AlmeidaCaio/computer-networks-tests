@@ -3,6 +3,7 @@
 # Script made with the help of the following  references:
 #      1 - https://www.youtube.com/watch?v=0nkgC3F2VM0
 #      2 - https://serverfault.com/questions/30026/whitelist-allowed-ips-in-out-using-iptables
+#      3 - https://serverfault.com/questions/623996/how-to-enable-traceroute-in-linux-machine
 #
 # NOTES: 
 #   1) File must be executable
@@ -32,9 +33,20 @@ iptables -P FORWARD DROP
 iptables -P OUTPUT ACCEPT 
 
 # Allowing loopback connections from the firewall
-iptables -A INPUT -i lo -j ACCEPT
+iptables -I INPUT -i lo -j ACCEPT
 
 # Allowing pings to the firewall
-iptables -A INPUT -i eth0 -p icmp -j ACCEPT 
+iptables -I INPUT -i eth0 -p udp --dport 33434:33474 -j REJECT
+iptables -A INPUT -i eth0 -p icmp --icmp-type 8 -j ACCEPT 
 
-## TODO: iptstate 
+# Allowing ports from VLAN 10
+for $chainType in FORWARD INPUT ; do 
+  for port in 80 443 ; do 
+    iptables -A $chainType -p tcp -s 172.16.1.0/24 --dport $port -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT 
+  done
+done
+
+# Allowing SSH only from VLAN 20
+for $chainType in FORWARD INPUT ; do 
+  iptables -A $chainType -p tcp -s 172.16.2.0/24 --dport 22 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+done

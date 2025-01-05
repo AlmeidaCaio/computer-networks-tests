@@ -97,7 +97,7 @@
         <mxCell id="X-Ir4ykL-uKakGHwIyS2-2" value="" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;" vertex="1" parent="1">
           <mxGeometry x="495" y="120" width="280" height="150" as="geometry" />
         </mxCell>
-        <mxCell id="X-Ir4ykL-uKakGHwIyS2-3" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;FW blocks:&lt;/h1&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;- HTTP packets coming from VLAN 10;&lt;br&gt;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;- SSH packets coming from VLAN 20;&lt;br&gt;- External packets into VLANs (ping allowed though).&lt;/span&gt;&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+        <mxCell id="X-Ir4ykL-uKakGHwIyS2-3" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;FW allows:&lt;/h1&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;- HTTP packets coming from VLAN 10;&lt;br&gt;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;- SSH packets coming from VLAN 20;&lt;br&gt;- External packets into VLANs (ping allowed though).&lt;/span&gt;&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="530" y="120" width="210" height="150" as="geometry" />
         </mxCell>
       </root>
