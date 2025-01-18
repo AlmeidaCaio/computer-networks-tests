@@ -9,11 +9,11 @@
 #
 imageName=$1
 # Networks' configurations
-docker network create --driver bridge --subnet 172.16.0.0/29 --attachable subnet-vlan-001
-docker network create --driver bridge --subnet 172.16.1.0/29 --attachable subnet-vlan-011
-docker network create --driver bridge --subnet 172.16.2.0/29 --attachable subnet-vlan-021
-docker network create --driver bridge --opt com.docker.network.bridge.name=eth1 --subnet 172.16.255.0/29 --attachable p2p-vlans-001-011
-docker network create --driver bridge --opt com.docker.network.bridge.name=eth2 --subnet 172.16.255.8/29 --attachable p2p-vlans-001-021
+docker network create --driver bridge --subnet 172.16.0.0/29 --gateway 172.16.0.1 --attachable subnet-vlan-001
+docker network create --driver bridge --subnet 172.16.1.0/29 --gateway 172.16.1.1 --attachable subnet-vlan-011
+docker network create --driver bridge --subnet 172.16.2.0/29 --gateway 172.16.2.1 --attachable subnet-vlan-021
+docker network create --driver bridge --opt com.docker.network.bridge.name=eth1 --subnet 172.16.255.0/29 --gateway 172.16.255.1 --attachable p2p-vlans-001-011
+docker network create --driver bridge --opt com.docker.network.bridge.name=eth2 --subnet 172.16.255.8/29 --gateway 172.16.255.9 --attachable p2p-vlans-001-021
 # Devices' instatiations inside their primary networks
 docker container run -itd -p 41231\:80 -p 41232\:443 -p 41233\:8080 --cap-add NET_ADMIN --name firwll-1 --network subnet-vlan-001 --ip 172.16.0.6 ${imageName}
 docker container run -itd -p 41234\:80 -p 41235\:443 -p 41236\:8080 --cap-add NET_ADMIN --name router-1 --network subnet-vlan-001 --ip 172.16.0.2 ${imageName}
@@ -39,6 +39,7 @@ docker container exec router-1 sh -c 'ip route add 172.16.2.0/29 via 172.16.255.
 # Adds static routes to the firewall
 docker container exec firwll-1 sh -c 'ip route add 172.16.1.0/29 via 172.16.0.2 dev eth0 && echo -e -n "\n\n[firwll-1] " && ping -c 1 -t 3 172.16.1.3'
 docker container exec firwll-1 sh -c 'ip route add 172.16.2.0/29 via 172.16.0.2 dev eth0 && echo -e -n "\n\n[firwll-1] " && ping -c 1 -t 3 172.16.2.3'
+docker container exec firwll-1 sh -c 'ip route add 172.16.255.0/28 via 172.16.0.2 dev eth0'
 # Final validations
 docker container exec firwll-1 sh -c 'echo -e -n "\n\n[firwll-1] " && ping -c 1 -t 2 172.16.1.2'
 docker container exec firwll-1 sh -c 'echo -e -n "\n\n[firwll-1] " && ping -c 1 -t 2 172.16.2.2'
