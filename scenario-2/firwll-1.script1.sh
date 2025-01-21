@@ -40,13 +40,13 @@ iptables -I INPUT -i eth0 -p udp --dport 33434:33474 -j REJECT
 iptables -A INPUT -i eth0 -p icmp --icmp-type 8 -j ACCEPT 
 
 # Allowing ports from VLAN 10
-for $chainType in FORWARD INPUT ; do 
+for chainType in FORWARD INPUT ; do 
   for port in 80 443 ; do 
     iptables -A $chainType -p tcp -s 172.16.1.0/24 --dport $port -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT 
   done
 done
 
 # Allowing SSH only from VLAN 20
-for $chainType in FORWARD INPUT ; do 
+for chainType in FORWARD INPUT ; do 
   iptables -A $chainType -p tcp -s 172.16.2.0/24 --dport 22 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
 done
