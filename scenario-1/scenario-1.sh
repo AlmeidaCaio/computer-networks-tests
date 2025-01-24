@@ -15,15 +15,15 @@ docker network create --driver bridge --subnet 172.16.2.0/29 --attachable subnet
 docker network create --driver bridge --subnet 172.16.255.0/29 --attachable p2p-vlans-001-011
 docker network create --driver bridge --subnet 172.16.255.8/29 --attachable p2p-vlans-001-021
 # Devices' instatiations inside their primary networks
-docker container run -itd -p 41234\:80 -p 41235\:443 -p 41236\:8080 --cap-add NET_ADMIN --name router-1 --network subnet-vlan-001 --ip 172.16.0.2 ${imageName} \
+docker container run -itd -p 41234\:22 -p 41235\:80 -p 41236\:443 --cap-add NET_ADMIN --name router-1 --network subnet-vlan-001 --ip 172.16.0.2 ${imageName} \
     && echo "[router-1] net.ipv4.ip_forward=$(docker container exec router-1 sh -c 'cat /proc/sys/net/ipv4/ip_forward')"
-docker container run -itd -p 41237\:80 -p 41238\:443 -p 41239\:8080 --cap-add NET_ADMIN --name switch-1 --network subnet-vlan-011 --ip 172.16.1.2 ${imageName} \
+docker container run -itd -p 41237\:22 -p 41238\:80 -p 41239\:443 --cap-add NET_ADMIN --name switch-1 --network subnet-vlan-011 --ip 172.16.1.2 ${imageName} \
     && echo "[switch-1] net.ipv4.ip_forward=$(docker container exec switch-1 sh -c 'cat /proc/sys/net/ipv4/ip_forward')"
-docker container run -itd -p 41243\:80 -p 41244\:443 -p 41245\:8080 --cap-add NET_ADMIN --name switch-2 --network subnet-vlan-021 --ip 172.16.2.2 ${imageName} \
+docker container run -itd -p 41243\:22 -p 41244\:80 -p 41245\:443 --cap-add NET_ADMIN --name switch-2 --network subnet-vlan-021 --ip 172.16.2.2 ${imageName} \
     && echo "[switch-2] net.ipv4.ip_forward=$(docker container exec switch-2 sh -c 'cat /proc/sys/net/ipv4/ip_forward')"
-docker container run -itd -p 41240\:80 -p 41241\:443 -p 41242\:8080 --cap-add NET_ADMIN --name workst-1 --network subnet-vlan-011 --ip 172.16.1.3 ${imageName} \
+docker container run -itd -p 41240\:22 -p 41241\:80 -p 41242\:443 --cap-add NET_ADMIN --name workst-1 --network subnet-vlan-011 --ip 172.16.1.3 ${imageName} \
     && echo "[workst-1] net.ipv4.ip_forward=$(docker container exec workst-1 sh -c 'cat /proc/sys/net/ipv4/ip_forward')"
-docker container run -itd -p 41246\:80 -p 41247\:443 -p 41248\:8080 --cap-add NET_ADMIN --name workst-2 --network subnet-vlan-021 --ip 172.16.2.3 ${imageName} \
+docker container run -itd -p 41246\:22 -p 41247\:80 -p 41248\:443 --cap-add NET_ADMIN --name workst-2 --network subnet-vlan-021 --ip 172.16.2.3 ${imageName} \
     && echo "[workst-2] net.ipv4.ip_forward=$(docker container exec workst-2 sh -c 'cat /proc/sys/net/ipv4/ip_forward')"
 # Adding Peer to Peer subnets for each primary nework
 docker network connect --ip 172.16.255.2 p2p-vlans-001-011 router-1
