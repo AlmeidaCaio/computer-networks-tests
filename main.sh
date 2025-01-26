@@ -6,7 +6,7 @@
 scenarioNumber=$1
 suplementaryOption=$2
 
-imageName=rede-testes\:1.01
+imageName=rede-testes\:1.02
 if [[ -z ${scenarioNumber} ]] ; then 
     echo "ERROR 1\ Missing parameter \$1." 
     exit 1
@@ -19,6 +19,8 @@ if [[ ${suplementaryOption} == "--clean" ]] ; then
     source ./scenario-${scenarioNumber}/scenario-${scenarioNumber}.clean.sh
     exit 3
 fi
-docker image build -f ./containerfile -t ${imageName} ./ 
+if [[ $( docker image ls --filter "reference=${imageName}" | wc -l ) -lt 2 ]] ; then
+    docker image build -f ./containerfile -t ${imageName} ./ 
+fi
 source ./scenario-${scenarioNumber}/scenario-${scenarioNumber}.sh ${imageName}
 exit 0
