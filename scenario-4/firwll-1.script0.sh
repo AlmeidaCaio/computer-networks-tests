@@ -13,6 +13,10 @@ wan="enp0s8"
 lannet="192.168.10.0/24"
 wannet="192.168.0.0/24"
 
+# Check default policies
+oldPolicies="`iptables -S | sed -E 's/^-P/§-P/g'`"
+echo ${oldPolicies} | sed -E 's/§/\n/g'
+
 #FLUSH NETFILTER CONFIGURATION ON BOOTUP
 iptables -F
 iptables -t nat -F

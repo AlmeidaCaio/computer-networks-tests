@@ -5,6 +5,7 @@
 #      2 - https://serverfault.com/questions/30026/whitelist-allowed-ips-in-out-using-iptables
 #      3 - https://serverfault.com/questions/623996/how-to-enable-traceroute-in-linux-machine
 #      4 - https://www.digitalocean.com/community/tutorials/iptables-essentials-common-firewall-rules-and-commands
+#      5 - https://serverfault.com/questions/1119981/iptables-allow-dns-resolution
 #
 # NOTES: 
 #   1) File must be executable
@@ -24,10 +25,6 @@ iptables -F
 iptables -t nat -F
 iptables -X
 
-## Check default policies
-#oldPolicies="`iptables -S | sed -E 's/^-P/§-P/g'`"
-#echo ${oldPolicies} | sed -E 's/§/\n/g' | tail -n 3
-
 # Setup firewall as a whitelist for incoming traffic (to firewall and its forwarding)
 iptables -P INPUT DROP
 iptables -P FORWARD DROP
@@ -39,6 +36,15 @@ iptables -I INPUT -i lo -j ACCEPT
 # Allowing pings to the firewall
 iptables -I INPUT -i eth0 -p udp --dport 33434:33474 -j REJECT
 iptables -A INPUT -i eth0 -p icmp --icmp-type 8 -j ACCEPT 
+
+# Allowing DNS from the firewall and anywhere inside 
+for chainType in FORWARD INPUT ; do 
+  for protocol in tcp udp ; do 
+    for portType in --dport --sport ; do 
+      iptables -A $chainType -p $protocol $portType 53 -j ACCEPT
+    done
+  done
+done
 
 # Allowing ports from VLAN 10
 for chainType in FORWARD INPUT ; do 
