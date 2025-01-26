@@ -5,9 +5,11 @@
 # Currently, this setup is based on scenario-1 with an addition to a firewall attached to router-1.
 #
 # Parameters:
-# $1 = Container's Image Name with its version (name\:version)
+# $1 = Container's Image Name with its version (e.g. "name\:version")
+# $2 = Load firewall configuration into firwll-1 (e.g. "1" or "0")
 #
 imageName=$1
+enableFirewall=$2
 # Networks' configurations
 docker network create --driver bridge --subnet 172.16.0.0/29 --gateway 172.16.0.1 --attachable subnet-vlan-001
 docker network create --driver bridge --subnet 172.16.1.0/29 --gateway 172.16.1.1 --attachable subnet-vlan-011
@@ -51,3 +53,13 @@ docker container exec workst-2 sh -c 'echo -e -n "\n\n[workst-2] " && ping -c 1 
 docker container exec workst-2 sh -c 'echo -e -n "\n\n[workst-2] " && ping -c 1 -t 4 172.16.1.3'
 docker container exec switch-1 sh -c 'echo -e -n "\n\n[switch-1] " && ping -c 1 -t 2 172.16.0.6'
 docker container exec switch-2 sh -c 'echo -e -n "\n\n[switch-2] " && ping -c 1 -t 2 172.16.0.6'
+# Firewall setup
+if ! [[ ${enableFirewall} =~ ^[01]$ ]] ; then
+    echo "ERROR 3: Scenario-2's parameter \$2 = '$2'; needs to be '0' or '1', since it's a boolean flag."
+    exit 3
+fi
+if [[ ${enableFirewall} == "1" ]] ; then
+    docker container cp "./$( find . -name 'scenario-2.firwll-1.sh' -printf '%P' )" firwll-1:/ && \
+    docker container exec firwll-1 bash /scenario-2.firwll-1.sh && \
+    echo "[firwll-1] File '/scenario-2.firwll-1.sh' loaded successfully."
+fi
