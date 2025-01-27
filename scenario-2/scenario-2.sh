@@ -61,5 +61,6 @@ fi
 if [[ ${enableFirewall} == "1" ]] ; then
     docker container cp "./$( find . -name 'scenario-2.firwll-1.sh' -printf '%P' )" firwll-1:/ && \
     docker container exec firwll-1 bash /scenario-2.firwll-1.sh && \
-    echo "[firwll-1] File '/scenario-2.firwll-1.sh' loaded successfully."
+    echo "[firwll-1] File '/scenario-2.firwll-1.sh' loaded successfully." && \
+    source "./$( find . -name 'scenario-2.tests.sh' -printf '%P' )"
 fi

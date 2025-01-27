@@ -33,27 +33,29 @@ iptables -P OUTPUT ACCEPT
 # Allowing loopback connections from the firewall
 iptables -I INPUT -i lo -j ACCEPT
 
-# Allowing pings to the firewall
-iptables -I INPUT -i eth0 -p udp --dport 33434:33474 -j REJECT
-iptables -A INPUT -i eth0 -p icmp --icmp-type 8 -j ACCEPT 
+# Allowing pings and traceroutes from the firewall
+for icmpType in 0 3 8 11 ; do 
+  iptables -A INPUT -i eth0 -p icmp --icmp-type $icmpType -j ACCEPT 
+done
+# Allowing pings from subnetworks
+for icmpType in 8 ; do 
+  iptables -A FORWARD -i eth0 -p icmp --icmp-type $icmpType -j ACCEPT 
+done
+## Rejects tracepaths from the firewall
+#iptables -I INPUT -i eth0 -p udp --dport 33434:33474 -j REJECT
 
 # Allowing DNS from the firewall and anywhere inside 
 for chainType in FORWARD INPUT ; do 
   for protocol in tcp udp ; do 
     for portType in --dport --sport ; do 
-      iptables -A $chainType -p $protocol $portType 53 -j ACCEPT
+      iptables -A $chainType -i eth0 -p $protocol $portType 53 -j ACCEPT
     done
   done
 done
 
 # Allowing ports from VLAN 10
-for chainType in FORWARD INPUT ; do 
-  for port in 80 443 ; do 
-    iptables -A $chainType -p tcp -s 172.16.1.0/24 --dport $port -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT 
+for chainType in FORWARD ; do 
+  for portType in --dport --sport ; do 
+    iptables -A $chainType -i eth0 -p tcp -s 172.16.1.0/24 $portType 443 -j ACCEPT 
   done
-done
-
-# Allowing SSH only from VLAN 20
-for chainType in FORWARD INPUT ; do 
-  iptables -A $chainType -p tcp -s 172.16.2.0/24 --dport 22 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
 done
