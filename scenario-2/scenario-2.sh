@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # About it:
 # * This is a simple network arrangement to allow containers to behave as l3-switches among themselves.

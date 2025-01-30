@@ -1,8 +1,7 @@
 FROM "docker.io/library/alpine:3.21.2"
 EXPOSE 22 \
     443 \
-    587 \
-    3389
+    587
 RUN apk add curl \
     frr \
     inetutils-telnet \
