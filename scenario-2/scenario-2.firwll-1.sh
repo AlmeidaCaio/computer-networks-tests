@@ -6,6 +6,7 @@
 #      3 - https://serverfault.com/questions/623996/how-to-enable-traceroute-in-linux-machine
 #      4 - https://www.digitalocean.com/community/tutorials/iptables-essentials-common-firewall-rules-and-commands
 #      5 - https://serverfault.com/questions/1119981/iptables-allow-dns-resolution
+#      6 - https://tecadmin.net/configuring-nat-masquerading-with-iptables/#:~:text=Steps%20by%20Step%20Guide%201%20Step%201%3A%20Enable,4%20Step%204%3A%20Save%20the%20iptables%20Rules%20
 #
 # NOTES: 
 #   1) File must be executable
@@ -53,9 +54,10 @@ for chainType in FORWARD INPUT ; do
   done
 done
 
-# Allowing ports from VLAN 10
-for chainType in FORWARD ; do 
+# Applying rules for ports 22 and 443 from VLAN 10, and prohibiting from VLAN 20
+for sourceIp in 172.16.1.0/24-22-REJECT 172.16.2.0/24-22-ACCEPT 172.16.1.0/24-443-ACCEPT 172.16.2.0/24-443-REJECT ; do 
+  triad=(${sourceIp//-/\ })
   for portType in --dport --sport ; do 
-    iptables -A $chainType -i eth0 -p tcp -s 172.16.1.0/24 $portType 443 -j ACCEPT 
+    iptables -A FORWARD -i eth0 -p tcp -s ${triad[0]} $portType ${triad[1]} -j ${triad[2]}
   done
 done

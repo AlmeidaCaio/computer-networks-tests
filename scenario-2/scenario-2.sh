@@ -11,6 +11,9 @@
 imageName=$1
 enableFirewall=$2
 # Networks' configurations
+echo "-----------------------------------------------" && \
+echo "-----------------NETWORK SETUP-----------------" && \
+echo "-----------------------------------------------"
 docker network create --driver bridge --subnet 172.16.0.0/29 --gateway 172.16.0.1 --attachable subnet-vlan-001
 docker network create --driver bridge --subnet 172.16.1.0/29 --gateway 172.16.1.1 --attachable subnet-vlan-011
 docker network create --driver bridge --subnet 172.16.2.0/29 --gateway 172.16.2.1 --attachable subnet-vlan-021
@@ -53,14 +56,23 @@ docker container exec workst-2 sh -c 'echo -e -n "\n\n[workst-2] " && ping -c 1 
 docker container exec workst-2 sh -c 'echo -e -n "\n\n[workst-2] " && ping -c 1 -t 4 172.16.1.3'
 docker container exec switch-1 sh -c 'echo -e -n "\n\n[switch-1] " && ping -c 1 -t 2 172.16.0.6'
 docker container exec switch-2 sh -c 'echo -e -n "\n\n[switch-2] " && ping -c 1 -t 2 172.16.0.6'
+echo "-----------------------------------------------" && \
+echo "--------------NETWORK SETUP DONE!--------------" && \
+echo "-----------------------------------------------"
 # Firewall setup
 if ! [[ ${enableFirewall} =~ ^[01]$ ]] ; then
     echo "ERROR 3: Scenario-2's parameter \$2 = '$2'; needs to be '0' or '1', since it's a boolean flag."
     exit 3
 fi
 if [[ ${enableFirewall} == "1" ]] ; then
+    echo "-----------------------------------------------" && \
+    echo "----------------FIREWALL SETUP-----------------" && \
+    echo "-----------------------------------------------"
     docker container cp "./$( find . -name 'scenario-2.firwll-1.sh' -printf '%P' )" firwll-1:/ && \
     docker container exec firwll-1 bash /scenario-2.firwll-1.sh && \
     echo "[firwll-1] File '/scenario-2.firwll-1.sh' loaded successfully." && \
+    echo "-----------------------------------------------" && \
+    echo "-------------FIREWALL SETUP DONE!--------------" && \
+    echo "-----------------------------------------------" && \
     source "./$( find . -name 'scenario-2.tests.sh' -printf '%P' )"
 fi
