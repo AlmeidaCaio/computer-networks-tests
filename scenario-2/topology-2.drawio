@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0" version="26.0.3">
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 Edg/132.0.0.0" version="26.0.10">
   <diagram name="Page-1" id="Xh3mkgjwqd65aYn8KOnx">
     <mxGraphModel dx="1112" dy="435" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -94,11 +94,11 @@
         <mxCell id="LywyaxbltV9Rz2-kyhSX-21" value="External Modem&lt;br&gt;(Outside main host)" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=15;" parent="1" vertex="1">
           <mxGeometry x="250" y="120" width="140" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="X-Ir4ykL-uKakGHwIyS2-2" value="" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;" vertex="1" parent="1">
-          <mxGeometry x="495" y="120" width="280" height="150" as="geometry" />
+        <mxCell id="X-Ir4ykL-uKakGHwIyS2-2" value="" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;" parent="1" vertex="1">
+          <mxGeometry x="495" y="120" width="305" height="150" as="geometry" />
         </mxCell>
-        <mxCell id="X-Ir4ykL-uKakGHwIyS2-3" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;FW allows:&lt;/h1&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;- HTTP packets coming from VLAN 10;&lt;br&gt;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;- SSH packets coming from VLAN 20;&lt;br&gt;- External packets into VLANs (ping allowed though).&lt;/span&gt;&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="530" y="120" width="210" height="150" as="geometry" />
+        <mxCell id="X-Ir4ykL-uKakGHwIyS2-3" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;FW allows:&lt;/h1&gt;&lt;p&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;- HTTPS packets coming from VLAN 10;&lt;br&gt;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;- SSH packets coming from VLAN 20;&lt;br&gt;- DNS allowed;&lt;br&gt;- Ping allowed (Traceroute only from firewall).&lt;/span&gt;&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="530" y="120" width="220" height="150" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
