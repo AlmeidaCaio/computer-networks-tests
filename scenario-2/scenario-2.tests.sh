@@ -58,7 +58,7 @@ echo -e '\n\n[firwll-1] traceroute to gmail.com:' \
 echo -e '\n\n[workst-2] ping to gmail.com:' \
     && sleep 1 && docker container exec workst-2 ping -c 1 gmail.com
 echo -e '\n\n[workst-2] smtps request to gmail.com relay:' \
-    && sleep 2 && docker container exec workst-2 curl -v --ssl-reqd --url 'smtp://smtp.gmail.com:587' --mail-from $mySender --mail-rcpt $myReceiver --user $myRelayCredentials -H 'Subject: Test Mail Send' -H "From: $mySender" -H "To: $myReceiver" -F '=(;type=multipart/alternative' -F '= Hi, I do work Thanks for testing!;type=text/plain' -F '=)' 
+    && sleep 2 && docker container exec workst-2 curl -v --ssl-reqd -m 15 --url 'smtp://smtp.gmail.com:587' --mail-from $mySender --mail-rcpt $myReceiver --user $myRelayCredentials -H 'Subject: Test Mail Send' -H "From: $mySender" -H "To: $myReceiver" -F '=(;type=multipart/alternative' -F '= Hi, I do work Thanks for testing!;type=text/plain' -F '=)' 
 docker container exec firwll-1 bash -c "kill ${testPID} < <( echo '' )"
 echo -e "\n\n[firwll-1] test-smtps.accept.firwll-1.log:" \
     && docker container exec firwll-1 cat test-smtps.accept.firwll-1.log
@@ -72,7 +72,7 @@ echo "[firwll-1] TCP dump SMTPS PId (reject): ${testPID}"
 echo -e '\n\n[workst-1] ping to gmail.com:' \
     && sleep 1 && docker container exec workst-1 ping -c 1 gmail.com
 echo -e '\n\n[workst-1] smtps request to gmail.com relay:' \
-    && sleep 2 && docker container exec workst-1 curl -v --ssl-reqd --url 'smtp://smtp.gmail.com:587' --mail-from $mySender --mail-rcpt $myReceiver --user $myRelayCredentials -H 'Subject: Test Mail Send' -H "From: $mySender" -H "To: $myReceiver" -F '=(;type=multipart/alternative' -F '= Hi, I do work Thanks for testing!;type=text/plain' -F '=)' 
+    && sleep 2 && docker container exec workst-1 curl -v --ssl-reqd -m 15 --url 'smtp://smtp.gmail.com:587' --mail-from $mySender --mail-rcpt $myReceiver --user $myRelayCredentials -H 'Subject: Test Mail Send' -H "From: $mySender" -H "To: $myReceiver" -F '=(;type=multipart/alternative' -F '= Hi, I do work Thanks for testing!;type=text/plain' -F '=)' 
 docker container exec firwll-1 bash -c "kill ${testPID} < <( echo '' )"
 echo -e "\n\n[firwll-1] test-smtps.reject.firwll-1.log:" \
     && docker container exec firwll-1 cat test-smtps.reject.firwll-1.log
