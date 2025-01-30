@@ -25,7 +25,7 @@ echo -e '\n\n[firwll-1] traceroute to google.com:' \
     && docker container exec firwll-1 traceroute -I -l -v -i eth0 google.com 
 echo -e '\n\n[firwll-1] nslookup of api.restful-api.dev:' \
     && docker container exec firwll-1 nslookup api.restful-api.dev 
-echo -e '\n\n[workst-1] ping to jsonplaceholder.typicode.com:' \
+echo -e '\n\n[workst-1] ping to api.restful-api.dev:' \
     && docker container exec workst-1 ping -c 1 api.restful-api.dev
 echo -e '\n\n[workst-1] https request to api.restful-api.dev/objects:' \
     && sleep 2 && docker container exec workst-1 curl -k -m 4 -X 'GET' 'https://api.restful-api.dev/objects' 
