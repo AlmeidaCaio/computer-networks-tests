@@ -17,6 +17,7 @@
 # About "Targets" in iptables:
 # * ACCEPT means to let the packet through.
 # * DROP means to drop the packet on the floor.
+# * REJECT means to drop the packet and inform about it.
 # * QUEUE means to pass the packet to userspace.
 # * RETURN means stop traversing this chain and resume at the next rule in the previous (calling) chain.
 #
