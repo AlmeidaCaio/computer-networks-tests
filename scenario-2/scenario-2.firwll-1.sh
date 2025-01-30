@@ -54,8 +54,8 @@ for chainType in FORWARD INPUT ; do
   done
 done
 
-# Applying rules for ports 22 and 443 to VLANs 10 and 20
-for sourceIp in 172.16.1.0/24-22-REJECT 172.16.2.0/24-22-ACCEPT 172.16.1.0/24-443-ACCEPT 172.16.2.0/24-443-REJECT ; do 
+# Applying rules for ports SMTPS and HTTPS to VLANs 10 and 20
+for sourceIp in 172.16.1.0/24-587-REJECT 172.16.2.0/24-587-ACCEPT 172.16.1.0/24-443-ACCEPT 172.16.2.0/24-443-REJECT ; do 
   triad=(${sourceIp//-/\ })
   for portType in --dport --sport ; do 
     iptables -A FORWARD -i eth0 -p tcp -s ${triad[0]} $portType ${triad[1]} -j ${triad[2]}

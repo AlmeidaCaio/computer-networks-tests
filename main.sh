@@ -6,7 +6,7 @@
 scenarioNumber=$1
 suplementaryOption=$2
 
-imageName=rede-testes\:1.02
+imageName=rede-testes\:1.03
 fwFlag=1
 if [[ -z ${scenarioNumber} ]] ; then 
     echo "ERROR 1: Missing parameter \$1." 
