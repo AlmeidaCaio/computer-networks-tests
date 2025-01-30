@@ -54,7 +54,7 @@ for chainType in FORWARD INPUT ; do
   done
 done
 
-# Applying rules for ports 22 and 443 from VLAN 10, and prohibiting from VLAN 20
+# Applying rules for ports 22 and 443 to VLANs 10 and 20
 for sourceIp in 172.16.1.0/24-22-REJECT 172.16.2.0/24-22-ACCEPT 172.16.1.0/24-443-ACCEPT 172.16.2.0/24-443-REJECT ; do 
   triad=(${sourceIp//-/\ })
   for portType in --dport --sport ; do 

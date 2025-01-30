@@ -35,5 +35,13 @@ echo -e "\n\n[firwll-1] test-http.drop.firwll-1.log:" \
 echo -e "\n\n"
 #
 # TODO: Tests for SSH ACCEPT
+echo "-----------------------------------------------" && \
+echo "------------TESTS FOR SSH : ACCEPT-------------" && \
+echo "-----------------------------------------------"
+echo -e "\n\n"
 #
 # TODO: Tests for SSH DROP
+echo "-----------------------------------------------" && \
+echo "------------TESTS FOR SSH : REJECT-------------" && \
+echo "-----------------------------------------------"
+echo -e "\n\n"
