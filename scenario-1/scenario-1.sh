@@ -2,7 +2,7 @@
 #
 # About it:
 # * This is a simple network arrangement to allow containers to behave as l3-switches among themselves.
-# Currently, this setup only have layer 3 configurations with static routes.
+# This setup only have layer 3 configurations with static routes.
 #
 # Parameters:
 # $1 = Alpine Version (e.g. "1.1.1")

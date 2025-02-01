@@ -1,8 +1,7 @@
 #!/bin/bash
 #
 # About it:
-# * This is a simple network arrangement to allow containers to behave as l3-switches among themselves.
-# Currently, this setup is based on scenario-1 with an addition to a firewall attached to router-1.
+# * This setup is based on scenario-1 with an addition to a firewall attached to router-1; also workst-1 and workst-2 are behaving as proper Work Stations.
 #
 # Parameters:
 # $1 = Alpine Version (e.g. "1.1.1")
