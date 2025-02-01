@@ -14,6 +14,7 @@ else
     exit 1 ;
 fi
 
+alpineVersion="3.21.2"
 fwFlag=1
 if [[ -z ${scenarioNumber} ]] ; then 
     echo "ERROR 2: Missing parameter \$1." 
@@ -31,5 +32,5 @@ if [[ ${suplementaryOption} == "--fw-off" ]] ; then
     echo "WARN 1: Scenario-${scenarioNumber} will have disabled firewall rules."
     fwFlag=0
 fi
-source ./scenario-${scenarioNumber}/scenario-${scenarioNumber}.sh ${fwFlag}
+source ./scenario-${scenarioNumber}/scenario-${scenarioNumber}.sh ${alpineVersion} ${fwFlag}
 exit 0

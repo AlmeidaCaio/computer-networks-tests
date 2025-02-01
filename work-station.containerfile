@@ -1,5 +1,6 @@
 # Container Image with common layer 7 utilities- for Work-Stations
-FROM "docker.io/library/alpine:3.21.2"
+ARG ALPINE_VERSION
+FROM "docker.io/library/alpine:${ALPINE_VERSION}"
 EXPOSE 22 \
     443 \
     587

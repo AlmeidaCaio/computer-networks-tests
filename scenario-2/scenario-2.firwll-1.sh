@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # Script made with the help of the following  references:
 #      1 - https://www.youtube.com/watch?v=0nkgC3F2VM0
@@ -57,8 +57,10 @@ done
 
 # Applying rules for ports SMTPS and HTTPS to VLANs 10 and 20
 for sourceIp in 172.16.1.0/24-587-REJECT 172.16.2.0/24-587-ACCEPT 172.16.1.0/24-443-ACCEPT 172.16.2.0/24-443-REJECT ; do 
-  triad=(${sourceIp//-/\ })
+  subnet="` echo ${sourceIp} | sed -E 's/^([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\/[0-9]{1,2})-.*$/\1/g' `"
+  portNumber="` echo ${sourceIp} | sed -E 's/^.*-([0-9]+)-.*$/\1/g' `"
+  fwActionTarget="` echo ${sourceIp} | sed -E 's/^.*-([A-Z]+)$/\1/g' `"
   for portType in --dport --sport ; do 
-    iptables -A FORWARD -i eth0 -p tcp -s ${triad[0]} $portType ${triad[1]} -j ${triad[2]}
+    iptables -A FORWARD -i eth0 -p tcp -s ${subnet} $portType ${portNumber} -j ${fwActionTarget}
   done
 done
