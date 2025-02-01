@@ -1,13 +1,14 @@
-#!/bin/sh
+#!/bin/bash
 #
 # About it:
 # * This is a simple network arrangement to allow containers to behave as l3-switches among themselves.
 # Currently, this setup only have layer 3 configurations with static routes.
 #
-# Parameters:
-# $1 = Container's Image Name with its version (name\:version)
 #
-imageName=$1
+imageName=tst-switch-l3\:1.00
+if [[ $( docker image ls --filter "reference=${imageName}" | wc -l ) -lt 2 ]] ; then
+    docker image build -f ./switch-l3.containerfile -t ${imageName} ./ 
+fi
 # Networks' configurations
 docker network create --driver bridge --subnet 172.16.0.0/30 --attachable subnet-vlan-001
 docker network create --driver bridge --subnet 172.16.1.0/29 --attachable subnet-vlan-011

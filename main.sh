@@ -14,14 +14,13 @@ else
     exit 1 ;
 fi
 
-imageName=rede-testes\:1.03
 fwFlag=1
 if [[ -z ${scenarioNumber} ]] ; then 
     echo "ERROR 2: Missing parameter \$1." 
     exit 2
 fi
-if ! [[ ${scenarioNumber} =~ ^[12]$ ]] ; then
-    echo "ERROR 3: Parameter \$1 = '$1'; needs to be '1' or '2', and optionally followed by '--clean' or '--fw-off'."
+if ! [[ ${scenarioNumber} =~ ^[123]$ ]] ; then
+    echo "ERROR 3: Parameter \$1 = '$1'; needs to be '1', '2' or '3', and optionally followed by '--clean' or '--fw-off'."
     exit 3
 fi
 if [[ ${suplementaryOption} == "--clean" ]] ; then
@@ -32,8 +31,5 @@ if [[ ${suplementaryOption} == "--fw-off" ]] ; then
     echo "WARN 1: Scenario-${scenarioNumber} will have disabled firewall rules."
     fwFlag=0
 fi
-if [[ $( docker image ls --filter "reference=${imageName}" | wc -l ) -lt 2 ]] ; then
-    docker image build -f ./containerfile -t ${imageName} ./ 
-fi
-source ./scenario-${scenarioNumber}/scenario-${scenarioNumber}.sh ${imageName} ${fwFlag}
+source ./scenario-${scenarioNumber}/scenario-${scenarioNumber}.sh ${fwFlag}
 exit 0

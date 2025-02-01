@@ -5,11 +5,21 @@
 # Currently, this setup is based on scenario-1 with an addition to a firewall attached to router-1.
 #
 # Parameters:
-# $1 = Container's Image Name with its version (e.g. "name\:version")
-# $2 = Load firewall configuration into firwll-1 (e.g. "1" or "0")
+# $1 = Load firewall configuration into firwll-1 (e.g. "1" or "0")
 #
-imageName=$1
-enableFirewall=$2
+enableFirewall=$1
+imageNameFirewall=tst-firewall\:1.00
+if [[ $( docker image ls --filter "reference=${imageNameFirewall}" | wc -l ) -lt 2 ]] ; then
+    docker image build -f ./firewall.containerfile -t ${imageNameFirewall} ./ 
+fi
+imageNameSwitch=tst-switch-l3\:1.00
+if [[ $( docker image ls --filter "reference=${imageNameSwitch}" | wc -l ) -lt 2 ]] ; then
+    docker image build -f ./switch-l3.containerfile -t ${imageNameSwitch} ./ 
+fi
+imageNameWorkStation=tst-work-station\:1.00
+if [[ $( docker image ls --filter "reference=${imageNameWorkStation}" | wc -l ) -lt 2 ]] ; then
+    docker image build -f ./work-station.containerfile -t ${imageNameWorkStation} ./ 
+fi
 # Networks' configurations
 echo "-----------------------------------------------" && \
 echo "-----------------NETWORK SETUP-----------------" && \
@@ -20,12 +30,12 @@ docker network create --driver bridge --subnet 172.16.2.0/29 --gateway 172.16.2.
 docker network create --driver bridge --opt com.docker.network.bridge.name=eth1 --subnet 172.16.255.0/29 --gateway 172.16.255.1 --attachable p2p-vlans-001-011
 docker network create --driver bridge --opt com.docker.network.bridge.name=eth2 --subnet 172.16.255.8/29 --gateway 172.16.255.9 --attachable p2p-vlans-001-021
 # Devices' instatiations inside their primary networks
-docker container run -itd -p 41231\:22 -p 41232\:443 -p 41233\:587 --cap-add NET_ADMIN --name firwll-1 --network subnet-vlan-001 --ip 172.16.0.6 ${imageName}
-docker container run -itd -p 41234\:22 -p 41235\:443 -p 41236\:587 --cap-add NET_ADMIN --name router-1 --network subnet-vlan-001 --ip 172.16.0.2 ${imageName}
-docker container run -itd -p 41237\:22 -p 41238\:443 -p 41239\:587 --cap-add NET_ADMIN --name switch-1 --network subnet-vlan-011 --ip 172.16.1.2 ${imageName}
-docker container run -itd -p 41243\:22 -p 41244\:443 -p 41245\:587 --cap-add NET_ADMIN --name switch-2 --network subnet-vlan-021 --ip 172.16.2.2 ${imageName}
-docker container run -itd -p 41240\:22 -p 41241\:443 -p 41242\:587 --cap-add NET_ADMIN --name workst-1 --network subnet-vlan-011 --ip 172.16.1.3 ${imageName}
-docker container run -itd -p 41246\:22 -p 41247\:443 -p 41248\:587 --cap-add NET_ADMIN --name workst-2 --network subnet-vlan-021 --ip 172.16.2.3 ${imageName}
+docker container run -itd -p 41231\:22 -p 41232\:443 -p 41233\:587 --cap-add NET_ADMIN --name firwll-1 --network subnet-vlan-001 --ip 172.16.0.6 ${imageNameFirewall}
+docker container run -itd -p 41234\:22 -p 41235\:443 -p 41236\:587 --cap-add NET_ADMIN --name router-1 --network subnet-vlan-001 --ip 172.16.0.2 ${imageNameSwitch}
+docker container run -itd -p 41237\:22 -p 41238\:443 -p 41239\:587 --cap-add NET_ADMIN --name switch-1 --network subnet-vlan-011 --ip 172.16.1.2 ${imageNameSwitch}
+docker container run -itd -p 41243\:22 -p 41244\:443 -p 41245\:587 --cap-add NET_ADMIN --name switch-2 --network subnet-vlan-021 --ip 172.16.2.2 ${imageNameSwitch}
+docker container run -itd -p 41240\:22 -p 41241\:443 -p 41242\:587 --cap-add NET_ADMIN --name workst-1 --network subnet-vlan-011 --ip 172.16.1.3 ${imageNameWorkStation}
+docker container run -itd -p 41246\:22 -p 41247\:443 -p 41248\:587 --cap-add NET_ADMIN --name workst-2 --network subnet-vlan-021 --ip 172.16.2.3 ${imageNameWorkStation}
 # Adding Peer to Peer subnets for each primary nework
 docker network connect --driver-opt com.docker.network.bridge.name=eth1 --ip 172.16.255.2 p2p-vlans-001-011 router-1
 docker network connect --driver-opt com.docker.network.bridge.name=eth1 --ip 172.16.255.3 p2p-vlans-001-011 switch-1

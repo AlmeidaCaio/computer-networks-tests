@@ -1,8 +1,8 @@
 # README (WIP)
 
-* This project's proposal is to test many GNU common utilities for network diagnosis. 
+* This project's proposal is to test many GNU common utilities for network diagnosis. It uses Container Images based on Alpine available at [Docker Hub](https://hub.docker.com/_/alpine/).
 
-* Currently, there are only 2 scenarios.
+* Currently, there are 3 scenarios.
 
 * For execution of a scenario through a bash CLI:
   ```
