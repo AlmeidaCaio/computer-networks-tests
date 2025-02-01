@@ -10,7 +10,7 @@
 baseImageVersion=$1
 imageName=tst-switch-l3\:1.00
 if [[ $( docker image ls --filter "reference=${imageName}" | wc -l ) -lt 2 ]] ; then
-    docker image build -f ./switch-l3.containerfile --build-arg ALPINE_VERSION=${baseImageVersion} -t ${imageName} ./ 
+    docker image build -f ./cimages/switch-l3.containerfile --build-arg ALPINE_VERSION=${baseImageVersion} -t ${imageName} ./ 
 fi
 # Networks' configurations
 docker network create --driver bridge --subnet 172.16.0.0/30 --attachable subnet-vlan-001
