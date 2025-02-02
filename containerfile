@@ -12,4 +12,5 @@ RUN apk add curl \
     iputils-ping \
     iputils-tracepath \
     openssh \
-    tcpdump
+    tcpdump \
+    vlan 
