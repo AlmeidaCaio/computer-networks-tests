@@ -13,7 +13,7 @@
 #
 baseImageVersion=$1
 enableFirewall=$2
-imageNameFirewall=cnt-simple\:1.00
+imageNameFirewall=cnt-firewall\:1.00
 if [[ $( docker image ls --filter "reference=${imageNameFirewall}" | wc -l ) -lt 2 ]] ; then
     docker image build -f ./cimages/firewall.containerfile --build-arg ALPINE_VERSION=${baseImageVersion} -t ${imageNameFirewall} ./ 
 fi
@@ -21,9 +21,9 @@ imageNameRouter=cnt-router\:1.00
 if [[ $( docker image ls --filter "reference=${imageNameRouter}" | wc -l ) -lt 2 ]] ; then
     docker image build -f ./cimages/router.containerfile --build-arg ALPINE_VERSION=${baseImageVersion} -t ${imageNameRouter} ./ 
 fi
-imageNameSwitch=cnt-switch-l3\:1.00
+imageNameSwitch=cnt-simple\:1.00
 if [[ $( docker image ls --filter "reference=${imageNameSwitch}" | wc -l ) -lt 2 ]] ; then
-    docker image build -f ./cimages/switch-l3.containerfile --build-arg ALPINE_VERSION=${baseImageVersion} -t ${imageNameSwitch} ./ 
+    docker image build -f ./cimages/.containerfile --build-arg ALPINE_VERSION=${baseImageVersion} -t ${imageNameSwitch} ./ 
 fi
 imageNameWorkStation=cnt-simple\:1.00
 echo "-----------------------------------------------" && \
