@@ -13,9 +13,10 @@ imageNameFirewall=cnt-firewall\:1.00
 if [[ $( docker image ls --filter "reference=${imageNameFirewall}" | wc -l ) -lt 2 ]] ; then
     docker image build -f ./cimages/firewall.containerfile --build-arg ALPINE_VERSION=${baseImageVersion} -t ${imageNameFirewall} ./ 
 fi
-imageNameSwitch=cnt-switch-l3\:1.00
+imageNameRouter=cnt-simple\:1.00
+imageNameSwitch=cnt-simple\:1.00
 if [[ $( docker image ls --filter "reference=${imageNameSwitch}" | wc -l ) -lt 2 ]] ; then
-    docker image build -f ./cimages/switch-l3.containerfile --build-arg ALPINE_VERSION=${baseImageVersion} -t ${imageNameSwitch} ./ 
+    docker image build -f ./cimages/.containerfile --build-arg ALPINE_VERSION=${baseImageVersion} -t ${imageNameSwitch} ./ 
 fi
 imageNameWorkStation=cnt-work-station\:1.00
 if [[ $( docker image ls --filter "reference=${imageNameWorkStation}" | wc -l ) -lt 2 ]] ; then
@@ -32,7 +33,7 @@ docker network create --driver bridge --opt com.docker.network.bridge.name=eth1 
 docker network create --driver bridge --opt com.docker.network.bridge.name=eth2 --subnet 172.16.255.8/29 --gateway 172.16.255.9 --attachable p2p-vlans-001-021
 # Devices' instatiations inside their primary networks
 docker container run -itd -p 41231\:22 --cap-add NET_ADMIN --name firwll-1 --network subnet-vlan-001 --ip 172.16.0.6 ${imageNameFirewall}
-docker container run -itd -p 41234\:22 --cap-add NET_ADMIN --name router-1 --network subnet-vlan-001 --ip 172.16.0.2 ${imageNameSwitch}
+docker container run -itd -p 41234\:22 --cap-add NET_ADMIN --name router-1 --network subnet-vlan-001 --ip 172.16.0.2 ${imageNameRouter}
 docker container run -itd -p 41237\:22 --cap-add NET_ADMIN --name switch-1 --network subnet-vlan-011 --ip 172.16.1.2 ${imageNameSwitch}
 docker container run -itd -p 41243\:22 --cap-add NET_ADMIN --name switch-2 --network subnet-vlan-021 --ip 172.16.2.2 ${imageNameSwitch}
 docker container run -itd -p 41240\:22 -p 41241\:443 -p 41242\:587 --cap-add NET_ADMIN --name workst-1 --network subnet-vlan-011 --ip 172.16.1.3 ${imageNameWorkStation}
