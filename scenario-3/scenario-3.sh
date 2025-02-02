@@ -12,13 +12,16 @@
 #
 baseImageVersion=$1
 imageNameFirewall=cnt-simple\:1.00
+if [[ $( docker image ls --filter "reference=${imageNameFirewall}" | wc -l ) -lt 2 ]] ; then
+    docker image build -f ./cimages/.containerfile --build-arg ALPINE_VERSION=${baseImageVersion} -t ${imageNameFirewall} ./ 
+fi
 imageNameRouter=cnt-router\:1.00
 if [[ $( docker image ls --filter "reference=${imageNameRouter}" | wc -l ) -lt 2 ]] ; then
     docker image build -f ./cimages/router.containerfile --build-arg ALPINE_VERSION=${baseImageVersion} -t ${imageNameRouter} ./ 
 fi
-imageNameSwitch=cnt-simple\:1.00
+imageNameSwitch=cnt-switch-l3\:1.00
 if [[ $( docker image ls --filter "reference=${imageNameSwitch}" | wc -l ) -lt 2 ]] ; then
-    docker image build -f ./cimages/.containerfile --build-arg ALPINE_VERSION=${baseImageVersion} -t ${imageNameSwitch} ./ 
+    docker image build -f ./cimages/switch-l3.containerfile --build-arg ALPINE_VERSION=${baseImageVersion} -t ${imageNameSwitch} ./ 
 fi
 imageNameWorkStation=cnt-simple\:1.00
 echo "-----------------------------------------------" && \
@@ -57,14 +60,36 @@ docker container run -itd -p 41249\:22 --cap-add NET_ADMIN --name workst-j --net
 docker container run -itd -p 41250\:22 --cap-add NET_ADMIN --name workst-k --network subnet-vlan-321 --ip 172.23.2.3 ${imageNameWorkStation}
 docker container run -itd -p 41251\:22 --cap-add NET_ADMIN --name workst-l --network subnet-vlan-321 --ip 172.23.2.4 ${imageNameWorkStation}
 # Adding Peer to Peer subnets for each primary nework
-docker network connect --driver-opt com.docker.network.bridge.name=eth1 --ip 172.21.0.2 subnet-vlan-101 router-1 
-docker network connect --driver-opt com.docker.network.bridge.name=eth1 --ip 172.22.0.2 subnet-vlan-201 router-2 
-docker network connect --driver-opt com.docker.network.bridge.name=eth1 --ip 172.23.0.2 subnet-vlan-301 router-3 
+docker network connect --driver-opt com.docker.network.bridge.name=eth1 --ip 172.21.0.2 p2p-vlans-001-1X1 router-1 
+docker network connect --driver-opt com.docker.network.bridge.name=eth1 --ip 172.22.0.2 p2p-vlans-001-2X1 router-2 
+docker network connect --driver-opt com.docker.network.bridge.name=eth1 --ip 172.23.0.2 p2p-vlans-001-3X1 router-3 
 docker network connect --driver-opt com.docker.network.bridge.name=eth1 --ip 172.21.1.2 subnet-vlan-111 switch-11 
 docker network connect --driver-opt com.docker.network.bridge.name=eth1 --ip 172.21.2.2 subnet-vlan-121 switch-12 
 docker network connect --driver-opt com.docker.network.bridge.name=eth1 --ip 172.22.1.2 subnet-vlan-211 switch-21 
 docker network connect --driver-opt com.docker.network.bridge.name=eth1 --ip 172.22.2.2 subnet-vlan-221 switch-22 
 docker network connect --driver-opt com.docker.network.bridge.name=eth1 --ip 172.23.1.2 subnet-vlan-311 switch-31 
 docker network connect --driver-opt com.docker.network.bridge.name=eth1 --ip 172.23.2.2 subnet-vlan-321 switch-32  
-
+# Alters default gateway from Docker's standard to custom containers (routers or l3-switches)
+docker container exec firwll-0 sh -c 'echo -e -n "\n\n[firwll-1] " && ping -c 1 -t 1 172.20.0.1'
+docker container exec router-1 sh -c 'ip route change default via 172.20.0.2 dev eth0 && echo -e -n "\n\n[router-1] " && ping -c 1 -t 1 172.20.0.2'
+docker container exec router-2 sh -c 'ip route change default via 172.20.0.2 dev eth0 && echo -e -n "\n\n[router-2] " && ping -c 1 -t 1 172.20.0.2'
+docker container exec router-3 sh -c 'ip route change default via 172.20.0.2 dev eth0 && echo -e -n "\n\n[router-3] " && ping -c 1 -t 1 172.20.0.2'
+docker container exec switch-11 sh -c 'ip route change default via 172.21.0.2 dev eth0 && echo -e -n "\n\n[switch-11] " && ping -c 1 -t 1 172.21.0.2'
+docker container exec switch-12 sh -c 'ip route change default via 172.21.0.2 dev eth0 && echo -e -n "\n\n[switch-12] " && ping -c 1 -t 1 172.21.0.2'
+docker container exec switch-21 sh -c 'ip route change default via 172.22.0.2 dev eth0 && echo -e -n "\n\n[switch-21] " && ping -c 1 -t 1 172.22.0.2'
+docker container exec switch-22 sh -c 'ip route change default via 172.22.0.2 dev eth0 && echo -e -n "\n\n[switch-22] " && ping -c 1 -t 1 172.22.0.2'
+docker container exec switch-31 sh -c 'ip route change default via 172.23.0.2 dev eth0 && echo -e -n "\n\n[switch-31] " && ping -c 1 -t 1 172.23.0.2'
+docker container exec switch-32 sh -c 'ip route change default via 172.23.0.2 dev eth0 && echo -e -n "\n\n[switch-32] " && ping -c 1 -t 1 172.23.0.2'
+docker container exec workst-a sh -c 'ip route change default via 172.21.1.2 dev eth0 && echo -e -n "\n\n[workst-a] " && ping -c 1 -t 1 172.21.1.2'
+docker container exec workst-b sh -c 'ip route change default via 172.21.1.2 dev eth0 && echo -e -n "\n\n[workst-b] " && ping -c 1 -t 1 172.21.1.2' 
+docker container exec workst-c sh -c 'ip route change default via 172.21.2.2 dev eth0 && echo -e -n "\n\n[workst-c] " && ping -c 1 -t 1 172.21.2.2' 
+docker container exec workst-d sh -c 'ip route change default via 172.21.2.2 dev eth0 && echo -e -n "\n\n[workst-d] " && ping -c 1 -t 1 172.21.2.2' 
+docker container exec workst-e sh -c 'ip route change default via 172.22.1.2 dev eth0 && echo -e -n "\n\n[workst-e] " && ping -c 1 -t 1 172.22.1.2' 
+docker container exec workst-f sh -c 'ip route change default via 172.22.1.2 dev eth0 && echo -e -n "\n\n[workst-f] " && ping -c 1 -t 1 172.22.1.2' 
+docker container exec workst-g sh -c 'ip route change default via 172.22.2.2 dev eth0 && echo -e -n "\n\n[workst-g] " && ping -c 1 -t 1 172.22.2.2' 
+docker container exec workst-h sh -c 'ip route change default via 172.22.2.2 dev eth0 && echo -e -n "\n\n[workst-h] " && ping -c 1 -t 1 172.22.2.2' 
+docker container exec workst-i sh -c 'ip route change default via 172.23.1.2 dev eth0 && echo -e -n "\n\n[workst-i] " && ping -c 1 -t 1 172.23.1.2' 
+docker container exec workst-j sh -c 'ip route change default via 172.23.1.2 dev eth0 && echo -e -n "\n\n[workst-j] " && ping -c 1 -t 1 172.23.1.2' 
+docker container exec workst-k sh -c 'ip route change default via 172.23.2.2 dev eth0 && echo -e -n "\n\n[workst-k] " && ping -c 1 -t 1 172.23.2.2' 
+docker container exec workst-l sh -c 'ip route change default via 172.23.2.2 dev eth0 && echo -e -n "\n\n[workst-l] " && ping -c 1 -t 1 172.23.2.2' 
 # TODO
