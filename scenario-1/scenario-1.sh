@@ -8,7 +8,7 @@
 # $1 = Alpine Version (e.g. "1.1.1")
 #
 baseImageVersion=$1
-imageName=tst-switch-l3\:1.00
+imageName=cnt-switch-l3\:1.00
 if [[ $( docker image ls --filter "reference=${imageName}" | wc -l ) -lt 2 ]] ; then
     docker image build -f ./cimages/switch-l3.containerfile --build-arg ALPINE_VERSION=${baseImageVersion} -t ${imageName} ./ 
 fi

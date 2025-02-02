@@ -9,15 +9,15 @@
 #
 baseImageVersion=$1
 enableFirewall=$2
-imageNameFirewall=tst-firewall\:1.00
+imageNameFirewall=cnt-firewall\:1.00
 if [[ $( docker image ls --filter "reference=${imageNameFirewall}" | wc -l ) -lt 2 ]] ; then
     docker image build -f ./cimages/firewall.containerfile --build-arg ALPINE_VERSION=${baseImageVersion} -t ${imageNameFirewall} ./ 
 fi
-imageNameSwitch=tst-switch-l3\:1.00
+imageNameSwitch=cnt-switch-l3\:1.00
 if [[ $( docker image ls --filter "reference=${imageNameSwitch}" | wc -l ) -lt 2 ]] ; then
     docker image build -f ./cimages/switch-l3.containerfile --build-arg ALPINE_VERSION=${baseImageVersion} -t ${imageNameSwitch} ./ 
 fi
-imageNameWorkStation=tst-work-station\:1.00
+imageNameWorkStation=cnt-work-station\:1.00
 if [[ $( docker image ls --filter "reference=${imageNameWorkStation}" | wc -l ) -lt 2 ]] ; then
     docker image build -f ./cimages/work-station.containerfile --build-arg ALPINE_VERSION=${baseImageVersion} -t ${imageNameWorkStation} ./ 
 fi

@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Script made with the help of the following  references:
+# Script made with the help of the following references:
 #      1 - https://www.youtube.com/watch?v=0nkgC3F2VM0
 #      2 - https://serverfault.com/questions/30026/whitelist-allowed-ips-in-out-using-iptables
 #      3 - https://serverfault.com/questions/623996/how-to-enable-traceroute-in-linux-machine
