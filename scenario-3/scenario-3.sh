@@ -9,11 +9,13 @@
 #
 # Parameters:
 # $1 = Alpine Version (e.g. "1.1.1")
+# $2 = Load firewall configuration into firwll-0 (e.g. "1" or "0")
 #
 baseImageVersion=$1
+enableFirewall=$2
 imageNameFirewall=cnt-simple\:1.00
 if [[ $( docker image ls --filter "reference=${imageNameFirewall}" | wc -l ) -lt 2 ]] ; then
-    docker image build -f ./cimages/.containerfile --build-arg ALPINE_VERSION=${baseImageVersion} -t ${imageNameFirewall} ./ 
+    docker image build -f ./cimages/firewall.containerfile --build-arg ALPINE_VERSION=${baseImageVersion} -t ${imageNameFirewall} ./ 
 fi
 imageNameRouter=cnt-router\:1.00
 if [[ $( docker image ls --filter "reference=${imageNameRouter}" | wc -l ) -lt 2 ]] ; then
@@ -92,4 +94,25 @@ docker container exec workst-i sh -c 'ip route change default via 172.23.1.2 dev
 docker container exec workst-j sh -c 'ip route change default via 172.23.1.2 dev eth0 && echo -e -n "\n\n[workst-j] " && ping -c 1 -t 1 172.23.1.2' 
 docker container exec workst-k sh -c 'ip route change default via 172.23.2.2 dev eth0 && echo -e -n "\n\n[workst-k] " && ping -c 1 -t 1 172.23.2.2' 
 docker container exec workst-l sh -c 'ip route change default via 172.23.2.2 dev eth0 && echo -e -n "\n\n[workst-l] " && ping -c 1 -t 1 172.23.2.2' 
-# TODO
+# TODO:
+#    - Set-up OSPF
+echo "-----------------------------------------------" && \
+echo "--------------NETWORK SETUP DONE!--------------" && \
+echo "-----------------------------------------------"
+# Firewall setup
+if ! [[ ${enableFirewall} =~ ^[01]$ ]] ; then
+    echo "ERROR 5: Scenario-3's parameter \$2 = '$2'; needs to be '0' or '1', since it's a boolean flag."
+    exit 5
+fi
+if [[ ${enableFirewall} == "1" ]] ; then
+    echo "-----------------------------------------------" && \
+    echo "----------------FIREWALL SETUP-----------------" && \
+    echo "-----------------------------------------------"
+    docker container cp "./$( find . -name 'scenario-3.firwll-0.sh' -printf '%P' )" firwll-0:/ && \
+    docker container exec firwll-0 sh /scenario-3.firwll-0.sh && \
+    echo "[firwll-0] File '/scenario-3.firwll-0.sh' loaded successfully." && \
+    echo "-----------------------------------------------" && \
+    echo "-------------FIREWALL SETUP DONE!--------------" && \
+    echo "-----------------------------------------------"
+    # TODO: run tests
+fi

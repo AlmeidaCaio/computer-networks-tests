@@ -43,8 +43,6 @@ done
 for icmpType in 8 ; do 
   iptables -A FORWARD -i eth0 -p icmp --icmp-type $icmpType -j ACCEPT 
 done
-## Rejects tracepaths from the firewall
-#iptables -I INPUT -i eth0 -p udp --dport 33434:33474 -j REJECT
 
 # Allowing DNS from the firewall and anywhere inside 
 for chainType in FORWARD INPUT ; do 
