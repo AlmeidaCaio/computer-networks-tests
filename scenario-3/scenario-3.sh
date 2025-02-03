@@ -40,9 +40,9 @@ docker network create --driver bridge --subnet 172.21.2.0/24 --gateway 172.21.2.
 docker network create --driver bridge --subnet 172.22.2.0/24 --gateway 172.22.2.1 --attachable subnet-vlan-221
 docker network create --driver bridge --subnet 172.23.2.0/24 --gateway 172.23.2.1 --attachable subnet-vlan-321
 docker container run -itd --rm -p 41230\:22 --cap-add NET_ADMIN --name firwll-0 --network subnet-vlan-001 --ip 172.20.0.2 ${imageNameFirewall}
-docker container run -itd --rm -p 41231\:22 --cap-add NET_ADMIN --name router-1 --network subnet-vlan-001 --ip 172.20.0.10 ${imageNameRouter}
-docker container run -itd --rm -p 41232\:22 --cap-add NET_ADMIN --name router-2 --network subnet-vlan-001 --ip 172.20.0.20 ${imageNameRouter}
-docker container run -itd --rm -p 41233\:22 --cap-add NET_ADMIN --name router-3 --network subnet-vlan-001 --ip 172.20.0.30 ${imageNameRouter}
+docker container run -itd --rm -p 41231\:22 --cap-add NET_ADMIN --name router-1 --network subnet-vlan-001 --ip 172.20.0.10 ${imageNameRouter} --privileged 
+docker container run -itd --rm -p 41232\:22 --cap-add NET_ADMIN --name router-2 --network subnet-vlan-001 --ip 172.20.0.20 ${imageNameRouter} --privileged 
+docker container run -itd --rm -p 41233\:22 --cap-add NET_ADMIN --name router-3 --network subnet-vlan-001 --ip 172.20.0.30 ${imageNameRouter} --privileged 
 docker container run -itd --rm -p 41234\:22 --cap-add NET_ADMIN --name switch-11 --network p2p-vlans-001-1X1 --ip 172.21.0.3 ${imageNameSwitch}
 docker container run -itd --rm -p 41235\:22 --cap-add NET_ADMIN --name switch-12 --network p2p-vlans-001-1X1 --ip 172.21.0.4 ${imageNameSwitch}
 docker container run -itd --rm -p 41236\:22 --cap-add NET_ADMIN --name switch-21 --network p2p-vlans-001-2X1 --ip 172.22.0.3 ${imageNameSwitch}
