@@ -6,6 +6,8 @@
 # References:
 #    - https://docs.frrouting.org/en/stable-10.2/ospfd.html
 #    - https://www.networkacademy.io/ccna/ospf/ospf-best-path-selection
+#    - https://docs.frrouting.org/projects/dev-guide/en/latest/ospf-api.html#installation-configuration 
+#    - https://github.com/FRRouting/frr/issues/8681 
 #
 # Parameters:
 # $1 = Alpine Version (e.g. "1.1.1")
