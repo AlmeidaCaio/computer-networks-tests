@@ -4,10 +4,11 @@
 # * This is TODO; however, dynamic routes are loaded with OSPF.
 #
 # References:
-#    - https://docs.frrouting.org/en/stable-10.2/ospfd.html
 #    - https://www.networkacademy.io/ccna/ospf/ospf-best-path-selection
-#    - https://docs.frrouting.org/projects/dev-guide/en/latest/ospf-api.html#installation-configuration 
+#    - https://alpine.pkgs.org/3.20/alpine-main-x86_64/quagga-1.2.4-r9.apk.html
 #    - https://github.com/FRRouting/frr/issues/8681 
+#    - https://docs.frrouting.org/en/stable-10.2/ospfd.html
+#    - https://docs.frrouting.org/projects/dev-guide/en/latest/ospf-api.html#installation-configuration 
 #
 # Parameters:
 # $1 = Alpine Version (e.g. "1.1.1")
