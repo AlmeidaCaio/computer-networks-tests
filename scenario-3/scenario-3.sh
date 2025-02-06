@@ -97,8 +97,6 @@ docker container exec workst-i sh -c 'ip route change default via 172.23.1.2 dev
 docker container exec workst-j sh -c 'ip route change default via 172.23.1.2 dev eth0 && echo -e -n "\n\n[workst-j] " && ping -c 1 -t 1 172.23.1.2' 
 docker container exec workst-k sh -c 'ip route change default via 172.23.2.2 dev eth0 && echo -e -n "\n\n[workst-k] " && ping -c 1 -t 1 172.23.2.2' 
 docker container exec workst-l sh -c 'ip route change default via 172.23.2.2 dev eth0 && echo -e -n "\n\n[workst-l] " && ping -c 1 -t 1 172.23.2.2' 
-# TODO:
-#    - Set-up OSPF
 echo "-----------------------------------------------" && \
 echo "--------------NETWORK SETUP DONE!--------------" && \
 echo "-----------------------------------------------"
@@ -117,5 +115,16 @@ if [[ ${enableFirewall} == "1" ]] ; then
     echo "-----------------------------------------------" && \
     echo "-------------FIREWALL SETUP DONE!--------------" && \
     echo "-----------------------------------------------"
-    # TODO: run tests
+    # TODO: run tests after Routers setup
 fi
+echo "-----------------------------------------------" && \
+echo "-----------------ROUTERS SETUP-----------------" && \
+echo "-----------------------------------------------"
+for i in 1 2 3 ; do 
+    docker container cp "./$( find . -name scenario-3.router-$i.sh -printf '%P' )" router-$i:/ && \
+    docker container exec router-$i sh /scenario-3.router-$i.sh && \
+    echo "[router-$i] File '/scenario-3.router-$i.sh' loaded successfully."
+done 
+echo "-----------------------------------------------" && \
+echo "--------------ROUTERS SETUP DONE!--------------" && \
+echo "-----------------------------------------------"
