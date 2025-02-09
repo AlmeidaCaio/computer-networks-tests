@@ -6,6 +6,7 @@
 # References:
 #    - https://www.networkacademy.io/ccna/ospf/ospf-best-path-selection
 #    - https://alpine.pkgs.org/3.20/alpine-main-x86_64/quagga-1.2.4-r9.apk.html
+#    - https://ixnfo.com/en/configuring-ospf-in-quagga.html#google_vignette
 #    - https://www.nongnu.org/quagga/docs/quagga.html#Sample-Config-File
 #    - https://www.nongnu.org/quagga/docs/quagga.html#OSPF-router
 #    - https://github.com/FRRouting/frr/issues/8681 
@@ -43,9 +44,9 @@ docker network create --driver bridge --subnet 172.21.2.0/24 --gateway 172.21.2.
 docker network create --driver bridge --subnet 172.22.2.0/24 --gateway 172.22.2.1 --attachable subnet-vlan-221
 docker network create --driver bridge --subnet 172.23.2.0/24 --gateway 172.23.2.1 --attachable subnet-vlan-321
 docker container run -itd --rm -p 41230\:22 --cap-add NET_ADMIN --name firwll-0 --network subnet-vlan-001 --ip 172.20.0.2 ${imageNameFirewall}
-docker container run -itd --rm -p 41231\:22 --cap-add NET_ADMIN --name router-1 --network subnet-vlan-001 --ip 172.20.0.10 ${imageNameRouter} --privileged 
-docker container run -itd --rm -p 41232\:22 --cap-add NET_ADMIN --name router-2 --network subnet-vlan-001 --ip 172.20.0.20 ${imageNameRouter} --privileged 
-docker container run -itd --rm -p 41233\:22 --cap-add NET_ADMIN --name router-3 --network subnet-vlan-001 --ip 172.20.0.30 ${imageNameRouter} --privileged 
+docker container run -itd --rm -p 41231\:22 --cap-add NET_ADMIN --name router-1 --network subnet-vlan-001 --ip 172.20.0.10 ${imageNameRouter} 
+docker container run -itd --rm -p 41232\:22 --cap-add NET_ADMIN --name router-2 --network subnet-vlan-001 --ip 172.20.0.20 ${imageNameRouter} 
+docker container run -itd --rm -p 41233\:22 --cap-add NET_ADMIN --name router-3 --network subnet-vlan-001 --ip 172.20.0.30 ${imageNameRouter} 
 docker container run -itd --rm -p 41234\:22 --cap-add NET_ADMIN --name switch-11 --network p2p-vlans-001-1X1 --ip 172.21.0.3 ${imageNameSwitch}
 docker container run -itd --rm -p 41235\:22 --cap-add NET_ADMIN --name switch-12 --network p2p-vlans-001-1X1 --ip 172.21.0.4 ${imageNameSwitch}
 docker container run -itd --rm -p 41236\:22 --cap-add NET_ADMIN --name switch-21 --network p2p-vlans-001-2X1 --ip 172.22.0.3 ${imageNameSwitch}
@@ -76,9 +77,18 @@ docker network connect --driver-opt com.docker.network.bridge.name=eth1 --ip 172
 docker network connect --driver-opt com.docker.network.bridge.name=eth1 --ip 172.23.2.2 subnet-vlan-321 switch-32  
 # Alters default gateway from Docker's standard to custom containers (routers or l3-switches)
 docker container exec firwll-0 sh -c 'echo -e -n "\n\n[firwll-1] " && ping -c 1 -t 1 172.20.0.1'
+docker container exec firwll-0 sh -c 'ip route add 172.21.0.0/22 via 172.20.0.10 dev eth0' 
+docker container exec firwll-0 sh -c 'ip route add 172.22.0.0/22 via 172.20.0.20 dev eth0' 
+docker container exec firwll-0 sh -c 'ip route add 172.23.0.0/22 via 172.20.0.30 dev eth0' 
 docker container exec router-1 sh -c 'ip route change default via 172.20.0.2 dev eth0 && echo -e -n "\n\n[router-1] " && ping -c 1 -t 1 172.20.0.2'
 docker container exec router-2 sh -c 'ip route change default via 172.20.0.2 dev eth0 && echo -e -n "\n\n[router-2] " && ping -c 1 -t 1 172.20.0.2'
 docker container exec router-3 sh -c 'ip route change default via 172.20.0.2 dev eth0 && echo -e -n "\n\n[router-3] " && ping -c 1 -t 1 172.20.0.2'
+docker container exec router-1 sh -c 'ip route add 172.21.1.0/24 via 172.21.0.3 dev eth1'
+docker container exec router-1 sh -c 'ip route add 172.21.2.0/24 via 172.21.0.4 dev eth1'
+docker container exec router-2 sh -c 'ip route add 172.22.1.0/24 via 172.22.0.3 dev eth1'
+docker container exec router-2 sh -c 'ip route add 172.22.2.0/24 via 172.22.0.4 dev eth1'
+docker container exec router-3 sh -c 'ip route add 172.23.1.0/24 via 172.23.0.3 dev eth1'
+docker container exec router-3 sh -c 'ip route add 172.23.2.0/24 via 172.23.0.4 dev eth1'
 docker container exec switch-11 sh -c 'ip route change default via 172.21.0.2 dev eth0 && echo -e -n "\n\n[switch-11] " && ping -c 1 -t 1 172.21.0.2'
 docker container exec switch-12 sh -c 'ip route change default via 172.21.0.2 dev eth0 && echo -e -n "\n\n[switch-12] " && ping -c 1 -t 1 172.21.0.2'
 docker container exec switch-21 sh -c 'ip route change default via 172.22.0.2 dev eth0 && echo -e -n "\n\n[switch-21] " && ping -c 1 -t 1 172.22.0.2'
