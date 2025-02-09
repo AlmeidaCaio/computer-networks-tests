@@ -77,9 +77,10 @@ docker network connect --driver-opt com.docker.network.bridge.name=eth1 --ip 172
 docker network connect --driver-opt com.docker.network.bridge.name=eth1 --ip 172.23.2.2 subnet-vlan-321 switch-32  
 # Alters default gateway from Docker's standard to custom containers (routers or l3-switches)
 docker container exec firwll-0 sh -c 'echo -e -n "\n\n[firwll-1] " && ping -c 1 -t 1 172.20.0.1'
-docker container exec firwll-0 sh -c 'ip route add 172.21.0.0/22 via 172.20.0.10 dev eth0' 
-docker container exec firwll-0 sh -c 'ip route add 172.22.0.0/22 via 172.20.0.20 dev eth0' 
-docker container exec firwll-0 sh -c 'ip route add 172.23.0.0/22 via 172.20.0.30 dev eth0' 
+## TODO: remove when ospf works among routers
+#docker container exec firwll-0 sh -c 'ip route add 172.21.0.0/22 via 172.20.0.10 dev eth0' 
+#docker container exec firwll-0 sh -c 'ip route add 172.22.0.0/22 via 172.20.0.20 dev eth0' 
+#docker container exec firwll-0 sh -c 'ip route add 172.23.0.0/22 via 172.20.0.30 dev eth0' 
 docker container exec router-1 sh -c 'ip route change default via 172.20.0.2 dev eth0 && echo -e -n "\n\n[router-1] " && ping -c 1 -t 1 172.20.0.2'
 docker container exec router-2 sh -c 'ip route change default via 172.20.0.2 dev eth0 && echo -e -n "\n\n[router-2] " && ping -c 1 -t 1 172.20.0.2'
 docker container exec router-3 sh -c 'ip route change default via 172.20.0.2 dev eth0 && echo -e -n "\n\n[router-3] " && ping -c 1 -t 1 172.20.0.2'
@@ -120,7 +121,7 @@ if [[ ${enableFirewall} == "1" ]] ; then
     echo "----------------FIREWALL SETUP-----------------" && \
     echo "-----------------------------------------------"
     docker container cp "./$( find . -name 'scenario-3.firwll-0.sh' -printf '%P' )" firwll-0:/ && \
-    docker container exec firwll-0 sh /scenario-3.firwll-0.sh && \
+    docker container exec firwll-0 sh -v /scenario-3.firwll-0.sh && \
     echo "[firwll-0] File '/scenario-3.firwll-0.sh' loaded successfully." && \
     echo "-----------------------------------------------" && \
     echo "-------------FIREWALL SETUP DONE!--------------" && \
@@ -132,8 +133,12 @@ echo "-----------------ROUTERS SETUP-----------------" && \
 echo "-----------------------------------------------"
 for i in 1 2 3 ; do 
     docker container cp "./$( find . -name scenario-3.router-$i.sh -printf '%P' )" router-$i:/ && \
-    docker container exec router-$i sh /scenario-3.router-$i.sh && \
-    echo "[router-$i] File '/scenario-3.router-$i.sh' loaded successfully."
+    docker container exec router-$i sh -v /scenario-3.router-$i.sh && \
+    echo "[router-$i] File '/scenario-3.router-$i.sh' loaded successfully." && \
+    echo "[router-$i] ospfd > show ip ospf database" && \
+    docker container exec router-$i sh -c 'vtysh --daemon ospfd < <( echo -e "show ip ospf database\nquit" )' && \
+    echo "[router-$i] ospfd > show ip ospf neighbor detail" && \
+    docker container exec router-$i sh -c 'vtysh --daemon ospfd < <( echo -e "show ip ospf neighbor detail\nquit" )' 
 done 
 echo "-----------------------------------------------" && \
 echo "--------------ROUTERS SETUP DONE!--------------" && \

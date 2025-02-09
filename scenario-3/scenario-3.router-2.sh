@@ -16,10 +16,10 @@ router ospf
  redistribute static
  neighbor 172.20.0.30
  neighbor 172.20.0.10
- network 172.22.0.0/24 area 0.0.0.2
+ network 172.22.0.0/22 area 0.0.0.2
  network 172.20.0.20/32 area 0.0.0.0
  area 0.0.0.0 range 172.20.0.0/24
- area 0.0.0.2 range 172.22.0.0/24
+ area 0.0.0.2 range 172.22.0.0/22
 
 line vty
 " > /etc/quagga/ospfd.conf \
