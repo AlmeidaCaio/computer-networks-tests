@@ -20,7 +20,6 @@ router ospf
  network 172.21.0.0/22 area 0.0.0.1
  area 0.0.0.0 range 172.20.0.0/24
  area 0.0.0.1 range 172.21.0.0/22
- area 0.0.0.1 range 172.21.2.3/32 not-advertise 
  area 0.0.0.2 virtual-link 172.20.0.20
  area 0.0.0.3 virtual-link 172.20.0.30
 

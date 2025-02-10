@@ -21,7 +21,6 @@ router ospf
  area 0.0.0.0 range 172.20.0.0/24
  area 0.0.0.1 virtual-link 172.20.0.10
  area 0.0.0.2 range 172.22.0.0/22
- area 0.0.0.2 range 172.22.2.3/32 not-advertise 
  area 0.0.0.3 virtual-link 172.20.0.30
 
 line vty

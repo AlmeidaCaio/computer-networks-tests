@@ -17,6 +17,10 @@
 #
 baseImageVersion=$1
 enableFirewall=$2
+if ! [[ ${enableFirewall} =~ ^[01]$ ]] ; then
+    echo "ERROR 5: Scenario-3's parameter \$2 = '$2'; needs to be '0' or '1', since it's a boolean flag."
+    exit 5
+fi
 imageNameFirewall=cnt-firewall\:1.00
 if [[ $( docker image ls --filter "reference=${imageNameFirewall}" | wc -l ) -lt 2 ]] ; then
     docker image build -f ./cimages/firewall.containerfile --build-arg ALPINE_VERSION=${baseImageVersion} -t ${imageNameFirewall} ./ 
@@ -108,10 +112,6 @@ echo "-----------------------------------------------" && \
 echo "--------------NETWORK SETUP DONE!--------------" && \
 echo "-----------------------------------------------"
 # Firewall setup
-if ! [[ ${enableFirewall} =~ ^[01]$ ]] ; then
-    echo "ERROR 5: Scenario-3's parameter \$2 = '$2'; needs to be '0' or '1', since it's a boolean flag."
-    exit 5
-fi
 if [[ ${enableFirewall} == "1" ]] ; then
     echo "-----------------------------------------------" && \
     echo "----------------FIREWALL SETUP-----------------" && \
@@ -122,7 +122,6 @@ if [[ ${enableFirewall} == "1" ]] ; then
     echo "-----------------------------------------------" && \
     echo "-------------FIREWALL SETUP DONE!--------------" && \
     echo "-----------------------------------------------"
-    # TODO: run tests after Routers setup
 fi
 echo "-----------------------------------------------" && \
 echo "-----------------ROUTERS SETUP-----------------" && \
@@ -135,12 +134,13 @@ for i in 1 2 3 ; do
         docker container exec router-$i sh -c "echo -e -n '\n[router-$i] ' && ping -c 1 -t 2 172.2$i.$k"
     done
 done 
+echo -n "" && sleep 5 && echo ""
 for i in 1 2 3 ; do 
     for j in "21.1.2" "21.1.3" "21.1.4" "21.2.2" "21.2.3" "21.2.4" \
                 "22.1.2" "22.1.3" "22.1.4" "22.2.2" "22.2.3" "22.2.4" \
                     "23.1.2" "23.1.3" "23.1.4" "23.2.2" "23.2.3" "23.2.4" ; do 
         [[ $j =~ ^2$i\.[0-9]\.[0-9]$ ]] && continue 
-        docker container exec router-$i sh -c "test=\$(ping -c 1 -t 3 172.$j | grep '0% packet loss' | wc -l) && if [ \$test == '1' ] ; then { echo '[router-$i] 172.$j OK' ; } ; else { echo '[router-$i] 172.$j FAIL, perhaps not advertised' ; } ; fi"
+        docker container exec router-$i sh -c "test=\$(ping -c 1 -t 3 172.$j | grep ' 0% packet loss' | wc -l) && if [ \$test == '1' ] ; then { echo '[router-$i] 172.$j OK' ; } ; else { echo '[router-$i] 172.$j FAIL, perhaps not advertised' ; } ; fi"
     done
     echo "[router-$i] ospfd > show ip ospf database" && \
     docker container exec router-$i sh -c 'vtysh --daemon ospfd < <( echo -e "show ip ospf database\nquit" )' && \

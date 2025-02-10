@@ -22,7 +22,6 @@ router ospf
  area 0.0.0.1 virtual-link 172.20.0.10 
  area 0.0.0.2 virtual-link 172.20.0.20 
  area 0.0.0.3 range 172.23.0.0/22
- area 0.0.0.3 range 172.23.2.3/32 not-advertise 
 
 line vty
 " > /etc/quagga/ospfd.conf \

@@ -9,6 +9,10 @@
 #
 baseImageVersion=$1
 enableFirewall=$2
+if ! [[ ${enableFirewall} =~ ^[01]$ ]] ; then
+    echo "ERROR 4: Scenario-2's parameter \$2 = '$2'; needs to be '0' or '1', since it's a boolean flag."
+    exit 4
+fi
 imageNameFirewall=cnt-firewall\:1.00
 if [[ $( docker image ls --filter "reference=${imageNameFirewall}" | wc -l ) -lt 2 ]] ; then
     docker image build -f ./cimages/firewall.containerfile --build-arg ALPINE_VERSION=${baseImageVersion} -t ${imageNameFirewall} ./ 
@@ -72,10 +76,6 @@ echo "-----------------------------------------------" && \
 echo "--------------NETWORK SETUP DONE!--------------" && \
 echo "-----------------------------------------------"
 # Firewall setup
-if ! [[ ${enableFirewall} =~ ^[01]$ ]] ; then
-    echo "ERROR 4: Scenario-2's parameter \$2 = '$2'; needs to be '0' or '1', since it's a boolean flag."
-    exit 4
-fi
 if [[ ${enableFirewall} == "1" ]] ; then
     echo "-----------------------------------------------" && \
     echo "----------------FIREWALL SETUP-----------------" && \
