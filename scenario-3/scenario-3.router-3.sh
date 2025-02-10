@@ -10,16 +10,19 @@ echo -n "log file /var/log/quagga/ospfd.log informational
 service advanced-vty
 router ospf
  ospf router-id 172.23.0.2
+ ospf abr-type standard
  log-adjacency-changes
  redistribute kernel
  redistribute connected
  redistribute static
- neighbor 172.20.0.10
- neighbor 172.20.0.20
+ passive-interface eth1
+ network 172.20.0.0/24 area 0.0.0.0
  network 172.23.0.0/22 area 0.0.0.3
- network 172.20.0.20/32 area 0.0.0.0
  area 0.0.0.0 range 172.20.0.0/24
+ area 0.0.0.1 virtual-link 172.20.0.10 
+ area 0.0.0.2 virtual-link 172.20.0.20 
  area 0.0.0.3 range 172.23.0.0/22
+ area 0.0.0.3 range 172.23.2.3/32 not-advertise 
 
 line vty
 " > /etc/quagga/ospfd.conf \
