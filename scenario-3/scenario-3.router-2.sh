@@ -17,10 +17,14 @@ router ospf
  redistribute static
  passive-interface eth1
  network 172.20.0.0/24 area 0.0.0.0
- network 172.22.0.0/22 area 0.0.0.2
+ network 172.22.0.0/29 area 0.0.0.2
+ network 172.22.1.0/24 area 0.0.0.2
+ network 172.22.2.0/24 area 0.0.0.2
  area 0.0.0.0 range 172.20.0.0/24
  area 0.0.0.1 virtual-link 172.20.0.10
- area 0.0.0.2 range 172.22.0.0/22
+ area 0.0.0.2 range 172.22.0.2/32
+ area 0.0.0.2 range 172.22.1.0/24
+ area 0.0.0.2 range 172.22.2.0/24
  area 0.0.0.3 virtual-link 172.20.0.30
 
 line vty

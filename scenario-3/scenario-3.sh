@@ -139,13 +139,11 @@ for i in 1 2 3 ; do
     for j in "21.1.2" "21.1.3" "21.1.4" "21.2.2" "21.2.3" "21.2.4" \
                 "22.1.2" "22.1.3" "22.1.4" "22.2.2" "22.2.3" "22.2.4" \
                     "23.1.2" "23.1.3" "23.1.4" "23.2.2" "23.2.3" "23.2.4" ; do 
-        [[ $j =~ ^2$i\.[0-9]\.[0-9]$ ]] && continue 
+        [[ $j =~ ^2$i\.[0-9]\.[0-9]$ ]] && { continue ; } 
         docker container exec router-$i sh -c "test=\$(ping -c 1 -t 3 172.$j | grep ' 0% packet loss' | wc -l) && if [ \$test == '1' ] ; then { echo '[router-$i] 172.$j OK' ; } ; else { echo '[router-$i] 172.$j FAIL, perhaps not advertised' ; } ; fi"
     done
-    echo "[router-$i] ospfd > show ip ospf database" && \
-    docker container exec router-$i sh -c 'vtysh --daemon ospfd < <( echo -e "show ip ospf database\nquit" )' && \
-    echo "[router-$i] ospfd > show ip ospf neighbor detail" && \
-    docker container exec router-$i sh -c 'vtysh --daemon ospfd < <( echo -e "show ip ospf neighbor detail\nquit" )' 
+    echo "[router-$i] vtysh --daemon ospfd" && \
+    docker container exec router-$i sh -c 'vtysh --daemon ospfd < <( echo -e "show ip ospf database\nshow ip ospf route\nshow ip ospf neighbor detail\nquit" )' 
 done
 echo "-----------------------------------------------" && \
 echo "--------------ROUTERS SETUP DONE!--------------" && \

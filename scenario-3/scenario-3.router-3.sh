@@ -17,11 +17,15 @@ router ospf
  redistribute static
  passive-interface eth1
  network 172.20.0.0/24 area 0.0.0.0
- network 172.23.0.0/22 area 0.0.0.3
+ network 172.23.0.0/29 area 0.0.0.3
+ network 172.23.1.0/24 area 0.0.0.3
+ network 172.23.2.0/24 area 0.0.0.3
  area 0.0.0.0 range 172.20.0.0/24
  area 0.0.0.1 virtual-link 172.20.0.10 
  area 0.0.0.2 virtual-link 172.20.0.20 
- area 0.0.0.3 range 172.23.0.0/22
+ area 0.0.0.3 range 172.23.0.2/32
+ area 0.0.0.3 range 172.23.1.0/24
+ area 0.0.0.3 range 172.23.2.0/24
 
 line vty
 " > /etc/quagga/ospfd.conf \
