@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 #
-# Script made with the help of the following  references:
+# Script made with the help of the following references:
 #      1 - https://www.youtube.com/watch?v=0nkgC3F2VM0
 #      2 - https://serverfault.com/questions/30026/whitelist-allowed-ips-in-out-using-iptables
 #      3 - https://serverfault.com/questions/623996/how-to-enable-traceroute-in-linux-machine
@@ -43,8 +43,6 @@ done
 for icmpType in 8 ; do 
   iptables -A FORWARD -i eth0 -p icmp --icmp-type $icmpType -j ACCEPT 
 done
-## Rejects tracepaths from the firewall
-#iptables -I INPUT -i eth0 -p udp --dport 33434:33474 -j REJECT
 
 # Allowing DNS from the firewall and anywhere inside 
 for chainType in FORWARD INPUT ; do 
@@ -57,8 +55,10 @@ done
 
 # Applying rules for ports SMTPS and HTTPS to VLANs 10 and 20
 for sourceIp in 172.16.1.0/24-587-REJECT 172.16.2.0/24-587-ACCEPT 172.16.1.0/24-443-ACCEPT 172.16.2.0/24-443-REJECT ; do 
-  triad=(${sourceIp//-/\ })
+  subnet="` echo ${sourceIp} | sed -E 's/^([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\/[0-9]{1,2})-.*$/\1/g' `"
+  portNumber="` echo ${sourceIp} | sed -E 's/^.*-([0-9]+)-.*$/\1/g' `"
+  fwActionTarget="` echo ${sourceIp} | sed -E 's/^.*-([A-Z]+)$/\1/g' `"
   for portType in --dport --sport ; do 
-    iptables -A FORWARD -i eth0 -p tcp -s ${triad[0]} $portType ${triad[1]} -j ${triad[2]}
+    iptables -A FORWARD -i eth0 -p tcp -s ${subnet} $portType ${portNumber} -j ${fwActionTarget}
   done
 done
