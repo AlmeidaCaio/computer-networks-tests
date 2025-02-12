@@ -1,7 +1,8 @@
 #!/bin/bash
 #
 # About it:
-# * This is TODO; however, dynamic routes are loaded with OSPF.
+# * This is a network with 3 routers operating as OSPF Area Border Routers (ABR). Each router knows best of its correspondent OSPF area, so Link State Advertisements (LSAs) are for external areas.
+# OBS.: Take notice that this scenario do not have an OSPF Backbone Router, since it is optional whenever there are multi-areas.
 #
 # References:
 #    - https://www.networkacademy.io/ccna/ospf/ospf-best-path-selection
@@ -9,7 +10,6 @@
 #    - https://ixnfo.com/en/configuring-ospf-in-quagga.html#google_vignette
 #    - https://www.nongnu.org/quagga/docs/quagga.html#Sample-Config-File
 #    - https://www.nongnu.org/quagga/docs/quagga.html#OSPF-router
-#    - https://github.com/FRRouting/frr/issues/8681 
 #
 # Parameters:
 # $1 = Alpine Version (e.g. "1.1.1")
@@ -134,13 +134,14 @@ for i in 1 2 3 ; do
         docker container exec router-$i sh -c "echo -e -n '\n[router-$i] ' && ping -c 1 -t 2 172.2$i.$k"
     done
 done 
-echo -n "" && sleep 5 && echo ""
+sleep 5 && echo ""
 for i in 1 2 3 ; do 
     for j in "21.1.2" "21.1.3" "21.1.4" "21.2.2" "21.2.3" "21.2.4" \
                 "22.1.2" "22.1.3" "22.1.4" "22.2.2" "22.2.3" "22.2.4" \
                     "23.1.2" "23.1.3" "23.1.4" "23.2.2" "23.2.3" "23.2.4" ; do 
         [[ $j =~ ^2$i\.[0-9]\.[0-9]$ ]] && { continue ; } 
-        docker container exec router-$i sh -c "test=\$(ping -c 1 -t 3 172.$j | grep ' 0% packet loss' | wc -l) && if [ \$test == '1' ] ; then { echo '[router-$i] 172.$j OK' ; } ; else { echo '[router-$i] 172.$j FAIL, perhaps not advertised' ; } ; fi"
+        sleep 2 && \
+        docker container exec router-$i sh -c "test=\$(ping -c 1 -t 3 172.$j | grep ' 0% packet loss' | wc -l) && if [ \$test == '1' ] ; then { echo '[router-$i] 172.$j OK' ; } ; else { echo '[router-$i] 172.$j FAIL, perhaps not yet advertised' ; } ; fi"
     done
     echo "[router-$i] vtysh --daemon ospfd" && \
     docker container exec router-$i sh -c 'vtysh --daemon ospfd < <( echo -e "show ip ospf database\nshow ip ospf route\nshow ip ospf neighbor detail\nquit" )' 

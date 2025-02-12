@@ -3,7 +3,6 @@ EXPOSE 22 \
     443 \
     587
 RUN apk add curl \
-    frr \
     inetutils-telnet \
     iptables \
     iptstate \
@@ -12,5 +11,6 @@ RUN apk add curl \
     iputils-ping \
     iputils-tracepath \
     openssh \
+    quagga \
     tcpdump \
     vlan 
