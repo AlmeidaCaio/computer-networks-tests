@@ -28,12 +28,7 @@ apk add openrc \
     && sh -c "echo ssh >> /etc/securetty" \
     && sh -c "passwd < <( echo -e -n '\n\n' )" \
     && rc-service sshd start
-    echo -n "Awaiting '/run/openrc'." \
-    && { while ! [ -d /run/openrc ] ; do 
-        sleep 5 \
-        && echo -n '.' 
-    done \
-    && echo ' Done!' \
-    && touch /run/openrc/softlevel \
-    && rc-service --verbose sshd restart ; }
+    ! [ -d /run/openrc ] && { mkdir /run/openrc && touch /run/openrc/softlevel ; } \
+    && rc-status --all \
+    && rc-service --verbose sshd restart
 }
