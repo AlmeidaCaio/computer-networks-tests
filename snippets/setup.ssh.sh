@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Code Snippet for OpenSSH installation inside the Alpine Container
+# Code Snippet for SSH Server (OpenSSH) installation inside the Alpine Container
 #
 # References:
 #    - https://wiki.alpinelinux.org/wiki/Setting_up_a_SSH_server#Service_commands
