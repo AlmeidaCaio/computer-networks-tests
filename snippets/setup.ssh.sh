@@ -3,6 +3,7 @@
 # Code Snippet for OpenSSH installation inside the Alpine Container
 #
 # References:
+#    - https://wiki.alpinelinux.org/wiki/Setting_up_a_SSH_server#Service_commands
 #    - https://man.openbsd.org/sshd_config
 #    - https://serverfault.com/questions/1015547/what-causes-ssh-error-kex-exchange-identification-connection-closed-by-remote
 #
@@ -11,7 +12,8 @@ ENABLE_SSH_WIDEOPEN="1"
 apk add openrc \
     openssh  \
 && [ $ENABLE_SSH_WIDEOPEN == "1" ] && {
-    sed -E -i 's/^(Include\s*\/etc\/ssh\/sshd_config\.d)/#\1/g' /etc/ssh/sshd_config \
+    rc-service sshd zap \
+    && sed -E -i 's/^(Include\s*\/etc\/ssh\/sshd_config\.d)/#\1/g' /etc/ssh/sshd_config \
     && sed -E -i 's/^#(Port\s*22)/\1/g' /etc/ssh/sshd_config \
     && sed -E -i 's/^#(AddressFamily\s*any)/\1/g' /etc/ssh/sshd_config \
     && sed -E -i 's/^#PermitRootLogin\s*prohibit-password/PermitRootLogin yes/g' /etc/ssh/sshd_config \
@@ -26,4 +28,12 @@ apk add openrc \
     && sh -c "echo ssh >> /etc/securetty" \
     && sh -c "passwd < <( echo -e -n '\n\n' )" \
     && rc-service sshd start
+    echo -n "Awaiting '/run/openrc'." \
+    && { while ! [ -d /run/openrc ] ; do 
+        sleep 5 \
+        && echo -n '.' 
+    done \
+    && echo ' Done!' \
+    && touch /run/openrc/softlevel \
+    && rc-service --verbose sshd restart ; }
 }
