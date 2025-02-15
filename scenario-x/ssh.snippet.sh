@@ -15,7 +15,7 @@ apk add openrc \
     && sed -E -i 's/^#(Port\s*22)/\1/g' /etc/ssh/sshd_config \
     && sed -E -i 's/^#(AddressFamily\s*any)/\1/g' /etc/ssh/sshd_config \
     && sed -E -i 's/^#PermitRootLogin\s*prohibit-password/PermitRootLogin yes/g' /etc/ssh/sshd_config \
-    && sed -E -i 's/^#(StrictModes\s*yes))/\1/g' /etc/ssh/sshd_config \
+    && sed -E -i 's/^#(StrictModes\s*yes)/\1/g' /etc/ssh/sshd_config \
     && sed -E -i 's/^#MaxAuthTries\s*6/MaxAuthTries 3/g' /etc/ssh/sshd_config \
     && sed -E -i 's/^#MaxSessions\s*10/MaxSessions 1/g' /etc/ssh/sshd_config \
     && sed -E -i 's/^#(PasswordAuthentication\s*yes)/\1/g' /etc/ssh/sshd_config \
