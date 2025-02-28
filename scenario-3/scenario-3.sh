@@ -18,8 +18,8 @@
 baseImageVersion=$1
 enableFirewall=$2
 if ! [[ ${enableFirewall} =~ ^[01]$ ]] ; then
-    echo "ERROR 5: Scenario-3's parameter \$2 = '$2'; needs to be '0' or '1', since it's a boolean flag."
-    exit 5
+    echo "ERROR 7: Scenario-3's parameter \$2 = '$2'; needs to be '0' or '1', since it's a boolean flag."
+    exit 7
 fi
 imageNameFirewall=cnt-firewall\:1.00
 if [[ $( docker image ls --filter "reference=${imageNameFirewall}" | wc -l ) -lt 2 ]] ; then
