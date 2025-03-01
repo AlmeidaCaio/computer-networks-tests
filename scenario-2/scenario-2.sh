@@ -10,7 +10,7 @@
 baseImageVersion=$1
 enableFirewall=$2
 if ! [[ ${enableFirewall} =~ ^[01]$ ]] ; then
-    echo "ERROR 6: Scenario-2's parameter \$2 = '$2'; needs to be '0' or '1', since it's a boolean flag."
+    echo "ERROR 6: Parameter \$2 = '$2'; needs to be '0' or '1', since it's a boolean flag."
     exit 6
 fi
 imageNameFirewall=cnt-firewall\:1.00
