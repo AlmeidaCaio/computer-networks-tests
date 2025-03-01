@@ -22,7 +22,7 @@ if [[ -z ${scenarioNumber} ]] ; then
     echo "ERROR 2: Missing parameter \$1." 
     exit 2
 fi
-if ! [[ ${scenarioNumber} =~ ^[123]$ ]] ; then
+if ! [[ ${scenarioNumber} =~ ^[1-4]$ ]] ; then
     echo "ERROR 3: Parameter \$1 = '$1'; needs to be '1', '2', '3' or '4', and optionally followed by ${optionsAvailable}."
     exit 3
 fi
