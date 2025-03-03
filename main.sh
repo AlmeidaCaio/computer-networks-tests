@@ -27,6 +27,12 @@ if ! [[ ${scenarioNumber} =~ ^[1-4]$ ]] ; then
     exit 3
 fi
 
+# Assure WSL2 is enabled for network promiscuity whenever needed
+if [[ $( find /mnt/c/Users -maxdepth 2 -name '.wslconfig' | wc -l ) -lt 1 ]] ; then
+    echo -e "[wsl2]\nnetworkingMode=mirrored" > "/mnt/c/Users/Public/.wslconfig" && \
+    echo -e "WARN 1: No .wslconfig file found; therefore, one were created on '/mnt/c/Users/Public/'.\nWSL must be manually restarted for this change to be applied."
+fi 
+
 # Function to load option parameters
 loadOptionsArguments() {
     while [ "$#" -gt 0 ] ; do 
@@ -38,7 +44,7 @@ loadOptionsArguments() {
             exit 0
         elif [[ $1 == "--fw-off" ]] ; then
             fwFlag=0
-            echo "WARN 1: Scenario-${scenarioNumber} will have disabled firewall rules."
+            echo "WARN 2: Scenario-${scenarioNumber} will have disabled firewall rules."
             shift
         else
             echo "ERROR 5: Option argument '$1' is not supported. Options available are: ${optionsAvailable}."

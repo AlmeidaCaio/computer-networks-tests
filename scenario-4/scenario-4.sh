@@ -8,6 +8,8 @@
 #    - https://community.synology.com/enu/forum/11/post/191645
 #    - https://wiki.alpinelinux.org/wiki/VLAN
 #    - https://stackoverflow.com/questions/42946453/how-does-the-docker-assign-mac-addresses-to-containers
+#    - https://superuser.com/questions/1670969/wsl2-make-available-visible-all-windows-network-adapters-inside-ubuntu#1671057
+#    - https://learn.microsoft.com/en-us/windows/wsl/wsl-config#wslconfighttps://learn.microsoft.com/en-us/windows/wsl/wsl-config#wslconfig
 #
 # Parameters:
 # $1 = Alpine Version (e.g. "1.1.1")

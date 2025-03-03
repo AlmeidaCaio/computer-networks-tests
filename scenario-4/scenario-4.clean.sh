@@ -3,7 +3,7 @@
 # Parameters
 # -
 #
-echo "Cleaning by $0 started, wait for its completion."
+echo "Cleaning by $0 started, await its completion."
 docker network disconnect vlan-131 switch-1
 docker network disconnect vlan-121 switch-1
 docker network disconnect vlan-111 switch-1
