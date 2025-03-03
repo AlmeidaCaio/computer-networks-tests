@@ -17,6 +17,7 @@
 #
 baseImageVersion=$1
 enableFirewall=$2
+macAddrWslOUI=$MAC_ADDRESS_WSL_OUI
 if ! [[ ${enableFirewall} =~ ^[01]$ ]] ; then
     echo "ERROR 6: Parameter \$2 = '$2'; needs to be '0' or '1', since it's a boolean flag."
     exit 6
@@ -36,7 +37,8 @@ fi
 echo "-----------------------------------------------" && \
 echo "-----------------NETWORK SETUP-----------------" && \
 echo "-----------------------------------------------"
-sudo ip link set eth0 promisc on
+wslInterfaceLink="` ip link list | grep -B 1 ${macAddrWslOUI} | head -n 1 | sed -E 's/^[0-9]+:\s*(\w+):.*$/\1/g' `"
+sudo ip link set ${wslInterfaceLink} promisc on
 docker network create --driver bridge --subnet 172.20.0.0/30 --gateway 172.20.0.1 --attachable subnet-vlan-001
 docker network create --driver bridge --subnet 172.20.0.8/29 --gateway 172.20.0.9 --attachable p2p-vlans-001-0X1
 docker network create --driver bridge --subnet 172.20.0.16/29 --gateway 172.20.0.17 --attachable p2p-vlans-001-1X1
