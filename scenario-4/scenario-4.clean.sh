@@ -12,6 +12,6 @@ docker network disconnect vlan-021 switch-0
 docker network disconnect vlan-011 switch-0
 docker network disconnect p2p-vlans-001-1X1 firwll-0 
 docker network disconnect p2p-vlans-001-0X1 firwll-0 
-docker container stop switch-1 switch-0 firwll-0
+docker container stop switch-1 switch-0 firwll-0 workst-011 workst-021 workst-031 workst-111 workst-121 workst-131
 docker network rm vlan-131 vlan-121 vlan-111 vlan-031 vlan-021 vlan-011 p2p-vlans-001-1X1 p2p-vlans-001-0X1 subnet-vlan-001
 echo "Completed!"
