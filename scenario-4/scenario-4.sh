@@ -9,7 +9,8 @@
 #    - https://wiki.alpinelinux.org/wiki/VLAN
 #    - https://stackoverflow.com/questions/42946453/how-does-the-docker-assign-mac-addresses-to-containers
 #    - https://superuser.com/questions/1670969/wsl2-make-available-visible-all-windows-network-adapters-inside-ubuntu#1671057
-#    - https://learn.microsoft.com/en-us/windows/wsl/wsl-config#wslconfighttps://learn.microsoft.com/en-us/windows/wsl/wsl-config#wslconfig
+#    - https://learn.microsoft.com/en-us/windows/wsl/wsl-config#wslconfig
+#    - https://docs.docker.com/engine/network/drivers/ipvlan/
 #
 # Parameters:
 # $1 = Alpine Version (e.g. "1.1.1")
@@ -37,17 +38,19 @@ fi
 echo "-----------------------------------------------" && \
 echo "-----------------NETWORK SETUP-----------------" && \
 echo "-----------------------------------------------"
-wslInterfaceLink="` ip link list | grep -B 1 ${macAddrWslOUI} | head -n 1 | sed -E 's/^[0-9]+:\s*(\w+):.*$/\1/g' `"
-sudo ip link set ${wslInterfaceLink} promisc on
+#interfaceLink="` ip link list | grep -B 1 ${macAddrWslOUI} | head -n 1 | sed -E 's/^[0-9]+:\s*(\w+):.*$/\1/g' `"
+interfaceLink="` ip link list | grep 'state UP' | grep 'eth' | head -n 1 | sed -E 's/^[0-9]+:\s*(\w+):.*$/\1/g' `"
+sudo ip link set dev ${interfaceLink} promisc on
+interfaceLink=eth0
 docker network create --driver bridge --subnet 172.20.0.0/30 --gateway 172.20.0.1 --attachable subnet-vlan-001
 docker network create --driver bridge --subnet 172.20.0.8/29 --gateway 172.20.0.9 --attachable p2p-vlans-001-0X1
 docker network create --driver bridge --subnet 172.20.0.16/29 --gateway 172.20.0.17 --attachable p2p-vlans-001-1X1
-docker network create --driver macvlan --subnet 172.20.1.0/24 --gateway 172.20.1.1 --opt macvlan_mode=vepa --opt parent=eth0.11 --attachable vlan-011
-docker network create --driver macvlan --subnet 172.20.2.0/24 --gateway 172.20.2.1 --opt macvlan_mode=vepa --opt parent=eth0.21 --attachable vlan-021
-docker network create --driver macvlan --subnet 172.20.3.0/24 --gateway 172.20.3.1 --opt macvlan_mode=vepa --opt parent=eth0.31 --attachable vlan-031
-docker network create --driver macvlan --subnet 172.20.11.0/24 --gateway 172.20.11.1 --opt macvlan_mode=vepa --opt parent=eth0.111 --attachable vlan-111
-docker network create --driver macvlan --subnet 172.20.12.0/24 --gateway 172.20.12.1 --opt macvlan_mode=vepa --opt parent=eth0.121 --attachable vlan-121
-docker network create --driver macvlan --subnet 172.20.13.0/24 --gateway 172.20.13.1 --opt macvlan_mode=vepa --opt parent=eth0.131 --attachable vlan-131
+docker network create --driver ipvlan --subnet 172.20.1.0/24 --gateway 172.20.1.1 --opt ipvlan_mode=l2 --opt "parent=${interfaceLink}.11" --attachable vlan-011
+docker network create --driver ipvlan --subnet 172.20.2.0/24 --gateway 172.20.2.1 --opt ipvlan_mode=l2 --opt "parent=${interfaceLink}.21" --attachable vlan-021
+docker network create --driver ipvlan --subnet 172.20.3.0/24 --gateway 172.20.3.1 --opt ipvlan_mode=l2 --opt "parent=${interfaceLink}.31" --attachable vlan-031
+docker network create --driver ipvlan --subnet 172.20.11.0/24 --gateway 172.20.11.1 --opt ipvlan_mode=l2 --opt "parent=${interfaceLink}.111" --attachable vlan-111
+docker network create --driver ipvlan --subnet 172.20.12.0/24 --gateway 172.20.12.1 --opt ipvlan_mode=l2 --opt "parent=${interfaceLink}.121" --attachable vlan-121
+docker network create --driver ipvlan --subnet 172.20.13.0/24 --gateway 172.20.13.1 --opt ipvlan_mode=l2 --opt "parent=${interfaceLink}.131" --attachable vlan-131
 docker container run -itd --rm -p 41230\:22 --cap-add NET_ADMIN --name firwll-0 --network subnet-vlan-001 --ip 172.20.0.2 ${imageNameFirewall} 
 docker container run -itd --rm -p 41231\:22 --cap-add MAC_ADMIN --cap-add NET_ADMIN --name switch-0 --network p2p-vlans-001-0X1 --ip 172.20.0.14 ${imageNameSwitch} 
 docker container run -itd --rm -p 41232\:22 --cap-add MAC_ADMIN --cap-add NET_ADMIN --name switch-1 --network p2p-vlans-001-1X1 --ip 172.20.0.22 ${imageNameSwitch} 
@@ -74,6 +77,13 @@ docker container exec workst-031 sh -c 'ip route change default via 172.20.3.2 d
 docker container exec workst-111 sh -c 'ip route change default via 172.20.11.2 dev eth0 && echo -e -n "\n\n[workst-111] " && ping -c 1 -t 1 172.20.11.2'
 docker container exec workst-121 sh -c 'ip route change default via 172.20.12.2 dev eth0 && echo -e -n "\n\n[workst-121] " && ping -c 1 -t 1 172.20.12.2'
 docker container exec workst-131 sh -c 'ip route change default via 172.20.13.2 dev eth0 && echo -e -n "\n\n[workst-131] " && ping -c 1 -t 1 172.20.13.2'
+# TODO: Fix below (doesn't work)
+docker container exec workst-011 sh -c 'echo -e -n "\n\n[workst-011] " && ping -c 1 -t 2 172.20.1.1'
+docker container exec workst-021 sh -c 'echo -e -n "\n\n[workst-021] " && ping -c 1 -t 2 172.20.2.1'
+docker container exec workst-031 sh -c 'echo -e -n "\n\n[workst-031] " && ping -c 1 -t 2 172.20.3.1'
+docker container exec workst-111 sh -c 'echo -e -n "\n\n[workst-111] " && ping -c 1 -t 2 172.20.11.1'
+docker container exec workst-121 sh -c 'echo -e -n "\n\n[workst-121] " && ping -c 1 -t 2 172.20.12.1'
+docker container exec workst-131 sh -c 'echo -e -n "\n\n[workst-131] " && ping -c 1 -t 2 172.20.13.1'
 #
 ## TODO
 #
