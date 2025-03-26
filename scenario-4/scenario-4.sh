@@ -18,7 +18,6 @@
 #
 baseImageVersion=$1
 enableFirewall=$2
-macAddrWslOUI=$MAC_ADDRESS_WSL_OUI
 if ! [[ ${enableFirewall} =~ ^[01]$ ]] ; then
     echo "ERROR 6: Parameter \$2 = '$2'; needs to be '0' or '1', since it's a boolean flag."
     exit 6
@@ -38,22 +37,21 @@ fi
 echo "-----------------------------------------------" && \
 echo "-----------------NETWORK SETUP-----------------" && \
 echo "-----------------------------------------------"
-#interfaceLink="` ip link list | grep -B 1 ${macAddrWslOUI} | head -n 1 | sed -E 's/^[0-9]+:\s*(\w+):.*$/\1/g' `"
-interfaceLink="` ip link list | grep 'state UP' | grep 'eth' | head -n 1 | sed -E 's/^[0-9]+:\s*(\w+):.*$/\1/g' `"
-sudo ip link set dev ${interfaceLink} promisc on
+hostInterfaceLink="` ip link list | grep 'state UP' | grep 'eth' | head -n 1 | sed -E 's/^[0-9]+:\s*(\w+):.*$/\1/g' `"
+sudo ip link set dev ${hostInterfaceLink} promisc on
 interfaceLink=eth0
 docker network create --driver bridge --subnet 172.20.0.0/30 --gateway 172.20.0.1 --attachable subnet-vlan-001
 docker network create --driver bridge --subnet 172.20.0.8/29 --gateway 172.20.0.9 --attachable p2p-vlans-001-0X1
 docker network create --driver bridge --subnet 172.20.0.16/29 --gateway 172.20.0.17 --attachable p2p-vlans-001-1X1
-docker network create --driver ipvlan --subnet 172.20.1.0/24 --gateway 172.20.1.1 --opt ipvlan_mode=l2 --opt "parent=${interfaceLink}.11" --attachable vlan-011
-docker network create --driver ipvlan --subnet 172.20.2.0/24 --gateway 172.20.2.1 --opt ipvlan_mode=l2 --opt "parent=${interfaceLink}.21" --attachable vlan-021
-docker network create --driver ipvlan --subnet 172.20.3.0/24 --gateway 172.20.3.1 --opt ipvlan_mode=l2 --opt "parent=${interfaceLink}.31" --attachable vlan-031
-docker network create --driver ipvlan --subnet 172.20.11.0/24 --gateway 172.20.11.1 --opt ipvlan_mode=l2 --opt "parent=${interfaceLink}.111" --attachable vlan-111
-docker network create --driver ipvlan --subnet 172.20.12.0/24 --gateway 172.20.12.1 --opt ipvlan_mode=l2 --opt "parent=${interfaceLink}.121" --attachable vlan-121
-docker network create --driver ipvlan --subnet 172.20.13.0/24 --gateway 172.20.13.1 --opt ipvlan_mode=l2 --opt "parent=${interfaceLink}.131" --attachable vlan-131
+docker network create --driver bridge --subnet 172.20.1.0/24 --gateway 172.20.1.1 --attachable vlan-011
+docker network create --driver bridge --subnet 172.20.2.0/24 --gateway 172.20.2.1 --attachable vlan-021
+docker network create --driver ipvlan --subnet 172.20.3.0/24 --gateway 172.20.3.1 --opt ipvlan_mode=l2 --opt "parent=${interfaceLink}.31" --mac-address "02:42:ac:14:03:02" --attachable vlan-031
+docker network create --driver bridge --subnet 172.20.11.0/24 --gateway 172.20.11.1 --attachable vlan-111
+docker network create --driver ipvlan --subnet 172.20.12.0/24 --gateway 172.20.12.1 --opt ipvlan_mode=l2 --opt "parent=${interfaceLink}.121" --mac-address "02:42:ac:14:02:02" --attachable vlan-121
+docker network create --driver ipvlan --subnet 172.20.13.0/24 --gateway 172.20.13.1 --opt ipvlan_mode=l2 --opt "parent=${interfaceLink}.131" --mac-address "02:42:ac:14:03:02" --attachable vlan-131
 docker container run -itd --rm -p 41230\:22 --cap-add NET_ADMIN --name firwll-0 --network subnet-vlan-001 --ip 172.20.0.2 ${imageNameFirewall} 
-docker container run -itd --rm -p 41231\:22 --cap-add MAC_ADMIN --cap-add NET_ADMIN --name switch-0 --network p2p-vlans-001-0X1 --ip 172.20.0.14 ${imageNameSwitch} 
-docker container run -itd --rm -p 41232\:22 --cap-add MAC_ADMIN --cap-add NET_ADMIN --name switch-1 --network p2p-vlans-001-1X1 --ip 172.20.0.22 ${imageNameSwitch} 
+docker container run -itd --rm -p 41231\:22 --cap-add NET_ADMIN --name switch-0 --network p2p-vlans-001-0X1 --ip 172.20.0.14 ${imageNameSwitch} 
+docker container run -itd --rm -p 41232\:22 --cap-add NET_ADMIN --name switch-1 --network p2p-vlans-001-1X1 --ip 172.20.0.22 ${imageNameSwitch} 
 docker network connect --driver-opt com.docker.network.bridge.name=eth1 --ip 172.20.0.10 p2p-vlans-001-0X1 firwll-0 
 docker network connect --driver-opt com.docker.network.bridge.name=eth2 --ip 172.20.0.18 p2p-vlans-001-1X1 firwll-0 
 docker network connect --driver-opt com.docker.network.bridge.name=eth1 --ip 172.20.1.2 vlan-011 switch-0
@@ -62,12 +60,12 @@ docker network connect --driver-opt com.docker.network.bridge.name=eth3 --ip 172
 docker network connect --driver-opt com.docker.network.bridge.name=eth1 --ip 172.20.11.2 vlan-111 switch-1
 docker network connect --driver-opt com.docker.network.bridge.name=eth2 --ip 172.20.12.2 vlan-121 switch-1
 docker network connect --driver-opt com.docker.network.bridge.name=eth3 --ip 172.20.13.2 vlan-131 switch-1 
-docker container run -itd --rm -p 41233\:22 --cap-add MAC_ADMIN --cap-add NET_ADMIN --name workst-011 --network vlan-011 --ip 172.20.1.3 ${imageNameWorkStation} 
-docker container run -itd --rm -p 41234\:22 --cap-add MAC_ADMIN --cap-add NET_ADMIN --name workst-021 --network vlan-021 --ip 172.20.2.3 ${imageNameWorkStation} 
-docker container run -itd --rm -p 41235\:22 --cap-add MAC_ADMIN --cap-add NET_ADMIN --name workst-031 --network vlan-031 --ip 172.20.3.3 ${imageNameWorkStation} 
-docker container run -itd --rm -p 41236\:22 --cap-add MAC_ADMIN --cap-add NET_ADMIN --name workst-111 --network vlan-111 --ip 172.20.11.3 ${imageNameWorkStation} 
-docker container run -itd --rm -p 41237\:22 --cap-add MAC_ADMIN --cap-add NET_ADMIN --name workst-121 --network vlan-121 --ip 172.20.12.3 ${imageNameWorkStation} 
-docker container run -itd --rm -p 41238\:22 --cap-add MAC_ADMIN --cap-add NET_ADMIN --name workst-131 --network vlan-131 --ip 172.20.13.3 ${imageNameWorkStation} 
+docker container run -itd --rm -p 41233\:22 --cap-add NET_ADMIN --name workst-011 --network vlan-011 --ip 172.20.1.3 ${imageNameWorkStation} 
+docker container run -itd --rm -p 41234\:22 --cap-add NET_ADMIN --name workst-021 --network vlan-021 --ip 172.20.2.3 ${imageNameWorkStation} 
+docker container run -itd --rm -p 41235\:22 --cap-add NET_ADMIN --name workst-031 --network vlan-031 --ip 172.20.3.3 ${imageNameWorkStation} 
+docker container run -itd --rm -p 41236\:22 --cap-add NET_ADMIN --name workst-111 --network vlan-111 --ip 172.20.11.3 ${imageNameWorkStation} 
+docker container run -itd --rm -p 41237\:22 --cap-add NET_ADMIN --name workst-121 --network vlan-121 --ip 172.20.12.3 ${imageNameWorkStation} 
+docker container run -itd --rm -p 41238\:22 --cap-add NET_ADMIN --name workst-131 --network vlan-131 --ip 172.20.13.3 ${imageNameWorkStation} 
 docker container exec firwll-0 sh -c 'ip route change default via 172.20.0.1 dev eth0 && echo -e -n "\n\n[firwll-0] " && ping -c 1 -t 1 172.20.0.1'
 docker container exec switch-0 sh -c 'ip route change default via 172.20.0.10 dev eth0 && echo -e -n "\n\n[switch-0] " && ping -c 1 -t 1 172.20.0.10'
 docker container exec switch-1 sh -c 'ip route change default via 172.20.0.18 dev eth0 && echo -e -n "\n\n[switch-1] " && ping -c 1 -t 1 172.20.0.18'
@@ -77,25 +75,35 @@ docker container exec workst-031 sh -c 'ip route change default via 172.20.3.2 d
 docker container exec workst-111 sh -c 'ip route change default via 172.20.11.2 dev eth0 && echo -e -n "\n\n[workst-111] " && ping -c 1 -t 1 172.20.11.2'
 docker container exec workst-121 sh -c 'ip route change default via 172.20.12.2 dev eth0 && echo -e -n "\n\n[workst-121] " && ping -c 1 -t 1 172.20.12.2'
 docker container exec workst-131 sh -c 'ip route change default via 172.20.13.2 dev eth0 && echo -e -n "\n\n[workst-131] " && ping -c 1 -t 1 172.20.13.2'
-docker container exec firwll-0 sh -c 'ip route add 172.20.1.0/24 via 172.20.0.10 dev eth1'
-docker container exec firwll-0 sh -c 'ip route add 172.20.2.0/24 via 172.20.0.10 dev eth1'
-docker container exec firwll-0 sh -c 'ip route add 172.20.3.0/24 via 172.20.0.10 dev eth1'
-docker container exec firwll-0 sh -c 'ip route add 172.20.11.0/24 via 172.20.0.18 dev eth2'
-docker container exec firwll-0 sh -c 'ip route add 172.20.12.0/24 via 172.20.0.18 dev eth2'
-docker container exec firwll-0 sh -c 'ip route add 172.20.13.0/24 via 172.20.0.18 dev eth2'
+docker container exec firwll-0 sh -c 'ip route add 172.20.1.0/24 via 172.20.0.14 dev eth1'
+docker container exec firwll-0 sh -c 'ip route add 172.20.2.0/24 via 172.20.0.14 dev eth1'
+docker container exec firwll-0 sh -c 'ip route add 172.20.3.0/24 via 172.20.0.14 dev eth1'
+docker container exec firwll-0 sh -c 'ip route add 172.20.11.0/24 via 172.20.0.22 dev eth2'
+docker container exec firwll-0 sh -c 'ip route add 172.20.12.0/24 via 172.20.0.22 dev eth2'
+docker container exec firwll-0 sh -c 'ip route add 172.20.13.0/24 via 172.20.0.22 dev eth2'
 # TODO: Configure VLANs recognition
-docker container exec switch-0 sh -c 'ip link add link eth1 name eth1.11 type vlan id 11'
-docker container exec switch-0 sh -c 'ip link add link eth2 name eth2.21 type vlan id 21'
-docker container exec switch-0 sh -c 'ip link add link eth3 name eth3.31 type vlan id 31'
-docker container exec switch-1 sh -c 'ip link add link eth1 name eth1.111 type vlan id 111'
-docker container exec switch-1 sh -c 'ip link add link eth2 name eth2.121 type vlan id 121'
-docker container exec switch-1 sh -c 'ip link add link eth3 name eth3.131 type vlan id 131'
-docker container exec workst-011 sh -c 'echo -e -n "\n\n[workst-011] " && ping -c 1 -t 2 172.20.1.1'
-docker container exec workst-021 sh -c 'echo -e -n "\n\n[workst-021] " && ping -c 1 -t 2 172.20.2.1'
-docker container exec workst-031 sh -c 'echo -e -n "\n\n[workst-031] " && ping -c 1 -t 2 172.20.3.1'
-docker container exec workst-111 sh -c 'echo -e -n "\n\n[workst-111] " && ping -c 1 -t 2 172.20.11.1'
-docker container exec workst-121 sh -c 'echo -e -n "\n\n[workst-121] " && ping -c 1 -t 2 172.20.12.1'
-docker container exec workst-131 sh -c 'echo -e -n "\n\n[workst-131] " && ping -c 1 -t 2 172.20.13.1'
+#docker container exec switch-0 sh -c 'ip link add link eth1 name eth1.11 type vlan id 11'
+#docker container exec switch-0 sh -c 'ip link add link eth2 name eth2.21 type vlan id 21'
+#docker container exec switch-0 sh -c 'ip link add link eth3 name eth3.31 type vlan id 31'
+#docker container exec switch-1 sh -c 'ip link add link eth1 name eth1.111 type vlan id 111'
+#docker container exec switch-1 sh -c 'ip link add link eth2 name eth2.121 type vlan id 121'
+#docker container exec switch-1 sh -c 'ip link add link eth3 name eth3.131 type vlan id 131'
+# Validations:
+docker container exec workst-011 sh -c 'echo -e -n "\n\n[workst-011] " && ping -c 1 -t 2 172.20.0.2'
+docker container exec workst-021 sh -c 'echo -e -n "\n\n[workst-021] " && ping -c 1 -t 2 172.20.0.2'
+docker container exec workst-031 sh -c 'echo -e -n "\n\n[workst-031] " && ping -c 1 -t 2 172.20.0.2'
+docker container exec workst-111 sh -c 'echo -e -n "\n\n[workst-111] " && ping -c 1 -t 2 172.20.0.2'
+docker container exec workst-121 sh -c 'echo -e -n "\n\n[workst-121] " && ping -c 1 -t 2 172.20.0.2'
+docker container exec workst-131 sh -c 'echo -e -n "\n\n[workst-131] " && ping -c 1 -t 2 172.20.0.2'
+echo -e '\n---[VLAN X11] checking route between 011 and 111---'
+docker container exec workst-011 sh -c 'echo -e -n "\n\n[workst-011] " && traceroute -I -m 4 172.20.11.3'
+docker container exec workst-111 sh -c 'echo -e -n "\n\n[workst-111] " && traceroute -I -m 4 172.20.1.3'
+echo -e '\n---[VLAN X21] checking route between 021 and 121---'
+docker container exec workst-021 sh -c 'echo -e -n "\n\n[workst-021] " && traceroute -I -m 4 172.20.12.3'
+docker container exec workst-121 sh -c 'echo -e -n "\n\n[workst-121] " && traceroute -I -m 4 172.20.2.3'
+echo -e '\n---[VLAN X31] checking route between 031 and 131---'
+docker container exec workst-031 sh -c 'echo -e -n "\n\n[workst-031] " && traceroute -I -m 4 172.20.13.3'
+docker container exec workst-131 sh -c 'echo -e -n "\n\n[workst-131] " && traceroute -I -m 4 172.20.3.3'
 #
 ## TODO
 #
@@ -119,6 +127,7 @@ echo "----------------SWITCHES SETUP-----------------" && \
 echo "-----------------------------------------------"
 #
 ## TODO
+docker container exec switch-0 sh -c 'apk add tcpdump'
 #
 echo "-----------------------------------------------" && \
 echo "-------------SWITCHES SETUP DONE!--------------" && \
