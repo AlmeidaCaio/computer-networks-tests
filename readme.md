@@ -24,6 +24,6 @@ and for containers' clean removal:
   |cnt-firewall|firewall.containerfile|Layer 4 Firewall|[iptables](https://git.netfilter.org/iptables/), [tcpdump](https://www.tcpdump.org/)|
   |cnt-router|router.containerfile|Router|[quagga](https://www.nongnu.org/quagga/)|
   |cnt-simple|.containerfile|Lean Network Device||
-  |cnt-switch-l3|switch-l3.containerfile|Layer 3 Switch|[arp-scan](https://github.com/royhills/arp-scan), [vlan](https://gitlab.alpinelinux.org/alpine/aports/-/tree/master/main/vlan)|
+  |cnt-switch-l3|switch-l3.containerfile|Layer 3 Switch|[arp-scan](https://github.com/royhills/arp-scan), [iproute2](https://wiki.linuxfoundation.org/networking/iproute2)|
   |cnt-work-station|work-station.containerfile|Lean Work Station Device|[curl](https://curl.se/)|
 
