@@ -82,27 +82,20 @@ docker container exec firwll-0 sh -c 'ip route add 172.20.3.0/24 via 172.20.0.14
 docker container exec firwll-0 sh -c 'ip route add 172.20.11.0/24 via 172.20.0.22 dev eth2'
 docker container exec firwll-0 sh -c 'ip route add 172.20.12.0/24 via 172.20.0.22 dev eth2'
 docker container exec firwll-0 sh -c 'ip route add 172.20.13.0/24 via 172.20.0.22 dev eth2'
-# Validations:
-docker container exec workst-011 sh -c 'echo -e -n "\n\n[workst-011] " && ping -c 1 -t 2 172.20.0.2'
-docker container exec workst-021 sh -c 'echo -e -n "\n\n[workst-021] " && ping -c 1 -t 2 172.20.0.2'
-docker container exec workst-031 sh -c 'echo -e -n "\n\n[workst-031] " && ping -c 1 -t 2 172.20.0.2'
-docker container exec workst-111 sh -c 'echo -e -n "\n\n[workst-111] " && ping -c 1 -t 2 172.20.0.2'
-docker container exec workst-121 sh -c 'echo -e -n "\n\n[workst-121] " && ping -c 1 -t 2 172.20.0.2'
-docker container exec workst-131 sh -c 'echo -e -n "\n\n[workst-131] " && ping -c 1 -t 2 172.20.0.2'
-echo -e '\n---[VLAN X11] checking route between 011 and 111---'
-docker container exec workst-011 sh -c 'echo -e -n "\n\n[workst-011] " && traceroute -I -m 4 172.20.11.3'
-docker container exec workst-111 sh -c 'echo -e -n "\n\n[workst-111] " && traceroute -I -m 4 172.20.1.3'
-echo -e '\n---[VLAN X21] checking route between 021 and 121---'
-docker container exec workst-021 sh -c 'echo -e -n "\n\n[workst-021] " && traceroute -I -m 4 172.20.12.3'
-docker container exec workst-121 sh -c 'echo -e -n "\n\n[workst-121] " && traceroute -I -m 4 172.20.2.3'
-echo -e '\n---[VLAN X31] checking route between 031 and 131---'
-docker container exec workst-031 sh -c 'echo -e -n "\n\n[workst-031] " && traceroute -I -m 4 172.20.13.3'
-docker container exec workst-131 sh -c 'echo -e -n "\n\n[workst-131] " && traceroute -I -m 4 172.20.3.3'
-#
-## TODO
-#
 echo "-----------------------------------------------" && \
 echo "--------------NETWORK SETUP DONE!--------------" && \
+echo "-----------------------------------------------"
+# Switches setup
+echo "-----------------------------------------------" && \
+echo "----------------SWITCHES SETUP-----------------" && \
+echo "-----------------------------------------------"
+for idx in 0 1 ; do 
+    docker container cp "./$( find . -name "scenario-4.switch-${idx}.sh" -printf '%P' )" switch-${idx}:/ && \
+    docker container exec switch-${idx} sh -v /scenario-4.switch-${idx}.sh && \
+    echo "[switch-${idx}] File '/scenario-4.switch-${idx}.sh' loaded successfully." 
+done 
+echo "-----------------------------------------------" && \
+echo "-------------SWITCHES SETUP DONE!--------------" && \
 echo "-----------------------------------------------"
 # Firewall setup
 if [[ ${enableFirewall} == "1" ]] ; then
@@ -116,13 +109,3 @@ if [[ ${enableFirewall} == "1" ]] ; then
     echo "-------------FIREWALL SETUP DONE!--------------" && \
     echo "-----------------------------------------------"
 fi
-echo "-----------------------------------------------" && \
-echo "----------------SWITCHES SETUP-----------------" && \
-echo "-----------------------------------------------"
-#
-## TODO
-docker container exec switch-0 sh -c 'apk add tcpdump'
-#
-echo "-----------------------------------------------" && \
-echo "-------------SWITCHES SETUP DONE!--------------" && \
-echo "-----------------------------------------------"
