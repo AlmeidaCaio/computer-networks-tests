@@ -1,6 +1,8 @@
 #!/bin/sh
 #
-# TODO: Adds VLANs - This is the equivalent of ipvlan?
+# TODO: Re do everything!
+#
+# Below is an example of VLAN Interfaces implementation (aka "VlanIf implementation")
 docker container exec switch-0 sh -c 'ip address delete 172.20.1.2/24 dev eth1'
 docker container exec switch-0 sh -c 'ip link set dev eth1 down'
 docker container exec switch-0 sh -c 'ip link add link eth1 name eth1.31 type vlan id 31 protocol 802.1Q'
