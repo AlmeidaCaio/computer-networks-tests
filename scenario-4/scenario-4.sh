@@ -12,6 +12,7 @@
 #    - https://learn.microsoft.com/en-us/windows/wsl/wsl-config#wslconfig
 #    - https://docs.docker.com/engine/network/drivers/ipvlan/
 #    - https://docs.bisdn.de/network_configuration/vlan_bridging.html#systemd-networkd
+#    - https://stackoverflow.com/questions/30905674/newer-versions-of-docker-have-cap-add-what-caps-can-be-added
 #
 # Parameters:
 # $1 = Alpine Version (e.g. "1.1.1")
@@ -51,8 +52,8 @@ docker network create --driver bridge --subnet 172.20.11.0/24 --gateway 172.20.1
 docker network create --driver ipvlan --subnet 172.20.12.0/24 --gateway 172.20.12.1 --opt ipvlan_mode=l2 --opt "parent=${interfaceLink}.121" --attachable vlan-121
 docker network create --driver ipvlan --subnet 172.20.13.0/24 --gateway 172.20.13.1 --opt ipvlan_mode=l2 --opt "parent=${interfaceLink}.131" --attachable vlan-131
 docker container run -itd --rm -p 41230\:22 --cap-add NET_ADMIN --name firwll-0 --network subnet-vlan-001 --ip 172.20.0.2 ${imageNameFirewall} 
-docker container run -itd --rm -p 41231\:22 --cap-add NET_ADMIN --name switch-0 --network p2p-vlans-001-0X1 --ip 172.20.0.14 ${imageNameSwitch} 
-docker container run -itd --rm -p 41232\:22 --cap-add NET_ADMIN --name switch-1 --network p2p-vlans-001-1X1 --ip 172.20.0.22 ${imageNameSwitch} 
+docker container run -itd --rm -p 41231\:22 --cap-add NET_ADMIN --cap-add SYS_ADMIN --name switch-0 --network p2p-vlans-001-0X1 --ip 172.20.0.14 ${imageNameSwitch} 
+docker container run -itd --rm -p 41232\:22 --cap-add NET_ADMIN --cap-add SYS_ADMIN --name switch-1 --network p2p-vlans-001-1X1 --ip 172.20.0.22 ${imageNameSwitch}
 docker network connect --driver-opt com.docker.network.bridge.name=eth1 --ip 172.20.0.10 p2p-vlans-001-0X1 firwll-0 
 docker network connect --driver-opt com.docker.network.bridge.name=eth2 --ip 172.20.0.18 p2p-vlans-001-1X1 firwll-0 
 docker network connect --driver-opt com.docker.network.bridge.name=eth1 --ip 172.20.1.2 vlan-011 switch-0
@@ -85,7 +86,6 @@ docker container exec firwll-0 sh -c 'ip route add 172.20.13.0/24 via 172.20.0.2
 echo "-----------------------------------------------" && \
 echo "--------------NETWORK SETUP DONE!--------------" && \
 echo "-----------------------------------------------"
-# Switches setup
 echo "-----------------------------------------------" && \
 echo "----------------SWITCHES SETUP-----------------" && \
 echo "-----------------------------------------------"
@@ -97,7 +97,6 @@ done
 echo "-----------------------------------------------" && \
 echo "-------------SWITCHES SETUP DONE!--------------" && \
 echo "-----------------------------------------------"
-# Firewall setup
 if [[ ${enableFirewall} == "1" ]] ; then
     echo "-----------------------------------------------" && \
     echo "----------------FIREWALL SETUP-----------------" && \
