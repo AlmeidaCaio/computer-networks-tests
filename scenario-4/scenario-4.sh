@@ -1,7 +1,9 @@
 #!/bin/bash
 #
 # About it:
-# * TODO
+# * This is a network with 2 switches with VLANs 11, 21 and 31 to segregate traffic.
+# * The VLANs exist to allow traffic among single segments of each switch, i.e., 172.20.00X.0/24 and 172.20.01X.0/24 respectively.
+# OBS.: This scenario also has IPVLAN subnetworks - to show how one could configure a docker bridge one with another as ipvlan.
 #
 # References:
 #    - https://ipwithease.com/how-to-set-up-and-use-macvlan-network/
@@ -94,6 +96,7 @@ for idx in 0 1 ; do
     docker container exec switch-${idx} sh -v /scenario-4.switch-${idx}.sh && \
     echo "[switch-${idx}] File '/scenario-4.switch-${idx}.sh' loaded successfully." 
 done 
+source "./$( find . -name "scenario-4.tests.sh" -printf '%P' )"
 echo "-----------------------------------------------" && \
 echo "-------------SWITCHES SETUP DONE!--------------" && \
 echo "-----------------------------------------------"

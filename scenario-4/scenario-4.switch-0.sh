@@ -8,7 +8,8 @@
 #      4 - https://www.man7.org/linux/man-pages/man8/bridge.8.html
 #      5 - https://developers.redhat.com/blog/2017/09/14/vlan-filter-support-on-bridge#with_vlan_filtering
 #      6 - https://paulgorman.org/technical/linux-iproute2-cheatsheet.html#Add%20an%20interface%20to%20bridge
-#      7 - https://askubuntu.com/questions/1268037/ip-tuntap-add-gives-open-no-such-file-or-directory
+#      7 - https://networkengineering.stackexchange.com/questions/2035/when-is-31-recommended-over-30-in-p2p-links
+#      8 - https://networkengineering.stackexchange.com/questions/24749/what-is-link-local-addressing
 #
 # NOTES: 
 #   0) "Tap" interfaces were created to capture frame receival.
@@ -38,6 +39,8 @@ for x in 1 2 3 ; do
   ip -netns "ns$x" link set dev "eth$x" up
   ip -netns "ns$x" address add "172.20.${x}.2/24" broadcast "172.20.${x}.255" dev "eth$x"
 done
+# TODO:
+# Must apply config to open ipvlan 172.20.3.0/24 (eth3)
 #
 # Setup network namespace "ns0"
 ip route delete default via 172.20.0.10 dev eth0
