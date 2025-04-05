@@ -53,7 +53,7 @@ for chainType in FORWARD INPUT ; do
   done
 done
 
-# Applying rules for ports SMTPS and HTTPS to VLANs 10 and 20
+# Applying rules for ports SMTPS and HTTPS to "VLANs" 10 and 20
 for sourceIp in 172.16.1.0/24-587-REJECT 172.16.2.0/24-587-ACCEPT 172.16.1.0/24-443-ACCEPT 172.16.2.0/24-443-REJECT ; do 
   subnet="` echo ${sourceIp} | sed -E 's/^([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\/[0-9]{1,2})-.*$/\1/g' `"
   portNumber="` echo ${sourceIp} | sed -E 's/^.*-([0-9]+)-.*$/\1/g' `"

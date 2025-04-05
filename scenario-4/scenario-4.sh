@@ -96,7 +96,6 @@ for idx in 0 1 ; do
     docker container exec switch-${idx} sh -v /scenario-4.switch-${idx}.sh && \
     echo "[switch-${idx}] File '/scenario-4.switch-${idx}.sh' loaded successfully." 
 done 
-source "./$( find . -name "scenario-4.tests.sh" -printf '%P' )"
 echo "-----------------------------------------------" && \
 echo "-------------SWITCHES SETUP DONE!--------------" && \
 echo "-----------------------------------------------"
@@ -111,3 +110,4 @@ if [[ ${enableFirewall} == "1" ]] ; then
     echo "-------------FIREWALL SETUP DONE!--------------" && \
     echo "-----------------------------------------------"
 fi
+source "./$( find . -name "scenario-4.tests.sh" -printf '%P' )"
