@@ -1,9 +1,5 @@
 #!/bin/sh
 #
-# TODO: 
-#   1) FIX RULES DUE TO DIFFERENT INTERFACE ETH0
-#   2) Must add rules for SMTP, SSH and HTTPS!! 
-#
 # Flush netfilter configuration on bootup
 iptables -F
 iptables -t nat -F
