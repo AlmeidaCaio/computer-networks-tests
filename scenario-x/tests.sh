@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# TODO: This file is for scenario 4, where there's an internal firewall between VLANs
+# TODO: This file is for another, where there's an internal firewall between VLANs
 #
 externalIP1="`ping -c 1 -4 jsonplaceholder.typicode.com \
     | grep -E '([0-9]{1,3}\.){3}[0-9]{1,3}' \
