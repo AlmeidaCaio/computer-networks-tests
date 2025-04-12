@@ -4,6 +4,7 @@
 #
 #
 if [ $( apk info | grep -E '^ethtool$' | wc -l ) == "0" ] ; then { apk add ethtool ; } ; fi
+if [ $( apk info | grep -E '^tcpdump$' | wc -l ) == "0" ] ; then { apk add tcpdump ; } ; fi
 # Bridge "br1" creation
 ip link add name br1 type bridge vlan_filtering 1 vlan_default_pvid 0
 #

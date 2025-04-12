@@ -14,7 +14,7 @@ Currently, there are 3 scenarios. The following is an execution example of a sce
 
 and for containers' clean removal:
   ```
-  bash main.sh $scenarioVersion --clean
+  bash main.sh $scenarioVersion --clear
   ```
 
 * Below is a table about the custom made container images and its utilities/dependencies:

@@ -9,7 +9,7 @@ suplementaryOptions=$( echo -n $@ | sed -E "s/$1\s*\b//g" )
 # Load .env parameters
 alpineVersion="3.21.2"
 fwFlag=1
-optionsAvailable="'--clean' or '--fw-off'"
+optionsAvailable="'--clear' or '--fw-off'"
 if [[ -f "./.env" ]] ; then
     source "./.env"
 else
@@ -39,7 +39,7 @@ loadOptionsArguments() {
         if ! [[ $1 =~ ^--[\-a-z]* ]] ; then 
             echo "ERROR 4: Option argument '$1' is not acceptable. Options available are: ${optionsAvailable}."
             exit 4
-        elif [[ $1 == "--clean" ]] ; then
+        elif [[ $1 == "--clear" ]] ; then
             source ./scenario-${scenarioNumber}/scenario-${scenarioNumber}.clean.sh
             exit 0
         elif [[ $1 == "--fw-off" ]] ; then
