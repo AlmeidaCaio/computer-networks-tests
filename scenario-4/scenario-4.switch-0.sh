@@ -18,6 +18,7 @@
 #   3) VLANs were used to isolate traffic between eth1, eth2 and eth3 interfaces
 #
 #
+if [ $( apk info | grep -E '^ethtool$' | wc -l ) == "0" ] ; then { apk add ethtool ; } ; fi
 # Bridge "br0" creation
 ip link add name br0 type bridge vlan_filtering 1 vlan_default_pvid 0
 #
@@ -50,9 +51,9 @@ ip link add name vth0 type veth peer vth0.x
 ip netns add ns0
 ip link set dev eth0 netns ns0
 ip link set dev vth0.x netns ns0
-ip -netns ns0 link add link vth0.x name vth0.11 type vlan id 11 
-ip -netns ns0 link add link vth0.x name vth0.21 type vlan id 21 
-ip -netns ns0 link add link vth0.x name vth0.31 type vlan id 31 
+ip -netns ns0 link add link vth0.x name vth0.11 type vlan id 11 reorder_hdr off
+ip -netns ns0 link add link vth0.x name vth0.21 type vlan id 21 reorder_hdr off
+ip -netns ns0 link add link vth0.x name vth0.31 type vlan id 31 reorder_hdr off
 ip -netns ns0 link set dev vth0.x up
 ip -netns ns0 address add 169.254.255.10/31 dev vth0.11
 ip -netns ns0 address add 169.254.255.20/31 dev vth0.21

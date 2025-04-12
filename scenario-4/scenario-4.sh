@@ -51,7 +51,7 @@ docker network create --driver bridge --subnet 172.20.1.0/24 --gateway 172.20.1.
 docker network create --driver bridge --subnet 172.20.2.0/24 --gateway 172.20.2.1 --attachable vlan-021
 docker network create --driver ipvlan --subnet 172.20.3.0/24 --gateway 172.20.3.1 --opt ipvlan_mode=l2 --opt "parent=${interfaceLink}.31" --attachable vlan-031
 docker network create --driver bridge --subnet 172.20.11.0/24 --gateway 172.20.11.1 --attachable vlan-111
-docker network create --driver ipvlan --subnet 172.20.12.0/24 --gateway 172.20.12.1 --opt ipvlan_mode=l2 --opt "parent=${interfaceLink}.121" --attachable vlan-121
+docker network create --driver ipvlan --subnet 172.20.12.0/24 --gateway 172.20.12.1 --opt ipvlan_mode=l2 --opt "parent=${interfaceLink}.21" --attachable vlan-121
 docker network create --driver ipvlan --subnet 172.20.13.0/24 --gateway 172.20.13.1 --opt ipvlan_mode=l2 --opt "parent=${interfaceLink}.131" --attachable vlan-131
 docker container run -itd --rm -p 41230\:22 --cap-add NET_ADMIN --name firwll-0 --network subnet-vlan-001 --ip 172.20.0.2 ${imageNameFirewall} 
 docker container run -itd --rm -p 41231\:22 --cap-add NET_ADMIN --cap-add SYS_ADMIN --name switch-0 --network p2p-vlans-001-0X1 --ip 172.20.0.14 ${imageNameSwitch} 
