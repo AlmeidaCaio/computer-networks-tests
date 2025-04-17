@@ -12,10 +12,8 @@
 #      8 - https://networkengineering.stackexchange.com/questions/24749/what-is-link-local-addressing
 #
 # NOTES: 
-#   0) "Tap" interfaces were created to capture frame receival.
-#   1) This switch is Layer 3; that is, bridges were created with assigned IP addresses
-#   2) The bridge interfaces created are specific for each physical one
-#   3) VLANs were used to isolate traffic between eth1, eth2 and eth3 interfaces
+#   1) VLANs were used to isolate traffic between eth1, eth2 and eth3 interfaces
+#   2) IPv4 /31 subnets were used for peer-to-peer connections inside a Docker's subnet offered (segmentation)
 #
 #
 if [ $( apk info | grep -E '^ethtool$' | wc -l ) == "0" ] ; then { apk add ethtool ; } ; fi
@@ -31,41 +29,28 @@ for x in 1 2 3 ; do
   ip netns add "ns$x"
   ip link set dev "eth$x" netns "ns$x"
   ip link set dev "vth$x" netns "ns$x"
+  ip -netns "ns$x" address add "172.20.0.$( expr ${x} * 2 + 9 )/31" dev "vth$x"
   ip -netns "ns$x" link set dev "vth$x" up
-  ip -netns "ns$x" address add "169.254.255.${x}/29" broadcast 169.254.255.7 dev "vth$x"
-  ip -netns "ns$x" route add default via 169.254.255.6 dev "vth$x"
+  ip -netns "ns$x" route add default via "172.20.0.$( expr ${x} * 2 + 8 )" dev "vth$x"
   ip link set dev "vth${x}.${x}1" master br0
   bridge vlan add vid "${x}1" dev "vth${x}.${x}1" pvid untagged
   ip link set dev "vth${x}.${x}1" up
   ip -netns "ns$x" link set dev lo up
-  ip -netns "ns$x" link set dev "eth$x" up
   ip -netns "ns$x" address add "172.20.${x}.2/24" broadcast "172.20.${x}.255" dev "eth$x"
+  ip -netns "ns$x" link set dev "eth$x" up
 done
 # TODO:
 # Must apply config to open ipvlan 172.20.3.0/24 (eth3)
 #
 # Setup network namespace "ns0"
-#ip route delete default via 172.20.0.10 dev eth0
-#ip address delete 172.20.0.14/29 dev eth0
-#ip link set dev eth0 down
-ip link add name vth0.x type veth peer vth0
-#ip -netns ns0 link add link vth0.x name vth0.11 type vlan id 11 reorder_hdr off
-#ip -netns ns0 link add link vth0.x name vth0.21 type vlan id 21 reorder_hdr off
-#ip -netns ns0 link add link vth0.x name vth0.31 type vlan id 31 reorder_hdr off
-ip link set dev vth0 up
-ip address add 169.254.255.6/29 broadcast 169.254.255.7 dev vth0
-ip route add 172.20.1.0/24 via 169.254.255.1 dev vth0
-ip route add 172.20.2.0/24 via 169.254.255.2 dev vth0
-ip route add 172.20.3.0/24 via 169.254.255.3 dev vth0
-ip link set dev vth0.x master br0
-bridge vlan add vid 11 dev vth0.x 
-bridge vlan add vid 21 dev vth0.x 
-bridge vlan add vid 31 dev vth0.x 
-ip link set dev vth0.x up
-#ip -netns ns0 link set dev lo up
-#ip -netns ns0 link set dev eth0 up
-#ip -netns ns0 address add 172.20.0.14/29 broadcast 172.20.0.15 dev eth0
-#ip -netns ns0 route add default via 172.20.0.10 dev eth0
+ip route delete default via 172.20.0.10 dev eth0
+ip address delete 172.20.0.11/29 dev eth0
+ip link set dev eth0 down
+ip link set dev eth0 master br0
+bridge vlan add vid 11 dev eth0
+bridge vlan add vid 21 dev eth0
+bridge vlan add vid 31 dev eth0
 #
-# Bridge "br0" activation
+# Activation
+ip link set dev eth0 up
 ip link set dev br0 up

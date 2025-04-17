@@ -54,8 +54,8 @@ docker network create --driver bridge --subnet 172.20.11.0/24 --gateway 172.20.1
 docker network create --driver ipvlan --subnet 172.20.12.0/24 --gateway 172.20.12.1 --opt ipvlan_mode=l2 --opt "parent=${interfaceLink}.21" --attachable vlan-121
 docker network create --driver ipvlan --subnet 172.20.13.0/24 --gateway 172.20.13.1 --opt ipvlan_mode=l2 --opt "parent=${interfaceLink}.131" --attachable vlan-131
 docker container run -itd --rm -p 41230\:22 --cap-add NET_ADMIN --name firwll-0 --network subnet-vlan-001 --ip 172.20.0.2 ${imageNameFirewall} 
-docker container run -itd --rm -p 41231\:22 --cap-add NET_ADMIN --cap-add SYS_ADMIN --name switch-0 --network p2p-vlans-001-0X1 --ip 172.20.0.14 ${imageNameSwitch} 
-docker container run -itd --rm -p 41232\:22 --cap-add NET_ADMIN --cap-add SYS_ADMIN --name switch-1 --network p2p-vlans-001-1X1 --ip 172.20.0.22 ${imageNameSwitch}
+docker container run -itd --rm -p 41231\:22 --cap-add NET_ADMIN --cap-add SYS_ADMIN --name switch-0 --network p2p-vlans-001-0X1 --ip 172.20.0.11 ${imageNameSwitch} 
+docker container run -itd --rm -p 41232\:22 --cap-add NET_ADMIN --cap-add SYS_ADMIN --name switch-1 --network p2p-vlans-001-1X1 --ip 172.20.0.19 ${imageNameSwitch}
 docker network connect --driver-opt com.docker.network.bridge.name=eth1 --ip 172.20.0.10 p2p-vlans-001-0X1 firwll-0 
 docker network connect --driver-opt com.docker.network.bridge.name=eth2 --ip 172.20.0.18 p2p-vlans-001-1X1 firwll-0 
 docker network connect --driver-opt com.docker.network.bridge.name=eth1 --ip 172.20.1.2 vlan-011 switch-0
@@ -79,12 +79,12 @@ docker container exec workst-031 sh -c 'ip route change default via 172.20.3.2 d
 docker container exec workst-111 sh -c 'ip route change default via 172.20.11.2 dev eth0 && echo -e -n "\n\n[workst-111] " && ping -c 1 -t 1 172.20.11.2'
 docker container exec workst-121 sh -c 'ip route change default via 172.20.12.2 dev eth0 && echo -e -n "\n\n[workst-121] " && ping -c 1 -t 1 172.20.12.2'
 docker container exec workst-131 sh -c 'ip route change default via 172.20.13.2 dev eth0 && echo -e -n "\n\n[workst-131] " && ping -c 1 -t 1 172.20.13.2'
-docker container exec firwll-0 sh -c 'ip route add 172.20.1.0/24 via 172.20.0.14 dev eth1'
-docker container exec firwll-0 sh -c 'ip route add 172.20.2.0/24 via 172.20.0.14 dev eth1'
-docker container exec firwll-0 sh -c 'ip route add 172.20.3.0/24 via 172.20.0.14 dev eth1'
-docker container exec firwll-0 sh -c 'ip route add 172.20.11.0/24 via 172.20.0.22 dev eth2'
-docker container exec firwll-0 sh -c 'ip route add 172.20.12.0/24 via 172.20.0.22 dev eth2'
-docker container exec firwll-0 sh -c 'ip route add 172.20.13.0/24 via 172.20.0.22 dev eth2'
+docker container exec firwll-0 sh -c 'ip route add 172.20.1.0/24 via 172.20.0.11 dev eth1'
+docker container exec firwll-0 sh -c 'ip route add 172.20.2.0/24 via 172.20.0.11 dev eth1'
+docker container exec firwll-0 sh -c 'ip route add 172.20.3.0/24 via 172.20.0.11 dev eth1'
+docker container exec firwll-0 sh -c 'ip route add 172.20.11.0/24 via 172.20.0.19 dev eth2'
+docker container exec firwll-0 sh -c 'ip route add 172.20.12.0/24 via 172.20.0.19 dev eth2'
+docker container exec firwll-0 sh -c 'ip route add 172.20.13.0/24 via 172.20.0.19 dev eth2'
 echo "-----------------------------------------------" && \
 echo "--------------NETWORK SETUP DONE!--------------" && \
 echo "-----------------------------------------------"
