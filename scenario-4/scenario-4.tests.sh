@@ -73,9 +73,9 @@ evaluateIcmpPing() {
     destIp=$2
     pingFlag=$3
     netnsName="`[[ -z $4 ]] && echo -n '' || echo -n "ip netns exec $4"`"
-    aux="`docker container exec ${containerName} sh -c "echo -n '\n[${containerName}] ' && ${netnsName} ping -c 1 ${destIp}"`"
+    aux="`docker container exec ${containerName} sh -c "echo -n '\n[${containerName}] ' && ${netnsName} ping -c 2 ${destIp}"`"
     echo -e -n ${aux} 1>&2
-    if [[ $(echo ${aux} | grep ' 0% packet loss' | wc -l) == "${pingFlag}" ]] ; then
+    if [[ $(echo ${aux} | grep -E ' 5?0% packet loss' | wc -l) == "${pingFlag}" ]] ; then
         echo -n "---OK---"
     else
         echo -n "--FAIL--"
@@ -197,38 +197,43 @@ echo "------------------------------------------------" && \
 echo "------------------TRACE ROUTES------------------" && \
 echo "------------------------------------------------" && \
 echo -e '\n---[VLAN 11] checking route between 011 and 111---'
-docker container exec workst-011 sh -c 'echo -e -n "\n\n[workst-011] " && traceroute -I -m 7 -n 172.20.11.3'
-docker container exec workst-111 sh -c 'echo -e -n "\n\n[workst-111] " && traceroute -I -m 7 -n 172.20.1.3'
+docker container exec workst-011 sh -c "echo -e -n '\n\n[workst-011] ' && traceroute -I -m 4 -n ${ip_W1}"
+docker container exec workst-111 sh -c "echo -e -n '\n\n[workst-111] ' && traceroute -I -m 4 -n ${ip_w1}"
 echo -e '\n---[VLAN 21] checking route between 021 and 121---'
-docker container exec workst-021 sh -c 'echo -e -n "\n\n[workst-021] " && traceroute -I -m 7 -n 172.20.12.3'
-docker container exec workst-121 sh -c 'echo -e -n "\n\n[workst-121] " && traceroute -I -m 7 -n 172.20.2.3'
+docker container exec workst-021 sh -c "echo -e -n '\n\n[workst-021] ' && traceroute -I -m 4 -n ${ip_W2}"
+docker container exec workst-121 sh -c "echo -e -n '\n\n[workst-121] ' && traceroute -I -m 4 -n ${ip_w2}"
 echo -e '\n---[VLAN 31] checking route between 031 and 131---'
-docker container exec workst-031 sh -c 'echo -e -n "\n\n[workst-031] " && traceroute -I -m 7 -n 172.20.13.3'
-docker container exec workst-131 sh -c 'echo -e -n "\n\n[workst-131] " && traceroute -I -m 7 -n 172.20.3.3'
+docker container exec workst-031 sh -c "echo -e -n '\n\n[workst-031] ' && traceroute -I -m 4 -n ${ip_W3}"
+docker container exec workst-131 sh -c "echo -e -n '\n\n[workst-131] ' && traceroute -I -m 4 -n ${ip_w3}"
 echo -e '\n---[VLAN 11 <--x--> VLAN 21] checking blockage between 011 and 021---'
-docker container exec workst-011 sh -c 'echo -e -n "\n\n[workst-011] " && traceroute -I -m 7 -n 172.20.2.3'
-docker container exec workst-011 sh -c 'echo -e -n "\n\n[workst-011] " && traceroute -I -m 7 -n 172.20.12.3'
-docker container exec workst-111 sh -c 'echo -e -n "\n\n[workst-111] " && traceroute -I -m 7 -n 172.20.12.3'
-docker container exec workst-111 sh -c 'echo -e -n "\n\n[workst-111] " && traceroute -I -m 7 -n 172.20.2.3'
-docker container exec workst-021 sh -c 'echo -e -n "\n\n[workst-021] " && traceroute -I -m 7 -n 172.20.1.3'
-docker container exec workst-021 sh -c 'echo -e -n "\n\n[workst-021] " && traceroute -I -m 7 -n 172.20.11.3'
-docker container exec workst-121 sh -c 'echo -e -n "\n\n[workst-121] " && traceroute -I -m 7 -n 172.20.11.3'
-docker container exec workst-121 sh -c 'echo -e -n "\n\n[workst-121] " && traceroute -I -m 7 -n 172.20.1.3'
+docker container exec workst-011 sh -c "echo -e -n '\n\n[workst-011] ' && traceroute -I -m 4 -n ${ip_w2}"
+docker container exec workst-011 sh -c "echo -e -n '\n\n[workst-011] ' && traceroute -I -m 4 -n ${ip_W2}"
+docker container exec workst-111 sh -c "echo -e -n '\n\n[workst-111] ' && traceroute -I -m 4 -n ${ip_W2}"
+docker container exec workst-111 sh -c "echo -e -n '\n\n[workst-111] ' && traceroute -I -m 4 -n ${ip_w2}"
+docker container exec workst-021 sh -c "echo -e -n '\n\n[workst-021] ' && traceroute -I -m 4 -n ${ip_w1}"
+docker container exec workst-021 sh -c "echo -e -n '\n\n[workst-021] ' && traceroute -I -m 4 -n ${ip_W1}"
+docker container exec workst-121 sh -c "echo -e -n '\n\n[workst-121] ' && traceroute -I -m 4 -n ${ip_W1}"
+docker container exec workst-121 sh -c "echo -e -n '\n\n[workst-121] ' && traceroute -I -m 4 -n ${ip_w1}"
 echo -e '\n---[VLAN 21 <--x--> VLAN 31] checking blockage between 021 and 031---'
-docker container exec workst-021 sh -c 'echo -e -n "\n\n[workst-021] " && traceroute -I -m 7 -n 172.20.3.3'
-docker container exec workst-021 sh -c 'echo -e -n "\n\n[workst-021] " && traceroute -I -m 7 -n 172.20.13.3'
-docker container exec workst-121 sh -c 'echo -e -n "\n\n[workst-121] " && traceroute -I -m 7 -n 172.20.13.3'
-docker container exec workst-121 sh -c 'echo -e -n "\n\n[workst-121] " && traceroute -I -m 7 -n 172.20.3.3'
-docker container exec workst-031 sh -c 'echo -e -n "\n\n[workst-031] " && traceroute -I -m 7 -n 172.20.2.3'
-docker container exec workst-031 sh -c 'echo -e -n "\n\n[workst-031] " && traceroute -I -m 7 -n 172.20.12.3'
-docker container exec workst-131 sh -c 'echo -e -n "\n\n[workst-131] " && traceroute -I -m 7 -n 172.20.12.3'
-docker container exec workst-131 sh -c 'echo -e -n "\n\n[workst-131] " && traceroute -I -m 7 -n 172.20.2.3'
+docker container exec workst-021 sh -c "echo -e -n '\n\n[workst-021] ' && traceroute -I -m 4 -n ${ip_w3}"
+docker container exec workst-021 sh -c "echo -e -n '\n\n[workst-021] ' && traceroute -I -m 4 -n ${ip_W3}"
+docker container exec workst-121 sh -c "echo -e -n '\n\n[workst-121] ' && traceroute -I -m 4 -n ${ip_W3}"
+docker container exec workst-121 sh -c "echo -e -n '\n\n[workst-121] ' && traceroute -I -m 4 -n ${ip_w3}"
+docker container exec workst-031 sh -c "echo -e -n '\n\n[workst-031] ' && traceroute -I -m 4 -n ${ip_w2}"
+docker container exec workst-031 sh -c "echo -e -n '\n\n[workst-031] ' && traceroute -I -m 4 -n ${ip_W2}"
+docker container exec workst-131 sh -c "echo -e -n '\n\n[workst-131] ' && traceroute -I -m 4 -n ${ip_W2}"
+docker container exec workst-131 sh -c "echo -e -n '\n\n[workst-131] ' && traceroute -I -m 4 -n ${ip_w2}"
 echo -e '\n---[VLAN 31 <--x--> VLAN 11] checking blockage between 031 and 011---'
-docker container exec workst-031 sh -c 'echo -e -n "\n\n[workst-031] " && traceroute -I -m 7 -n 172.20.1.3'
-docker container exec workst-031 sh -c 'echo -e -n "\n\n[workst-031] " && traceroute -I -m 7 -n 172.20.11.3'
-docker container exec workst-131 sh -c 'echo -e -n "\n\n[workst-131] " && traceroute -I -m 7 -n 172.20.11.3'
-docker container exec workst-131 sh -c 'echo -e -n "\n\n[workst-131] " && traceroute -I -m 7 -n 172.20.1.3'
-docker container exec workst-011 sh -c 'echo -e -n "\n\n[workst-011] " && traceroute -I -m 7 -n 172.20.3.3'
-docker container exec workst-011 sh -c 'echo -e -n "\n\n[workst-011] " && traceroute -I -m 7 -n 172.20.13.3'
-docker container exec workst-111 sh -c 'echo -e -n "\n\n[workst-111] " && traceroute -I -m 7 -n 172.20.13.3'
-docker container exec workst-111 sh -c 'echo -e -n "\n\n[workst-111] " && traceroute -I -m 7 -n 172.20.3.3'
+docker container exec workst-031 sh -c "echo -e -n '\n\n[workst-031] ' && traceroute -I -m 4 -n ${ip_w1}"
+docker container exec workst-031 sh -c "echo -e -n '\n\n[workst-031] ' && traceroute -I -m 4 -n ${ip_W1}"
+docker container exec workst-131 sh -c "echo -e -n '\n\n[workst-131] ' && traceroute -I -m 4 -n ${ip_W1}"
+docker container exec workst-131 sh -c "echo -e -n '\n\n[workst-131] ' && traceroute -I -m 4 -n ${ip_w1}"
+docker container exec workst-011 sh -c "echo -e -n '\n\n[workst-011] ' && traceroute -I -m 4 -n ${ip_w3}"
+docker container exec workst-011 sh -c "echo -e -n '\n\n[workst-011] ' && traceroute -I -m 4 -n ${ip_W3}"
+docker container exec workst-111 sh -c "echo -e -n '\n\n[workst-111] ' && traceroute -I -m 4 -n ${ip_W3}"
+docker container exec workst-111 sh -c "echo -e -n '\n\n[workst-111] ' && traceroute -I -m 4 -n ${ip_w3}"
+echo -e "\n\n"
+echo "------------------------------------------------" && \
+echo "------------------OBSERVATIONS------------------" && \
+echo "------------------------------------------------" && \
+echo -e " Sometimes, the Network takes a while to stabilize and load all routes;\ntherefore, if any ICMP ping result has given 'FAIL', then\nwait some minutes and re-execute this file.\nDifferent results may be obtained."
