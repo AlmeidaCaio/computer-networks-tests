@@ -4,8 +4,9 @@
 # * Set of tests to validate traffic among each device. It enphasizes VLAN restrictions.
 #
 # Parameters:
-# -
+# $1 = Load iptables configurations into firwll-0 (e.g. "1" or "0")
 #
+firewallFlag=$1
 echo "------------------------------------------------" && \
 echo "------------------IP ADDRESSES------------------" && \
 echo "------------------------------------------------"
@@ -30,6 +31,7 @@ docker container exec switch-1 sh -c 'echo -e "\n\n[switch-1] bridge vlan show" 
 echo "------------------------------------------------" && \
 echo "-----------TESTS FOR INTERNAL ROUTING-----------" && \
 echo "------------------------------------------------"
+if [[ ${firewallFlag} == "1" ]] ; then
 expectedValues="1|1|1|1|1|1|1|1|1|
 1|1|1|1|1|1|0|0|0|
 1|1|1|0|0|0|1|1|1|
@@ -39,6 +41,17 @@ expectedValues="1|1|1|1|1|1|1|1|1|
 1|0|1|1|0|0|1|0|0|
 1|0|1|0|1|0|0|1|0|
 1|0|1|0|0|1|0|0|1"
+else 
+expectedValues="1|1|1|1|1|1|1|1|1|
+1|1|1|1|1|1|1|1|1|
+1|1|1|1|1|1|1|1|1|
+1|1|1|1|1|1|1|1|1|
+1|1|1|1|1|1|1|1|1|
+1|1|1|1|1|1|1|1|1|
+1|1|1|1|1|1|1|1|1|
+1|1|1|1|1|1|1|1|1|
+1|1|1|1|1|1|1|1|1"
+fi
 val=(${expectedValues//\|/\ })
 if [[ ${#val[@]} -lt 81 ]] ; then 
     echo "ERROR 7: ICMP Ping expected values qty is lower than 81." 1>&2

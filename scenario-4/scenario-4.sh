@@ -37,9 +37,6 @@ fi
 echo "-----------------------------------------------" && \
 echo "-----------------NETWORK SETUP-----------------" && \
 echo "-----------------------------------------------"
-#hostInterfaceLink="` ip link list | grep 'state UP' | grep 'eth' | head -n 1 | sed -E 's/^[0-9]+:\s*(\w+):.*$/\1/g' `"
-#sudo ip link set dev ${hostInterfaceLink} promisc on
-#interfaceLink=eth0
 docker network create --driver bridge --subnet 172.20.0.0/30 --gateway 172.20.0.1 --attachable subnet-vlan-001
 docker network create --driver bridge --subnet 172.20.0.8/29 --gateway 172.20.0.9 --attachable p2p-svlans-001-0X1
 docker network create --driver bridge --subnet 172.20.0.16/29 --gateway 172.20.0.17 --attachable p2p-svlans-001-1X1
@@ -104,4 +101,4 @@ echo "[firwll-0] File '/scenario-4.firwll-0.sh' loaded successfully."
 echo "-----------------------------------------------" && \
 echo "-------------FIREWALL SETUP DONE!--------------" && \
 echo "-----------------------------------------------"
-. "./$( find . -name "scenario-4.tests.sh" -printf '%P' )"
+. "./$( find . -name "scenario-4.tests.sh" -printf '%P' )" ${enableFirewall}
