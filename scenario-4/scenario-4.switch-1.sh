@@ -5,6 +5,13 @@
 #
 # Bridge "br1" creation
 ip link add name br1 type bridge vlan_filtering 1 vlan_default_pvid 0
+ip route delete default via 172.20.0.18 dev eth0
+ip address delete 172.20.0.19/29 dev eth0
+ip link set dev eth0 down
+ip link set dev eth0 master br1
+bridge vlan add vid 11 dev eth0
+bridge vlan add vid 21 dev eth0
+bridge vlan add vid 31 dev eth0
 #
 # Setup network namespaces "ns1", "ns2" and "ns3"
 for x in 1 2 3 ; do 
@@ -27,15 +34,17 @@ done
 # TODO:
 # Must apply config to open ipvlans 172.20.12.0/24 (eth2) and 172.20.13.0/24 (eth3)
 #
-# Setup network namespace "ns0"
-ip route delete default via 172.20.0.18 dev eth0
-ip address delete 172.20.0.19/29 dev eth0
-ip link set dev eth0 down
-ip link set dev eth0 master br1
-bridge vlan add vid 11 dev eth0
-bridge vlan add vid 21 dev eth0
-bridge vlan add vid 31 dev eth0
-#
 # Activation
 ip link set dev eth0 up
 ip link set dev br1 up
+#
+# Validate downlinks
+ip netns exec ns1 ping -c 1 172.20.0.19
+ip netns exec ns1 ping -c 1 172.20.11.2
+ip netns exec ns1 ping -c 1 172.20.11.3
+ip netns exec ns2 ping -c 1 172.20.0.21
+ip netns exec ns2 ping -c 1 172.20.12.2
+ip netns exec ns2 ping -c 1 172.20.12.3
+ip netns exec ns3 ping -c 1 172.20.0.23
+ip netns exec ns3 ping -c 1 172.20.13.2
+ip netns exec ns3 ping -c 1 172.20.13.3

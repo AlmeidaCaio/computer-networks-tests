@@ -45,6 +45,13 @@ ip route add 172.20.11.0/24 via 172.20.0.19 dev eth2.11
 ip route add 172.20.12.0/24 via 172.20.0.21 dev eth2.21
 ip route add 172.20.13.0/24 via 172.20.0.23 dev eth2.31
 #
+# Validate downlinks
+for destis in 172.20.0.10 172.20.0.11 172.20.0.12 172.20.0.13 172.20.0.14 172.20.0.15 \
+  172.20.1.2 172.20.1.3 172.20.2.2 172.20.2.3 172.20.3.2 172.20.3.3 ; do 
+    ping -c 1 ${destis}
+done 
+#
+#
 if [ ${firewallFlag} == "1" ] ; then
     # Rules to deny packets between different VLANs
     ## TODO

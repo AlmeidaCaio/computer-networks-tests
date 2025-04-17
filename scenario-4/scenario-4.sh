@@ -89,15 +89,6 @@ echo "-----------------------------------------------" && \
 echo "--------------NETWORK SETUP DONE!--------------" && \
 echo "-----------------------------------------------"
 echo "-----------------------------------------------" && \
-echo "----------------FIREWALL SETUP-----------------" && \
-echo "-----------------------------------------------"
-docker container cp "./$( find . -name 'scenario-4.firwll-0.sh' -printf '%P' )" firwll-0:/ && \
-docker container exec firwll-0 sh -v /scenario-4.firwll-0.sh ${enableFirewall} && \
-echo "[firwll-0] File '/scenario-4.firwll-0.sh' loaded successfully."
-echo "-----------------------------------------------" && \
-echo "-------------FIREWALL SETUP DONE!--------------" && \
-echo "-----------------------------------------------"
-echo "-----------------------------------------------" && \
 echo "----------------SWITCHES SETUP-----------------" && \
 echo "-----------------------------------------------"
 for idx in 0 1 ; do 
@@ -107,5 +98,14 @@ for idx in 0 1 ; do
 done 
 echo "-----------------------------------------------" && \
 echo "-------------SWITCHES SETUP DONE!--------------" && \
+echo "-----------------------------------------------"
+echo "-----------------------------------------------" && \
+echo "----------------FIREWALL SETUP-----------------" && \
+echo "-----------------------------------------------"
+docker container cp "./$( find . -name 'scenario-4.firwll-0.sh' -printf '%P' )" firwll-0:/ && \
+docker container exec firwll-0 sh -v /scenario-4.firwll-0.sh ${enableFirewall} && \
+echo "[firwll-0] File '/scenario-4.firwll-0.sh' loaded successfully."
+echo "-----------------------------------------------" && \
+echo "-------------FIREWALL SETUP DONE!--------------" && \
 echo "-----------------------------------------------"
 . "./$( find . -name "scenario-4.tests.sh" -printf '%P' )"
