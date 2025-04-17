@@ -10,6 +10,9 @@
 #
 firewallFlag=$1
 # Setup network interfaces - VLANs 11, 21 and 31 on switch-0
+ip route delete 172.20.1.0/24 dev eth1
+ip route delete 172.20.2.0/24 dev eth1
+ip route delete 172.20.3.0/24 dev eth1
 ip address delete 172.20.0.10/29 dev eth1
 ip link set dev eth1 down
 ip link add link eth1 name eth1.11 type vlan id 11 reorder_hdr off
@@ -24,6 +27,9 @@ ip link set dev eth1.21 up
 ip link set dev eth1.31 up
 #
 # Setup network interfaces - VLANs 11, 21 and 31 on switch-1
+ip route delete 172.20.11.0/24 dev eth2
+ip route delete 172.20.12.0/24 dev eth2
+ip route delete 172.20.13.0/24 dev eth2
 ip address delete 172.20.0.18/29 dev eth2
 ip link set dev eth2 down
 ip link add link eth2 name eth2.11 type vlan id 11 reorder_hdr off

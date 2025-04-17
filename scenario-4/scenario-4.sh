@@ -3,16 +3,12 @@
 # About it:
 # * This is a network with 2 switches with VLANs 11, 21 and 31 to segregate traffic.
 # * The VLANs exist to allow traffic among single segments of each switch, i.e., 172.20.00X.0/24 and 172.20.01X.0/24 respectively.
-# OBS.: This scenario also has IPVLAN subnetworks - to show how one could configure a docker bridge one with another as ipvlan.
 #
 # References:
-#    - https://ipwithease.com/how-to-set-up-and-use-macvlan-network/
 #    - https://community.synology.com/enu/forum/11/post/191645
 #    - https://wiki.alpinelinux.org/wiki/VLAN
-#    - https://stackoverflow.com/questions/42946453/how-does-the-docker-assign-mac-addresses-to-containers
 #    - https://superuser.com/questions/1670969/wsl2-make-available-visible-all-windows-network-adapters-inside-ubuntu#1671057
 #    - https://learn.microsoft.com/en-us/windows/wsl/wsl-config#wslconfig
-#    - https://docs.docker.com/engine/network/drivers/ipvlan/
 #    - https://docs.bisdn.de/network_configuration/vlan_bridging.html#systemd-networkd
 #    - https://stackoverflow.com/questions/30905674/newer-versions-of-docker-have-cap-add-what-caps-can-be-added
 #
@@ -41,18 +37,18 @@ fi
 echo "-----------------------------------------------" && \
 echo "-----------------NETWORK SETUP-----------------" && \
 echo "-----------------------------------------------"
-hostInterfaceLink="` ip link list | grep 'state UP' | grep 'eth' | head -n 1 | sed -E 's/^[0-9]+:\s*(\w+):.*$/\1/g' `"
-sudo ip link set dev ${hostInterfaceLink} promisc on
-interfaceLink=eth0
+#hostInterfaceLink="` ip link list | grep 'state UP' | grep 'eth' | head -n 1 | sed -E 's/^[0-9]+:\s*(\w+):.*$/\1/g' `"
+#sudo ip link set dev ${hostInterfaceLink} promisc on
+#interfaceLink=eth0
 docker network create --driver bridge --subnet 172.20.0.0/30 --gateway 172.20.0.1 --attachable subnet-vlan-001
 docker network create --driver bridge --subnet 172.20.0.8/29 --gateway 172.20.0.9 --attachable p2p-svlans-001-0X1
 docker network create --driver bridge --subnet 172.20.0.16/29 --gateway 172.20.0.17 --attachable p2p-svlans-001-1X1
 docker network create --driver bridge --subnet 172.20.1.0/24 --gateway 172.20.1.1 --attachable subnet-vlan-011
 docker network create --driver bridge --subnet 172.20.2.0/24 --gateway 172.20.2.1 --attachable subnet-vlan-021
-docker network create --driver ipvlan --subnet 172.20.3.0/24 --gateway 172.20.3.1 --opt ipvlan_mode=l2 --opt "parent=${interfaceLink}.31" --attachable subnet-vlan-031
+docker network create --driver bridge --subnet 172.20.3.0/24 --gateway 172.20.3.1 --attachable subnet-vlan-031
 docker network create --driver bridge --subnet 172.20.11.0/24 --gateway 172.20.11.1 --attachable subnet-vlan-111
-docker network create --driver ipvlan --subnet 172.20.12.0/24 --gateway 172.20.12.1 --opt ipvlan_mode=l2 --opt "parent=${interfaceLink}.21" --attachable subnet-vlan-121
-docker network create --driver ipvlan --subnet 172.20.13.0/24 --gateway 172.20.13.1 --opt ipvlan_mode=l2 --opt "parent=${interfaceLink}.131" --attachable subnet-vlan-131
+docker network create --driver bridge --subnet 172.20.12.0/24 --gateway 172.20.12.1 --attachable subnet-vlan-121
+docker network create --driver bridge --subnet 172.20.13.0/24 --gateway 172.20.13.1 --attachable subnet-vlan-131
 docker container run -itd --rm -p 41230\:22 --cap-add NET_ADMIN --name firwll-0 --network subnet-vlan-001 --ip 172.20.0.2 ${imageNameFirewall} 
 docker container run -itd --rm -p 41231\:22 --cap-add NET_ADMIN --cap-add SYS_ADMIN --name switch-0 --network p2p-svlans-001-0X1 --ip 172.20.0.11 ${imageNameSwitch} 
 docker container run -itd --rm -p 41232\:22 --cap-add NET_ADMIN --cap-add SYS_ADMIN --name switch-1 --network p2p-svlans-001-1X1 --ip 172.20.0.19 ${imageNameSwitch}
