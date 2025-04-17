@@ -73,7 +73,6 @@ evaluateIcmpPing() {
     destIp=$2
     pingFlag=$3
     netnsName="`[[ -z $4 ]] && echo -n '' || echo -n "ip netns exec $4"`"
-    sleep 3
     aux="`docker container exec ${containerName} sh -c "echo -n '\n[${containerName}] ' && ${netnsName} ping -c 1 ${destIp}"`"
     echo -e -n ${aux} 1>&2
     if [[ $(echo ${aux} | grep ' 0% packet loss' | wc -l) == "${pingFlag}" ]] ; then

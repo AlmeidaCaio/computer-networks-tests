@@ -38,12 +38,12 @@ ip link set dev eth2.21 up
 ip link set dev eth2.31 up
 #
 # Setup routes
-ip route add 172.20.1.0/24 via 172.20.0.11 dev eth0.11
-ip route add 172.20.2.0/24 via 172.20.0.13 dev eth0.21
-ip route add 172.20.3.0/24 via 172.20.0.15 dev eth0.31
-ip route add 172.20.11.0/24 via 172.20.0.19 dev eth0.11
-ip route add 172.20.12.0/24 via 172.20.0.21 dev eth0.21
-ip route add 172.20.13.0/24 via 172.20.0.23 dev eth0.31
+ip route add 172.20.1.0/24 via 172.20.0.11 dev eth1.11
+ip route add 172.20.2.0/24 via 172.20.0.13 dev eth1.21
+ip route add 172.20.3.0/24 via 172.20.0.15 dev eth1.31
+ip route add 172.20.11.0/24 via 172.20.0.19 dev eth2.11
+ip route add 172.20.12.0/24 via 172.20.0.21 dev eth2.21
+ip route add 172.20.13.0/24 via 172.20.0.23 dev eth2.31
 #
 if [ ${firewallFlag} == "1" ] ; then
     # Rules to deny packets between different VLANs
