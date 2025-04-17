@@ -31,8 +31,6 @@ for x in 1 2 3 ; do
   ip -netns "ns$x" address add "172.20.1${x}.2/24" broadcast "172.20.1${x}.255" dev "eth$x"
   ip -netns "ns$x" link set dev "eth$x" up
 done
-# TODO:
-# Must apply config to open ipvlans 172.20.12.0/24 (eth2) and 172.20.13.0/24 (eth3)
 #
 # Activation
 ip link set dev eth0 up
