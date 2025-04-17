@@ -2,5 +2,6 @@
 ARG ALPINE_VERSION
 FROM "docker.io/library/alpine:${ALPINE_VERSION}"
 EXPOSE 22 
-RUN apk add arp-scan \
-    iproute2 
+RUN apk update \
+    && apk add arp-scan \
+        iproute2 
