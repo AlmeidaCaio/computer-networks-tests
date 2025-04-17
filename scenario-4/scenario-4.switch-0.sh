@@ -16,8 +16,6 @@
 #   2) IPv4 /31 subnets were used for peer-to-peer connections inside a Docker's subnet offered (segmentation)
 #
 #
-if [ $( apk info | grep -E '^ethtool$' | wc -l ) == "0" ] ; then { apk add ethtool ; } ; fi
-if [ $( apk info | grep -E '^tcpdump$' | wc -l ) == "0" ] ; then { apk add tcpdump ; } ; fi
 # Bridge "br0" creation
 ip link add name br0 type bridge vlan_filtering 1 vlan_default_pvid 0
 #
@@ -29,9 +27,9 @@ for x in 1 2 3 ; do
   ip netns add "ns$x"
   ip link set dev "eth$x" netns "ns$x"
   ip link set dev "vth$x" netns "ns$x"
-  ip -netns "ns$x" address add "172.20.0.$( expr ${x} * 2 + 9 )/31" dev "vth$x"
+  ip -netns "ns$x" address add "172.20.0.$(( ${x} * 2 + 9 ))/31" dev "vth$x"
   ip -netns "ns$x" link set dev "vth$x" up
-  ip -netns "ns$x" route add default via "172.20.0.$( expr ${x} * 2 + 8 )" dev "vth$x"
+  ip -netns "ns$x" route add default via "172.20.0.$(( ${x} * 2 + 8 ))" dev "vth$x"
   ip link set dev "vth${x}.${x}1" master br0
   bridge vlan add vid "${x}1" dev "vth${x}.${x}1" pvid untagged
   ip link set dev "vth${x}.${x}1" up

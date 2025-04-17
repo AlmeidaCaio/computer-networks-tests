@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # About it:
 # * Set of tests to validate traffic among each device. It enphasizes VLAN restrictions.
@@ -7,53 +7,21 @@
 # -
 #
 echo "------------------------------------------------" && \
-echo "------------------ TCP  DUMPS ------------------" && \
+echo "------------------IP ADDRESSES------------------" && \
 echo "------------------------------------------------"
-docker container exec firwll-0 sh -c "{ tcpdump -e -i eth0 -n -vvv &> eth0.firwll-0.log & } && echo \$!"
-docker container exec firwll-0 sh -c "{ tcpdump -e -i eth1 -n -vvv &> eth1.firwll-0.log & } && echo \$!"
-docker container exec firwll-0 sh -c "{ tcpdump -e -i eth2 -n -vvv &> eth2.firwll-0.log & } && echo \$!"
-docker container exec switch-0 sh -c "{ tcpdump -e -i lo -n -vvv &> lo.switch-0.log & } && echo \$!"
-docker container exec switch-0 sh -c "{ tcpdump -e -i br0 -n -vvv &> br0.switch-0.log & } && echo \$!"
-docker container exec switch-0 sh -c "{ tcpdump -e -i vth0 -n -vvv &> vth0.switch-0.log & } && echo \$!"
-docker container exec switch-0 sh -c "{ ip netns exec ns1 tcpdump -e -i vth1 -n -vvv &> vth1.switch-0.log & } && echo \$!"
-docker container exec switch-0 sh -c "{ ip netns exec ns2 tcpdump -e -i vth2 -n -vvv &> vth2.switch-0.log & } && echo \$!"
-docker container exec switch-0 sh -c "{ ip netns exec ns3 tcpdump -e -i vth3 -n -vvv &> vth3.switch-0.log & } && echo \$!"
-#docker container exec switch-0 sh -c "{ ip netns exec ns0 tcpdump -e -i lo -n -vvv &> lo0.switch-0.log & } && echo \$!"
-docker container exec switch-0 sh -c "{ tcpdump -e -i eth0 -n -vvv &> eth0.switch-0.log & } && echo \$!"
-docker container exec switch-0 sh -c "{ tcpdump -e -i vth0.x -n -vvv &> vth0.x.switch-0.log & } && echo \$!"
-#docker container exec switch-0 sh -c "{ ip netns exec ns0 tcpdump -e -i vth0.11 -n -vvv &> vth0.11.switch-0.log & } && echo \$!"
-#docker container exec switch-0 sh -c "{ ip netns exec ns0 tcpdump -e -i vth0.21 -n -vvv &> vth0.21.switch-0.log & } && echo \$!"
-#docker container exec switch-0 sh -c "{ ip netns exec ns0 tcpdump -e -i vth0.31 -n -vvv &> vth0.31.switch-0.log & } && echo \$!"
-docker container exec switch-0 sh -c "{ ip netns exec ns1 tcpdump -e -i lo -n -vvv &> lo1.switch-0.log & } && echo \$!"
-docker container exec switch-0 sh -c "{ ip netns exec ns1 tcpdump -e -i eth1 -n -vvv &> eth1.switch-0.log & } && echo \$!"
-docker container exec switch-0 sh -c "{ tcpdump -e -i vth1.11 -n -vvv &> vth1.11.switch-0.log & } && echo \$!"
-docker container exec switch-0 sh -c "{ ip netns exec ns2 tcpdump -e -i lo -n -vvv &> lo2.switch-0.log & } && echo \$!"
-docker container exec switch-0 sh -c "{ ip netns exec ns2 tcpdump -e -i eth2 -n -vvv &> eth2.switch-0.log & } && echo \$!"
-docker container exec switch-0 sh -c "{ tcpdump -e -i vth2.21 -n -vvv &> vth2.21.switch-0.log & } && echo \$!"
-docker container exec switch-0 sh -c "{ ip netns exec ns3 tcpdump -e -i lo -n -vvv &> lo3.switch-0.log & } && echo \$!"
-docker container exec switch-0 sh -c "{ ip netns exec ns3 tcpdump -e -i eth3 -n -vvv &> eth3.switch-0.log & } && echo \$!"
-docker container exec switch-0 sh -c "{ tcpdump -e -i vth3.31 -n -vvv &> vth3.31.switch-0.log & } && echo \$!"
-docker container exec switch-1 sh -c "{ tcpdump -e -i lo -n -vvv &> lo.switch-1.log & } && echo \$!"
-docker container exec switch-1 sh -c "{ tcpdump -e -i br1 -n -vvv &> br1.switch-1.log & } && echo \$!"
-docker container exec switch-1 sh -c "{ tcpdump -e -i vth0 -n -vvv &> vth0.switch-1.log & } && echo \$!"
-docker container exec switch-1 sh -c "{ ip netns exec ns1 tcpdump -e -i vth1 -n -vvv &> vth1.switch-1.log & } && echo \$!"
-docker container exec switch-1 sh -c "{ ip netns exec ns2 tcpdump -e -i vth2 -n -vvv &> vth2.switch-1.log & } && echo \$!"
-docker container exec switch-1 sh -c "{ ip netns exec ns3 tcpdump -e -i vth3 -n -vvv &> vth3.switch-1.log & } && echo \$!"
-#docker container exec switch-1 sh -c "{ ip netns exec ns0 tcpdump -e -i lo -n -vvv &> lo0.switch-1.log & } && echo \$!"
-docker container exec switch-1 sh -c "{ tcpdump -e -i eth0 -n -vvv &> eth0.switch-1.log & } && echo \$!"
-docker container exec switch-1 sh -c "{ tcpdump -e -i vth0.x -n -vvv &> vth0.x.switch-1.log & } && echo \$!"
-#docker container exec switch-1 sh -c "{ ip netns exec ns0 tcpdump -e -i vth0.11 -n -vvv &> vth0.11.switch-1.log & } && echo \$!"
-#docker container exec switch-1 sh -c "{ ip netns exec ns0 tcpdump -e -i vth0.21 -n -vvv &> vth0.21.switch-1.log & } && echo \$!"
-#docker container exec switch-1 sh -c "{ ip netns exec ns0 tcpdump -e -i vth0.31 -n -vvv &> vth0.31.switch-1.log & } && echo \$!"
-docker container exec switch-1 sh -c "{ ip netns exec ns0 tcpdump -e -i lo -n -vvv &> lo1.switch-1.log & } && echo \$!"
-docker container exec switch-1 sh -c "{ ip netns exec ns1 tcpdump -e -i eth1 -n -vvv &> eth1.switch-1.log & } && echo \$!"
-docker container exec switch-1 sh -c "{ tcpdump -e -i vth1.11 -n -vvv &> vth1.11.switch-1.log & } && echo \$!"
-docker container exec switch-1 sh -c "{ ip netns exec ns2 tcpdump -e -i lo -n -vvv &> lo2.switch-1.log & } && echo \$!"
-docker container exec switch-1 sh -c "{ ip netns exec ns2 tcpdump -e -i eth2 -n -vvv &> eth2.switch-1.log & } && echo \$!"
-docker container exec switch-1 sh -c "{ tcpdump -e -i vth2.21 -n -vvv &> vth2.21.switch-1.log & } && echo \$!"
-docker container exec switch-1 sh -c "{ ip netns exec ns3 tcpdump -e -i lo -n -vvv &> lo3.switch-1.log & } && echo \$!"
-docker container exec switch-1 sh -c "{ ip netns exec ns3 tcpdump -e -i eth3 -n -vvv &> eth3.switch-1.log & } && echo \$!"
-docker container exec switch-1 sh -c "{ tcpdump -e -i vth3.31 -n -vvv &> vth3.31.switch-1.log & } && echo \$!"
+docker container exec firwll-0   sh -c 'echo -e "\n\n[firwll-0] ip address show" && ip address show'
+docker container exec switch-0   sh -c 'echo -e "\n\n[switch-0.ns1] ip address show" && ip -netns ns1 address show'
+docker container exec switch-0   sh -c 'echo -e "\n\n[switch-0.ns2] ip address show" && ip -netns ns2 address show'
+docker container exec switch-0   sh -c 'echo -e "\n\n[switch-0.ns3] ip address show" && ip -netns ns3 address show'
+docker container exec switch-1   sh -c 'echo -e "\n\n[switch-1.ns1] ip address show" && ip -netns ns1 address show'
+docker container exec switch-1   sh -c 'echo -e "\n\n[switch-1.ns2] ip address show" && ip -netns ns2 address show'
+docker container exec switch-1   sh -c 'echo -e "\n\n[switch-1.ns3] ip address show" && ip -netns ns3 address show'
+docker container exec workst-011 sh -c 'echo -e "\n\n[workst-011] ip address show" && ip address show'
+docker container exec workst-021 sh -c 'echo -e "\n\n[workst-021] ip address show" && ip address show'
+docker container exec workst-031 sh -c 'echo -e "\n\n[workst-031] ip address show" && ip address show'
+docker container exec workst-111 sh -c 'echo -e "\n\n[workst-111] ip address show" && ip address show'
+docker container exec workst-121 sh -c 'echo -e "\n\n[workst-121] ip address show" && ip address show'
+docker container exec workst-131 sh -c 'echo -e "\n\n[workst-131] ip address show" && ip address show'
 echo "------------------------------------------------" && \
 echo "------------------BRIDGE VLANS------------------" && \
 echo "------------------------------------------------"
@@ -61,177 +29,170 @@ docker container exec switch-0 sh -c 'echo -e "\n\n[switch-0] bridge vlan show" 
 docker container exec switch-1 sh -c 'echo -e "\n\n[switch-1] bridge vlan show" && bridge vlan show'
 echo "------------------------------------------------" && \
 echo "-----------TESTS FOR INTERNAL ROUTING-----------" && \
-echo "------------------------------------------------" && \
+echo "------------------------------------------------"
+expectedValues="1|1|1|1|1|1|1|1|1|
+1|1|1|1|1|1|0|0|0|
+1|1|1|0|0|0|1|1|1|
+1|1|0|1|0|0|1|0|0|
+1|1|0|0|1|0|0|1|0|
+1|1|0|0|0|1|0|0|1|
+1|0|1|1|0|0|1|0|0|
+1|0|1|0|1|0|0|1|0|
+1|0|1|0|0|1|0|0|1"
+val=(${expectedValues//\|/\ })
+if [[ ${#val[@]} -lt 81 ]] ; then 
+    echo "ERROR 7: ICMP Ping expected values qty is lower than 81." 1>&2
+    exit 7
+fi
 echo -e -n "\nExpected ICMP Pings reachability among hosts:" && \
 echo -e -n "\n                1 => reachable" && \
 echo -e "\n                0 => not reachable" && \
 echo '|          |firwll-0|switch-0|switch-1|workst-011|workst-021|workst-031|workst-111|workst-121|workst-131|' && \
 echo '|----------|--------|--------|--------|----------|----------|----------|----------|----------|----------|' && \
-echo '|  firwll-0|       1|       1|       1|         1|         1|         1|         1|         1|         1|' && \
-echo '|  switch-0|       1|       1|       1|         1|         1|         1|         0|         0|         0|' && \
-echo '|  switch-1|       1|       1|       1|         0|         0|         0|         1|         1|         1|' && \
-echo '|workst-011|       1|       1|       0|         1|         0|         0|         1|         0|         0|' && \
-echo '|workst-021|       1|       1|       0|         0|         1|         0|         0|         1|         0|' && \
-echo '|workst-031|       1|       1|       0|         0|         0|         1|         0|         0|         1|' && \
-echo '|workst-111|       1|       0|       1|         1|         0|         0|         1|         0|         0|' && \
-echo '|workst-121|       1|       0|       1|         0|         1|         0|         0|         1|         0|' && \
-echo '|workst-131|       1|       0|       1|         0|         0|         1|         0|         0|         1|' && \
+echo "|  firwll-0|       ${val[0]}|       ${val[1]}|       ${val[2]}|         ${val[3]}|         ${val[4]}|         ${val[5]}|         ${val[6]}|         ${val[7]}|         ${val[8]}|" && \
+echo "|  switch-0|       ${val[9]}|       ${val[10]}|       ${val[11]}|         ${val[12]}|         ${val[13]}|         ${val[14]}|         ${val[15]}|         ${val[16]}|         ${val[17]}|" && \
+echo "|  switch-1|       ${val[18]}|       ${val[19]}|       ${val[20]}|         ${val[21]}|         ${val[22]}|         ${val[23]}|         ${val[24]}|         ${val[25]}|         ${val[26]}|" && \
+echo "|workst-011|       ${val[27]}|       ${val[28]}|       ${val[29]}|         ${val[30]}|         ${val[31]}|         ${val[32]}|         ${val[33]}|         ${val[34]}|         ${val[35]}|" && \
+echo "|workst-021|       ${val[36]}|       ${val[37]}|       ${val[38]}|         ${val[39]}|         ${val[40]}|         ${val[41]}|         ${val[42]}|         ${val[43]}|         ${val[44]}|" && \
+echo "|workst-031|       ${val[45]}|       ${val[46]}|       ${val[47]}|         ${val[48]}|         ${val[49]}|         ${val[50]}|         ${val[51]}|         ${val[52]}|         ${val[53]}|" && \
+echo "|workst-111|       ${val[54]}|       ${val[55]}|       ${val[56]}|         ${val[57]}|         ${val[58]}|         ${val[59]}|         ${val[60]}|         ${val[61]}|         ${val[62]}|" && \
+echo "|workst-121|       ${val[63]}|       ${val[64]}|       ${val[65]}|         ${val[66]}|         ${val[67]}|         ${val[68]}|         ${val[69]}|         ${val[70]}|         ${val[71]}|" && \
+echo "|workst-131|       ${val[72]}|       ${val[73]}|       ${val[74]}|         ${val[75]}|         ${val[76]}|         ${val[77]}|         ${val[78]}|         ${val[79]}|         ${val[80]}|" && \
 echo -e '\n\n'
+evaluateIcmpPing() {
+    # Parameters:
+    #     $1 <- Container's name or Id
+    #     $2 <- IP address destination
+    #     $3 <- Boolean flag expected for ping ('1' or '0')
+    #     $4 <- [Optional] Network Namespace name (iproute2 netns)
+    #
+    # Returns:
+    #     "---OK---" | "--FAIL--"
+    #
+    containerName=$1
+    destIp=$2
+    pingFlag=$3
+    netnsName="`[[ -z $4 ]] && echo -n '' || echo -n "ip netns exec $4"`"
+    sleep 3
+    aux="`docker container exec ${containerName} sh -c "echo -n '\n[${containerName}] ' && ${netnsName} ping -c 1 ${destIp}"`"
+    echo -e -n ${aux} 1>&2
+    if [[ $(echo ${aux} | grep ' 0% packet loss' | wc -l) == "${pingFlag}" ]] ; then
+        echo -n "---OK---"
+    else
+        echo -n "--FAIL--"
+    fi
+    exit 0
+}
 ip_fw="172.20.0.2"
-ip_s0="172.20.0.14"
-ip_s1="172.20.0.22"
+ip_sa="172.20.0.11" ; ip_sb="172.20.0.13" ; ip_sc="172.20.0.15"
+ip_SA="172.20.0.19" ; ip_SB="172.20.0.21" ; ip_SC="172.20.0.23"
 ip_w1="172.20.1.3"
 ip_w2="172.20.2.3"
 ip_w3="172.20.3.3"
 ip_W1="172.20.11.3"
 ip_W2="172.20.12.3"
 ip_W3="172.20.13.3"
-passed="---OK---"
-failed="--FAIL--"
-aux="`docker container exec firwll-0 sh -c "echo -e -n '\n\n[firwll-0] ' && ping -c 1 ${ip_fw}"`" ; echo -e ${aux} ; fw_fw="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec firwll-0 sh -c "echo -e -n '\n\n[firwll-0] ' && ping -c 1 ${ip_s0}"`" ; echo -e ${aux} ; fw_s0="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec firwll-0 sh -c "echo -e -n '\n\n[firwll-0] ' && ping -c 1 ${ip_s1}"`" ; echo -e ${aux} ; fw_s1="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec firwll-0 sh -c "echo -e -n '\n\n[firwll-0] ' && ping -c 1 ${ip_w1}"`" ; echo -e ${aux} ; fw_w1="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec firwll-0 sh -c "echo -e -n '\n\n[firwll-0] ' && ping -c 1 ${ip_w2}"`" ; echo -e ${aux} ; fw_w2="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec firwll-0 sh -c "echo -e -n '\n\n[firwll-0] ' && ping -c 1 ${ip_w3}"`" ; echo -e ${aux} ; fw_w3="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec firwll-0 sh -c "echo -e -n '\n\n[firwll-0] ' && ping -c 1 ${ip_W1}"`" ; echo -e ${aux} ; fw_W1="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec firwll-0 sh -c "echo -e -n '\n\n[firwll-0] ' && ping -c 1 ${ip_W2}"`" ; echo -e ${aux} ; fw_W2="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec firwll-0 sh -c "echo -e -n '\n\n[firwll-0] ' && ping -c 1 ${ip_W3}"`" ; echo -e ${aux} ; fw_W3="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec switch-0 sh -c "echo -e -n '\n\n[switch-0] ' && ping -c 1 ${ip_fw}"`" ; echo -e ${aux} ; s0_fw="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec switch-0 sh -c "echo -e -n '\n\n[switch-0] ' && ping -c 1 ${ip_s0}"`" ; echo -e ${aux} ; s0_s0="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec switch-0 sh -c "echo -e -n '\n\n[switch-0] ' && ping -c 1 ${ip_s1}"`" ; echo -e ${aux} ; s0_s1="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec switch-0 sh -c "echo -e -n '\n\n[switch-0] ' && ping -c 1 ${ip_w1}"`" ; echo -e ${aux} ; s0_w1="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec switch-0 sh -c "echo -e -n '\n\n[switch-0] ' && ping -c 1 ${ip_w2}"`" ; echo -e ${aux} ; s0_w2="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec switch-0 sh -c "echo -e -n '\n\n[switch-0] ' && ping -c 1 ${ip_w3}"`" ; echo -e ${aux} ; s0_w3="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec switch-0 sh -c "echo -e -n '\n\n[switch-0] ' && ping -c 1 ${ip_W1}"`" ; echo -e ${aux} ; s0_W1="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec switch-0 sh -c "echo -e -n '\n\n[switch-0] ' && ping -c 1 ${ip_W2}"`" ; echo -e ${aux} ; s0_W2="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec switch-0 sh -c "echo -e -n '\n\n[switch-0] ' && ping -c 1 ${ip_W3}"`" ; echo -e ${aux} ; s0_W3="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec switch-1 sh -c "echo -e -n '\n\n[switch-1] ' && ping -c 1 ${ip_fw}"`" ; echo -e ${aux} ; s1_fw="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec switch-1 sh -c "echo -e -n '\n\n[switch-1] ' && ping -c 1 ${ip_s0}"`" ; echo -e ${aux} ; s1_s0="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec switch-1 sh -c "echo -e -n '\n\n[switch-1] ' && ping -c 1 ${ip_s1}"`" ; echo -e ${aux} ; s1_s1="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec switch-1 sh -c "echo -e -n '\n\n[switch-1] ' && ping -c 1 ${ip_w1}"`" ; echo -e ${aux} ; s1_w1="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec switch-1 sh -c "echo -e -n '\n\n[switch-1] ' && ping -c 1 ${ip_w2}"`" ; echo -e ${aux} ; s1_w2="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec switch-1 sh -c "echo -e -n '\n\n[switch-1] ' && ping -c 1 ${ip_w3}"`" ; echo -e ${aux} ; s1_w3="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec switch-1 sh -c "echo -e -n '\n\n[switch-1] ' && ping -c 1 ${ip_W1}"`" ; echo -e ${aux} ; s1_W1="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec switch-1 sh -c "echo -e -n '\n\n[switch-1] ' && ping -c 1 ${ip_W2}"`" ; echo -e ${aux} ; s1_W2="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec switch-1 sh -c "echo -e -n '\n\n[switch-1] ' && ping -c 1 ${ip_W3}"`" ; echo -e ${aux} ; s1_W3="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec workst-011 sh -c "echo -e -n '\n\n[workst-011] ' && ping -c 1 ${ip_fw}"`" ; echo -e ${aux} ; w1_fw="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec workst-011 sh -c "echo -e -n '\n\n[workst-011] ' && ping -c 1 ${ip_s0}"`" ; echo -e ${aux} ; w1_s0="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec workst-011 sh -c "echo -e -n '\n\n[workst-011] ' && ping -c 1 ${ip_s1}"`" ; echo -e ${aux} ; w1_s1="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec workst-011 sh -c "echo -e -n '\n\n[workst-011] ' && ping -c 1 ${ip_w1}"`" ; echo -e ${aux} ; w1_w1="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec workst-011 sh -c "echo -e -n '\n\n[workst-011] ' && ping -c 1 ${ip_w2}"`" ; echo -e ${aux} ; w1_w2="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec workst-011 sh -c "echo -e -n '\n\n[workst-011] ' && ping -c 1 ${ip_w3}"`" ; echo -e ${aux} ; w1_w3="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec workst-011 sh -c "echo -e -n '\n\n[workst-011] ' && ping -c 1 ${ip_W1}"`" ; echo -e ${aux} ; w1_W1="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec workst-011 sh -c "echo -e -n '\n\n[workst-011] ' && ping -c 1 ${ip_W2}"`" ; echo -e ${aux} ; w1_W2="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec workst-011 sh -c "echo -e -n '\n\n[workst-011] ' && ping -c 1 ${ip_W3}"`" ; echo -e ${aux} ; w1_W3="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec workst-021 sh -c "echo -e -n '\n\n[workst-021] ' && ping -c 1 ${ip_fw}"`" ; echo -e ${aux} ; w2_fw="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec workst-021 sh -c "echo -e -n '\n\n[workst-021] ' && ping -c 1 ${ip_s0}"`" ; echo -e ${aux} ; w2_s0="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec workst-021 sh -c "echo -e -n '\n\n[workst-021] ' && ping -c 1 ${ip_s1}"`" ; echo -e ${aux} ; w2_s1="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec workst-021 sh -c "echo -e -n '\n\n[workst-021] ' && ping -c 1 ${ip_w1}"`" ; echo -e ${aux} ; w2_w1="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec workst-021 sh -c "echo -e -n '\n\n[workst-021] ' && ping -c 1 ${ip_w2}"`" ; echo -e ${aux} ; w2_w2="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec workst-021 sh -c "echo -e -n '\n\n[workst-021] ' && ping -c 1 ${ip_w3}"`" ; echo -e ${aux} ; w2_w3="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec workst-021 sh -c "echo -e -n '\n\n[workst-021] ' && ping -c 1 ${ip_W1}"`" ; echo -e ${aux} ; w2_W1="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec workst-021 sh -c "echo -e -n '\n\n[workst-021] ' && ping -c 1 ${ip_W2}"`" ; echo -e ${aux} ; w2_W2="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec workst-021 sh -c "echo -e -n '\n\n[workst-021] ' && ping -c 1 ${ip_W3}"`" ; echo -e ${aux} ; w2_W3="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec workst-031 sh -c "echo -e -n '\n\n[workst-031] ' && ping -c 1 ${ip_fw}"`" ; echo -e ${aux} ; w3_fw="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec workst-031 sh -c "echo -e -n '\n\n[workst-031] ' && ping -c 1 ${ip_s0}"`" ; echo -e ${aux} ; w3_s0="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec workst-031 sh -c "echo -e -n '\n\n[workst-031] ' && ping -c 1 ${ip_s1}"`" ; echo -e ${aux} ; w3_s1="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec workst-031 sh -c "echo -e -n '\n\n[workst-031] ' && ping -c 1 ${ip_w1}"`" ; echo -e ${aux} ; w3_w1="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec workst-031 sh -c "echo -e -n '\n\n[workst-031] ' && ping -c 1 ${ip_w2}"`" ; echo -e ${aux} ; w3_w2="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec workst-031 sh -c "echo -e -n '\n\n[workst-031] ' && ping -c 1 ${ip_w3}"`" ; echo -e ${aux} ; w3_w3="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec workst-031 sh -c "echo -e -n '\n\n[workst-031] ' && ping -c 1 ${ip_W1}"`" ; echo -e ${aux} ; w3_W1="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec workst-031 sh -c "echo -e -n '\n\n[workst-031] ' && ping -c 1 ${ip_W2}"`" ; echo -e ${aux} ; w3_W2="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec workst-031 sh -c "echo -e -n '\n\n[workst-031] ' && ping -c 1 ${ip_W3}"`" ; echo -e ${aux} ; w3_W3="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec workst-111 sh -c "echo -e -n '\n\n[workst-111] ' && ping -c 1 ${ip_fw}"`" ; echo -e ${aux} ; W1_fw="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec workst-111 sh -c "echo -e -n '\n\n[workst-111] ' && ping -c 1 ${ip_s0}"`" ; echo -e ${aux} ; W1_s0="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec workst-111 sh -c "echo -e -n '\n\n[workst-111] ' && ping -c 1 ${ip_s1}"`" ; echo -e ${aux} ; W1_s1="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec workst-111 sh -c "echo -e -n '\n\n[workst-111] ' && ping -c 1 ${ip_w1}"`" ; echo -e ${aux} ; W1_w1="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec workst-111 sh -c "echo -e -n '\n\n[workst-111] ' && ping -c 1 ${ip_w2}"`" ; echo -e ${aux} ; W1_w2="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec workst-111 sh -c "echo -e -n '\n\n[workst-111] ' && ping -c 1 ${ip_w3}"`" ; echo -e ${aux} ; W1_w3="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec workst-111 sh -c "echo -e -n '\n\n[workst-111] ' && ping -c 1 ${ip_W1}"`" ; echo -e ${aux} ; W1_W1="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec workst-111 sh -c "echo -e -n '\n\n[workst-111] ' && ping -c 1 ${ip_W2}"`" ; echo -e ${aux} ; W1_W2="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec workst-111 sh -c "echo -e -n '\n\n[workst-111] ' && ping -c 1 ${ip_W3}"`" ; echo -e ${aux} ; W1_W3="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec workst-121 sh -c "echo -e -n '\n\n[workst-121] ' && ping -c 1 ${ip_fw}"`" ; echo -e ${aux} ; W2_fw="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec workst-121 sh -c "echo -e -n '\n\n[workst-121] ' && ping -c 1 ${ip_s0}"`" ; echo -e ${aux} ; W2_s0="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec workst-121 sh -c "echo -e -n '\n\n[workst-121] ' && ping -c 1 ${ip_s1}"`" ; echo -e ${aux} ; W2_s1="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec workst-121 sh -c "echo -e -n '\n\n[workst-121] ' && ping -c 1 ${ip_w1}"`" ; echo -e ${aux} ; W2_w1="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec workst-121 sh -c "echo -e -n '\n\n[workst-121] ' && ping -c 1 ${ip_w2}"`" ; echo -e ${aux} ; W2_w2="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec workst-121 sh -c "echo -e -n '\n\n[workst-121] ' && ping -c 1 ${ip_w3}"`" ; echo -e ${aux} ; W2_w3="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec workst-121 sh -c "echo -e -n '\n\n[workst-121] ' && ping -c 1 ${ip_W1}"`" ; echo -e ${aux} ; W2_W1="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec workst-121 sh -c "echo -e -n '\n\n[workst-121] ' && ping -c 1 ${ip_W2}"`" ; echo -e ${aux} ; W2_W2="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec workst-121 sh -c "echo -e -n '\n\n[workst-121] ' && ping -c 1 ${ip_W3}"`" ; echo -e ${aux} ; W2_W3="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec workst-131 sh -c "echo -e -n '\n\n[workst-131] ' && ping -c 1 ${ip_fw}"`" ; echo -e ${aux} ; W3_fw="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec workst-131 sh -c "echo -e -n '\n\n[workst-131] ' && ping -c 1 ${ip_s0}"`" ; echo -e ${aux} ; W3_s0="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec workst-131 sh -c "echo -e -n '\n\n[workst-131] ' && ping -c 1 ${ip_s1}"`" ; echo -e ${aux} ; W3_s1="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec workst-131 sh -c "echo -e -n '\n\n[workst-131] ' && ping -c 1 ${ip_w1}"`" ; echo -e ${aux} ; W3_w1="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec workst-131 sh -c "echo -e -n '\n\n[workst-131] ' && ping -c 1 ${ip_w2}"`" ; echo -e ${aux} ; W3_w2="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec workst-131 sh -c "echo -e -n '\n\n[workst-131] ' && ping -c 1 ${ip_w3}"`" ; echo -e ${aux} ; W3_w3="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
-aux="`docker container exec workst-131 sh -c "echo -e -n '\n\n[workst-131] ' && ping -c 1 ${ip_W1}"`" ; echo -e ${aux} ; W3_W1="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec workst-131 sh -c "echo -e -n '\n\n[workst-131] ' && ping -c 1 ${ip_W2}"`" ; echo -e ${aux} ; W3_W2="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${failed} ; else echo -n ${passed} ; fi`"
-aux="`docker container exec workst-131 sh -c "echo -e -n '\n\n[workst-131] ' && ping -c 1 ${ip_W3}"`" ; echo -e ${aux} ; W3_W3="`if [ $(echo $aux | grep ' 0% packet loss' | wc -l) == '1' ] ; then echo -n ${passed} ; else echo -n ${failed} ; fi`"
+allResults=''
+for triad in "firwll-0|${ip_fw}|${val[0]}|" \
+    "firwll-0|${ip_sa}|${val[1]}|" \
+    "firwll-0|${ip_SA}|${val[2]}|" \
+    "firwll-0|${ip_w1}|${val[3]}|" \
+    "firwll-0|${ip_w2}|${val[4]}|" \
+    "firwll-0|${ip_w3}|${val[5]}|" \
+    "firwll-0|${ip_W1}|${val[6]}|" \
+    "firwll-0|${ip_W2}|${val[7]}|" \
+    "firwll-0|${ip_W3}|${val[8]}|" \
+    "switch-0|${ip_fw}|${val[9]}|ns1" \
+    "switch-0|${ip_sb}|${val[10]}|ns2" \
+    "switch-0|${ip_SC}|${val[11]}|ns3" \
+    "switch-0|${ip_w1}|${val[12]}|ns1" \
+    "switch-0|${ip_w2}|${val[13]}|ns2" \
+    "switch-0|${ip_w3}|${val[14]}|ns3" \
+    "switch-0|${ip_W1}|${val[15]}|ns1" \
+    "switch-0|${ip_W2}|${val[16]}|ns2" \
+    "switch-0|${ip_W3}|${val[17]}|ns3" \
+    "switch-1|${ip_fw}|${val[18]}|ns1" \
+    "switch-1|${ip_sb}|${val[19]}|ns2" \
+    "switch-1|${ip_SC}|${val[20]}|ns3" \
+    "switch-1|${ip_w1}|${val[21]}|ns1" \
+    "switch-1|${ip_w2}|${val[22]}|ns2" \
+    "switch-1|${ip_w3}|${val[23]}|ns3" \
+    "switch-1|${ip_W1}|${val[24]}|ns1" \
+    "switch-1|${ip_W2}|${val[25]}|ns2" \
+    "switch-1|${ip_W3}|${val[26]}|ns3" \
+    "workst-011|${ip_fw}|${val[27]}|" \
+    "workst-011|${ip_sa}|${val[28]}|" \
+    "workst-011|${ip_SA}|${val[29]}|" \
+    "workst-011|${ip_w1}|${val[30]}|" \
+    "workst-011|${ip_w2}|${val[31]}|" \
+    "workst-011|${ip_w3}|${val[32]}|" \
+    "workst-011|${ip_W1}|${val[33]}|" \
+    "workst-011|${ip_W2}|${val[34]}|" \
+    "workst-011|${ip_W3}|${val[35]}|" \
+    "workst-021|${ip_fw}|${val[36]}|" \
+    "workst-021|${ip_sb}|${val[37]}|" \
+    "workst-021|${ip_SB}|${val[38]}|" \
+    "workst-021|${ip_w1}|${val[39]}|" \
+    "workst-021|${ip_w2}|${val[40]}|" \
+    "workst-021|${ip_w3}|${val[41]}|" \
+    "workst-021|${ip_W1}|${val[42]}|" \
+    "workst-021|${ip_W2}|${val[43]}|" \
+    "workst-021|${ip_W3}|${val[44]}|" \
+    "workst-031|${ip_fw}|${val[45]}|" \
+    "workst-031|${ip_sc}|${val[46]}|" \
+    "workst-031|${ip_SC}|${val[47]}|" \
+    "workst-031|${ip_w1}|${val[48]}|" \
+    "workst-031|${ip_w2}|${val[49]}|" \
+    "workst-031|${ip_w3}|${val[50]}|" \
+    "workst-031|${ip_W1}|${val[51]}|" \
+    "workst-031|${ip_W2}|${val[52]}|" \
+    "workst-031|${ip_W3}|${val[53]}|" \
+    "workst-111|${ip_fw}|${val[54]}|" \
+    "workst-111|${ip_sa}|${val[55]}|" \
+    "workst-111|${ip_SA}|${val[56]}|" \
+    "workst-111|${ip_w1}|${val[57]}|" \
+    "workst-111|${ip_w2}|${val[58]}|" \
+    "workst-111|${ip_w3}|${val[59]}|" \
+    "workst-111|${ip_W1}|${val[60]}|" \
+    "workst-111|${ip_W2}|${val[61]}|" \
+    "workst-111|${ip_W3}|${val[62]}|" \
+    "workst-121|${ip_fw}|${val[63]}|" \
+    "workst-121|${ip_sb}|${val[64]}|" \
+    "workst-121|${ip_SB}|${val[65]}|" \
+    "workst-121|${ip_w1}|${val[66]}|" \
+    "workst-121|${ip_w2}|${val[67]}|" \
+    "workst-121|${ip_w3}|${val[68]}|" \
+    "workst-121|${ip_W1}|${val[69]}|" \
+    "workst-121|${ip_W2}|${val[70]}|" \
+    "workst-121|${ip_W3}|${val[71]}|" \
+    "workst-131|${ip_fw}|${val[72]}|" \
+    "workst-131|${ip_sc}|${val[73]}|" \
+    "workst-131|${ip_SC}|${val[74]}|" \
+    "workst-131|${ip_w1}|${val[75]}|" \
+    "workst-131|${ip_w2}|${val[76]}|" \
+    "workst-131|${ip_w3}|${val[77]}|" \
+    "workst-131|${ip_W1}|${val[78]}|" \
+    "workst-131|${ip_W2}|${val[79]}|" \
+    "workst-131|${ip_W3}|${val[80]}|"
+do 
+    triadArray=(${triad//\|/\ })
+    allResults+="`echo -n "$(evaluateIcmpPing ${triadArray[@]}) "`"
+done
+x=(${allResults})
 echo -e -n "\n\n\nICMP Pings conformity with the expected among hosts:" && \
 echo -e -n "\n               OK => valid"
 echo -e "\n             FAIL => not valid" && \
 echo "|          |firwll-0|switch-0|switch-1|workst-011|workst-021|workst-031|workst-111|workst-121|workst-131|" && \
 echo "|----------|--------|--------|--------|----------|----------|----------|----------|----------|----------|" && \
-echo "|  firwll-0|${fw_fw}|${fw_s0}|${fw_s1}|-${fw_w1}-|-${fw_w2}-|-${fw_w3}-|-${fw_W1}-|-${fw_W2}-|-${fw_W3}-|" && \
-echo "|  switch-0|${s0_fw}|${s0_s0}|${s0_s1}|-${s0_w1}-|-${s0_w2}-|-${s0_w3}-|-${s0_W1}-|-${s0_W2}-|-${s0_W3}-|" && \
-echo "|  switch-1|${s1_fw}|${s1_s0}|${s1_s1}|-${s1_w1}-|-${s1_w2}-|-${s1_w3}-|-${s1_W1}-|-${s1_W2}-|-${s1_W3}-|" && \
-echo "|workst-011|${w1_fw}|${w1_s0}|${w1_s1}|-${w1_w1}-|-${w1_w2}-|-${w1_w3}-|-${w1_W1}-|-${w1_W2}-|-${w1_W3}-|" && \
-echo "|workst-021|${w2_fw}|${w2_s0}|${w2_s1}|-${w2_w1}-|-${w2_w2}-|-${w2_w3}-|-${w2_W1}-|-${w2_W2}-|-${w2_W3}-|" && \
-echo "|workst-031|${w3_fw}|${w3_s0}|${w3_s1}|-${w3_w1}-|-${w3_w2}-|-${w3_w3}-|-${w3_W1}-|-${w3_W2}-|-${w3_W3}-|" && \
-echo "|workst-111|${W1_fw}|${W1_s0}|${W1_s1}|-${W1_w1}-|-${W1_w2}-|-${W1_w3}-|-${W1_W1}-|-${W1_W2}-|-${W1_W3}-|" && \
-echo "|workst-121|${W2_fw}|${W2_s0}|${W2_s1}|-${W2_w1}-|-${W2_w2}-|-${W2_w3}-|-${W2_W1}-|-${W2_W2}-|-${W2_W3}-|" && \
-echo "|workst-131|${W3_fw}|${W3_s0}|${W3_s1}|-${W3_w1}-|-${W3_w2}-|-${W3_w3}-|-${W3_W1}-|-${W3_W2}-|-${W3_W3}-|" && \
-echo -e "\n\n"
-scen4Logs=$( find . -name "logs" | grep "scenario-4" )
-docker container cp firwll-0:/eth0.firwll-0.log "${scen4Logs}/"
-docker container cp firwll-0:/eth1.firwll-0.log "${scen4Logs}/"
-docker container cp firwll-0:/eth2.firwll-0.log "${scen4Logs}/"
-docker container cp switch-0:/lo.switch-0.log "${scen4Logs}/"
-docker container cp switch-0:/br0.switch-0.log "${scen4Logs}/"
-docker container cp switch-0:/vth0.switch-0.log "${scen4Logs}/"
-docker container cp switch-0:/vth1.switch-0.log "${scen4Logs}/"
-docker container cp switch-0:/vth2.switch-0.log "${scen4Logs}/"
-docker container cp switch-0:/vth3.switch-0.log "${scen4Logs}/"
-#docker container cp switch-0:/lo0.switch-0.log "${scen4Logs}/"
-docker container cp switch-0:/eth0.switch-0.log "${scen4Logs}/"
-docker container cp switch-0:/vth0.x.switch-0.log "${scen4Logs}/"
-#docker container cp switch-0:/vth0.11.switch-0.log "${scen4Logs}/"
-#docker container cp switch-0:/vth0.21.switch-0.log "${scen4Logs}/"
-#docker container cp switch-0:/vth0.31.switch-0.log "${scen4Logs}/"
-docker container cp switch-0:/lo1.switch-0.log "${scen4Logs}/"
-docker container cp switch-0:/eth1.switch-0.log "${scen4Logs}/"
-docker container cp switch-0:/vth1.11.switch-0.log "${scen4Logs}/"
-docker container cp switch-0:/lo2.switch-0.log "${scen4Logs}/"
-docker container cp switch-0:/eth2.switch-0.log "${scen4Logs}/"
-docker container cp switch-0:/vth2.21.switch-0.log "${scen4Logs}/"
-docker container cp switch-0:/lo3.switch-0.log "${scen4Logs}/"
-docker container cp switch-0:/eth3.switch-0.log "${scen4Logs}/"
-docker container cp switch-0:/vth3.31.switch-0.log "${scen4Logs}/"
-docker container cp switch-1:/lo.switch-1.log "${scen4Logs}/"
-docker container cp switch-1:/br1.switch-1.log "${scen4Logs}/"
-docker container cp switch-1:/vth0.switch-1.log "${scen4Logs}/"
-docker container cp switch-1:/vth1.switch-1.log "${scen4Logs}/"
-docker container cp switch-1:/vth2.switch-1.log "${scen4Logs}/"
-docker container cp switch-1:/vth3.switch-1.log "${scen4Logs}/"
-#docker container cp switch-1:/lo0.switch-1.log "${scen4Logs}/"
-docker container cp switch-1:/eth0.switch-1.log "${scen4Logs}/"
-docker container cp switch-1:/vth0.x.switch-1.log "${scen4Logs}/"
-#docker container cp switch-1:/vth0.11.switch-1.log "${scen4Logs}/"
-#docker container cp switch-1:/vth0.21.switch-1.log "${scen4Logs}/"
-#docker container cp switch-1:/vth0.31.switch-1.log "${scen4Logs}/"
-docker container cp switch-1:/lo1.switch-1.log "${scen4Logs}/"
-docker container cp switch-1:/eth1.switch-1.log "${scen4Logs}/"
-docker container cp switch-1:/vth1.11.switch-1.log "${scen4Logs}/"
-docker container cp switch-1:/lo2.switch-1.log "${scen4Logs}/"
-docker container cp switch-1:/eth2.switch-1.log "${scen4Logs}/"
-docker container cp switch-1:/vth2.21.switch-1.log "${scen4Logs}/"
-docker container cp switch-1:/lo3.switch-1.log "${scen4Logs}/"
-docker container cp switch-1:/eth3.switch-1.log "${scen4Logs}/"
-docker container cp switch-1:/vth3.31.switch-1.log "${scen4Logs}/"
-
-
+echo "| firwll-0 |${x[0]}|${x[1]}|${x[2]}|-${x[3]}-|-${x[4]}-|-${x[5]}-|-${x[6]}-|-${x[7]}-|-${x[8]}-|" && \
+echo "| switch-0 |${x[9]}|${x[10]}|${x[11]}|-${x[12]}-|-${x[13]}-|-${x[14]}-|-${x[15]}-|-${x[16]}-|-${x[17]}-|" && \
+echo "| switch-1 |${x[18]}|${x[19]}|${x[20]}|-${x[21]}-|-${x[22]}-|-${x[23]}-|-${x[24]}-|-${x[25]}-|-${x[26]}-|" && \
+echo "|workst-011|${x[27]}|${x[28]}|${x[29]}|-${x[30]}-|-${x[31]}-|-${x[32]}-|-${x[33]}-|-${x[34]}-|-${x[35]}-|" && \
+echo "|workst-021|${x[36]}|${x[37]}|${x[38]}|-${x[39]}-|-${x[40]}-|-${x[41]}-|-${x[42]}-|-${x[43]}-|-${x[44]}-|" && \
+echo "|workst-031|${x[45]}|${x[46]}|${x[47]}|-${x[48]}-|-${x[49]}-|-${x[50]}-|-${x[51]}-|-${x[52]}-|-${x[53]}-|" && \
+echo "|workst-111|${x[54]}|${x[55]}|${x[56]}|-${x[57]}-|-${x[58]}-|-${x[59]}-|-${x[60]}-|-${x[61]}-|-${x[62]}-|" && \
+echo "|workst-121|${x[63]}|${x[64]}|${x[65]}|-${x[66]}-|-${x[67]}-|-${x[68]}-|-${x[69]}-|-${x[70]}-|-${x[71]}-|" && \
+echo "|workst-131|${x[72]}|${x[73]}|${x[74]}|-${x[75]}-|-${x[76]}-|-${x[77]}-|-${x[78]}-|-${x[79]}-|-${x[80]}-|" && \
 echo -e '\n\n' && \
 echo "------------------------------------------------" && \
 echo "------------------TRACE ROUTES------------------" && \

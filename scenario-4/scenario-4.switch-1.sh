@@ -1,10 +1,8 @@
 #!/bin/sh
 #
-# Script analogous to the one in file "scenario-4.switch-1.sh"
+# Script analogous to the one in file "scenario-4.switch-0.sh"
 #
 #
-if [ $( apk info | grep -E '^ethtool$' | wc -l ) == "0" ] ; then { apk add ethtool ; } ; fi
-if [ $( apk info | grep -E '^tcpdump$' | wc -l ) == "0" ] ; then { apk add tcpdump ; } ; fi
 # Bridge "br1" creation
 ip link add name br1 type bridge vlan_filtering 1 vlan_default_pvid 0
 #
@@ -16,9 +14,9 @@ for x in 1 2 3 ; do
   ip netns add "ns$x"
   ip link set dev "eth$x" netns "ns$x"
   ip link set dev "vth$x" netns "ns$x"
-  ip -netns "ns$x" address add "172.20.0.$( expr ${x} * 2 + 17 )/31" dev "vth$x"
+  ip -netns "ns$x" address add "172.20.0.$(( ${x} * 2 + 17 ))/31" dev "vth$x"
   ip -netns "ns$x" link set dev "vth$x" up
-  ip -netns "ns$x" route add default via "172.20.0.$( expr ${x} * 2 + 16 )" dev "vth$x"
+  ip -netns "ns$x" route add default via "172.20.0.$(( ${x} * 2 + 16 ))" dev "vth$x"
   ip link set dev "vth${x}.${x}1" master br1
   bridge vlan add vid "${x}1" dev "vth${x}.${x}1" pvid untagged
   ip link set dev "vth${x}.${x}1" up
