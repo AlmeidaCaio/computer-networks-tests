@@ -55,16 +55,16 @@ ip route add 172.20.13.0/24 via 172.20.0.23 dev eth2.31
 for destis in 172.20.0.10 172.20.0.11 172.20.0.12 172.20.0.13 172.20.0.14 172.20.0.15 \
   172.20.0.18 172.20.0.19 172.20.0.20 172.20.0.21 172.20.0.22 172.20.0.23 \
   172.20.1.2 172.20.2.2 172.20.3.2 172.20.11.2 172.20.12.2 172.20.13.2 ; do 
+    sleep 1
     ping -c 1 ${destis}
 done 
 for destis in 172.20.1.3 172.20.2.3 172.20.3.3 172.20.11.3 172.20.12.3 172.20.13.3 ; do
-    traceroute -I -m 3 ${destis}
+    sleep 2
+    traceroute -I -m 3 -n ${destis}
 done
 #
 #
 if [ ${firewallFlag} == "1" ] ; then
-    # Rules to deny packets between different VLANs
-    ## TODO
     #
     # Flush netfilter configuration on bootup
     iptables -F
@@ -80,24 +80,37 @@ if [ ${firewallFlag} == "1" ] ; then
     iptables -I INPUT -i lo -j ACCEPT
     #
     # Allowing pings and traceroutes from the firewall
-    for icmpType in 0 3 8 11 ; do 
-      iptables -A INPUT -i eth0 -p icmp --icmp-type $icmpType -j ACCEPT 
-    done
-    # Allowing pings from subnetworks
-    for icmpType in 8 ; do 
-      iptables -A FORWARD -i eth0 -p icmp --icmp-type $icmpType -j ACCEPT 
+    for interface in eth1 eth2 ; do 
+      for icmpType in 0 3 8 11 ; do 
+        iptables -A INPUT -i $interface -p icmp --icmp-type $icmpType -j ACCEPT 
+      done
     done
     # Rejects tracepaths to the outside 
     for chainType in FORWARD INPUT ; do 
-      iptables -A $chainType -i eth0 -p udp --dport 33434:33474 -j REJECT
+      iptables -A $chainType -i eth0 -p udp --dport 33434\:33474 -j REJECT
     done
     #
     # Allowing DNS from the firewall and anywhere inside 
     for chainType in FORWARD INPUT ; do 
       for protocol in tcp udp ; do 
         for portType in --dport --sport ; do 
-          iptables -A $chainType -i eth0 -p $protocol $portType 53 -j ACCEPT
+          iptables -A $chainType -p $protocol $portType 53 -j ACCEPT
         done
+      done
+    done
+    #
+    # Rules to allow any packets between subnets with same VLANs
+    for item in 172.20.1.0/24-172.20.11.0/24-ACCEPT 172.20.1.0/24-172.20.12.0/24-REJECT 172.20.1.0/24-172.20.13.0/24-REJECT \
+      172.20.2.0/24-172.20.11.0/24-REJECT 172.20.2.0/24-172.20.12.0/24-ACCEPT 172.20.2.0/24-172.20.13.0/24-REJECT \
+        172.20.3.0/24-172.20.11.0/24-REJECT 172.20.3.0/24-172.20.12.0/24-REJECT 172.20.3.0/24-172.20.13.0/24-ACCEPT
+    do 
+      vlanId1stDigit="` echo -n ${item} | sed -E 's/^.*\.1?([1-3])\.0\/.*$/\1/g' `"
+      srcSubnet="` echo -n ${item} | sed -E 's/^([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\/[0-9]{1,2})-.*$/\1/g' `"
+      dstSubnet="` echo -n ${item} | sed -E 's/^.*-([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\/[0-9]{1,2})-.*$/\1/g' `"
+      fwActionTarget="` echo -n ${item} | sed -E 's/^.*-([A-Z]+)$/\1/g' `"
+      for protocol in "icmp --icmp-type 8" "sctp" "tcp" "udp" ; do 
+        iptables -A FORWARD -i "eth1.${vlanId1stDigit}1" -o "eth2.${vlanId1stDigit}1" -p ${protocol} -s ${srcSubnet} -d ${dstSubnet} -j ${fwActionTarget}
+        iptables -A FORWARD -i "eth2.${vlanId1stDigit}1" -o "eth1.${vlanId1stDigit}1" -p ${protocol} -s ${dstSubnet} -d ${srcSubnet} -j ${fwActionTarget}
       done
     done
 fi 
