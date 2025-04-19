@@ -80,15 +80,12 @@ if [ ${firewallFlag} == "1" ] ; then
     iptables -I INPUT -i lo -j ACCEPT
     #
     # Allowing pings and traceroutes from the firewall
-    for interface in eth1 eth2 ; do 
+    for interface in eth1+ eth2+ ; do 
       for icmpType in 0 3 8 11 ; do 
         iptables -A INPUT -i $interface -p icmp --icmp-type $icmpType -j ACCEPT 
       done
     done
-    # Rejects tracepaths to the outside 
-    for chainType in FORWARD INPUT ; do 
-      iptables -A $chainType -i eth0 -p udp --dport 33434\:33474 -j REJECT
-    done
+    iptables -A FORWARD -o eth0 -p icmp --icmp-type 8 -j ACCEPT 
     #
     # Allowing DNS from the firewall and anywhere inside 
     for chainType in FORWARD INPUT ; do 
@@ -100,17 +97,10 @@ if [ ${firewallFlag} == "1" ] ; then
     done
     #
     # Rules to allow any packets between subnets with same VLANs
-    for item in 172.20.1.0/24-172.20.11.0/24-ACCEPT 172.20.1.0/24-172.20.12.0/24-REJECT 172.20.1.0/24-172.20.13.0/24-REJECT \
-      172.20.2.0/24-172.20.11.0/24-REJECT 172.20.2.0/24-172.20.12.0/24-ACCEPT 172.20.2.0/24-172.20.13.0/24-REJECT \
-        172.20.3.0/24-172.20.11.0/24-REJECT 172.20.3.0/24-172.20.12.0/24-REJECT 172.20.3.0/24-172.20.13.0/24-ACCEPT
-    do 
-      vlanId1stDigit="` echo -n ${item} | sed -E 's/^.*\.1?([1-3])\.0\/.*$/\1/g' `"
-      srcSubnet="` echo -n ${item} | sed -E 's/^([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\/[0-9]{1,2})-.*$/\1/g' `"
-      dstSubnet="` echo -n ${item} | sed -E 's/^.*-([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\/[0-9]{1,2})-.*$/\1/g' `"
-      fwActionTarget="` echo -n ${item} | sed -E 's/^.*-([A-Z]+)$/\1/g' `"
+    for vlanId in 11 21 31 ; do 
       for protocol in "icmp --icmp-type 8" "sctp" "tcp" "udp" ; do 
-        iptables -A FORWARD -i "eth1.${vlanId1stDigit}1" -o "eth2.${vlanId1stDigit}1" -p ${protocol} -s ${srcSubnet} -d ${dstSubnet} -j ${fwActionTarget}
-        iptables -A FORWARD -i "eth2.${vlanId1stDigit}1" -o "eth1.${vlanId1stDigit}1" -p ${protocol} -s ${dstSubnet} -d ${srcSubnet} -j ${fwActionTarget}
+        iptables -A FORWARD -i "eth1.${vlanId}" -o "eth2.${vlanId}" -p ${protocol} -j ACCEPT
+        iptables -A FORWARD -i "eth2.${vlanId}" -o "eth1.${vlanId}" -p ${protocol} -j ACCEPT
       done
     done
 fi 

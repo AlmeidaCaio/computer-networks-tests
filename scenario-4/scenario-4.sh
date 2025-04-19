@@ -9,7 +9,6 @@
 #    - https://wiki.alpinelinux.org/wiki/VLAN
 #    - https://superuser.com/questions/1670969/wsl2-make-available-visible-all-windows-network-adapters-inside-ubuntu#1671057
 #    - https://learn.microsoft.com/en-us/windows/wsl/wsl-config#wslconfig
-#    - https://docs.bisdn.de/network_configuration/vlan_bridging.html#systemd-networkd
 #    - https://stackoverflow.com/questions/30905674/newer-versions-of-docker-have-cap-add-what-caps-can-be-added
 #
 # Parameters:
@@ -37,6 +36,8 @@ fi
 echo "-----------------------------------------------" && \
 echo "-----------------NETWORK SETUP-----------------" && \
 echo "-----------------------------------------------"
+hostInterfaceLink="` ip link list | grep 'state UP' | grep 'eth' | head -n 1 | sed -E 's/^[0-9]+:\s*(\w+):.*$/\1/g' `"
+sudo ip link set dev ${hostInterfaceLink} promisc on
 docker network create --driver bridge --subnet 172.20.0.0/30 --gateway 172.20.0.1 --attachable subnet-vlan-001
 docker network create --driver bridge --subnet 172.20.0.8/29 --gateway 172.20.0.9 --attachable p2p-svlans-001-0X1
 docker network create --driver bridge --subnet 172.20.0.16/29 --gateway 172.20.0.17 --attachable p2p-svlans-001-1X1
