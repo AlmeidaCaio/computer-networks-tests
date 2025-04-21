@@ -4,6 +4,7 @@
 #    - https://github.com/moby/moby/pull/42626
 #    - https://www.rfc-editor.org/rfc/rfc3021
 #    - https://www.man7.org/linux/man-pages/man8/ip-link.8.html
+#    - https://serverfault.com/questions/431593/iptables-forwarding-between-two-interface
 #
 # Parameters:
 # $1 = Load iptables configurations into firwll-0 (e.g. "1" or "0")
@@ -98,17 +99,7 @@ if [ ${firewallFlag} == "1" ] ; then
     #
     # Rules to allow any packets between subnets with same VLANs
     for vlanId in 11 21 31 ; do 
-      #
-      # Allow request workst-0X1 --> workst-1X1 
       iptables -A FORWARD -i "eth1.${vlanId}" -o "eth2.${vlanId}" -j ACCEPT
-      #
-      ## Allow response of workst-0X1 --> workst-1X1 
-      #iptables -A FORWARD -i "eth2.${vlanId}" -o "eth1.${vlanId}" -m state --state ESTABLISHED,RELATED -j ACCEPT
-      #
-      # Allow request workst-0X1 <-- workst-1X1 
       iptables -A FORWARD -i "eth2.${vlanId}" -o "eth1.${vlanId}" -j ACCEPT
-      #
-      ## Allow response of workst-0X1 --> workst-1X1 
-      #iptables -A FORWARD -i "eth1.${vlanId}" -o "eth2.${vlanId}" -m state --state ESTABLISHED,RELATED -j ACCEPT
     done
 fi 
