@@ -1,4 +1,4 @@
-# README (WIP)
+# README
 
 This project's proposal is to test many common utilities for network diagnosis. It uses Container Images based on Alpine 3.21.2 available at [Docker Hub](https://hub.docker.com/_/alpine/).
 
