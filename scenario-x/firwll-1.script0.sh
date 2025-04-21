@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# ref.: https://www.youtube.com/watch?v=0nkgC3F2VM0
+# Script originally from: https://www.youtube.com/watch?v=0nkgC3F2VM0
 #
 # NOTES: 
 #   1) File must be executable

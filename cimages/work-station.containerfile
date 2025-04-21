@@ -4,4 +4,5 @@ FROM "docker.io/library/alpine:${ALPINE_VERSION}"
 EXPOSE 22 \
     443 \
     587
-RUN apk add curl 
+RUN apk update \
+    && apk add curl 
