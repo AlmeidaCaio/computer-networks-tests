@@ -99,7 +99,17 @@ if [ ${firewallFlag} == "1" ] ; then
     #
     # Rules to allow any packets between subnets with same VLANs
     for vlanId in 11 21 31 ; do 
+      #
+      # Allow request workst-0X1 --> workst-1X1 
       iptables -A FORWARD -i "eth1.${vlanId}" -o "eth2.${vlanId}" -j ACCEPT
+      #
+      # Allow response of workst-0X1 --> workst-1X1
+      iptables -A FORWARD -i "eth2.${vlanId}" -o "eth1.${vlanId}" -m state --state ESTABLISHED,RELATED -j ACCEPT 
+      #
+      # Allow request workst-0X1 <-- workst-1X1 
       iptables -A FORWARD -i "eth2.${vlanId}" -o "eth1.${vlanId}" -j ACCEPT
+      #
+      # Allow response of workst-0X1 <-- workst-1X1
+      iptables -A FORWARD -i "eth1.${vlanId}" -o "eth2.${vlanId}" -m state --state ESTABLISHED,RELATED -j ACCEPT 
     done
 fi 
