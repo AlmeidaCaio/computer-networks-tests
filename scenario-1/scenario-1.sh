@@ -6,12 +6,11 @@
 #
 # Parameters:
 # $1 = Alpine Version (e.g. "1.1.1")
+# $2 = Load containers witdebugger images (boolean flag: "1" or "0")
 #
 baseImageVersion=$1
-imageName=cnt-simple\:1.00
-if [[ $( docker image ls --filter "reference=${imageName}" | wc -l ) -lt 2 ]] ; then
-    docker image build -f ./cimages/.containerfile --build-arg ALPINE_VERSION=${baseImageVersion} -t ${imageName} ./ 
-fi
+dbgImageFlag=$2
+imageName="`[[ ${dbgImageFlag} == "1" ]] && imageBuilder 'debugger' || imageBuilder 'simple'`"
 # Networks' configurations
 docker network create --driver bridge --subnet 172.16.0.0/30 --attachable subnet-vlan-001
 docker network create --driver bridge --subnet 172.16.1.0/29 --attachable subnet-vlan-011

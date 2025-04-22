@@ -13,27 +13,20 @@
 #
 # Parameters:
 # $1 = Alpine Version (e.g. "1.1.1")
-# $2 = Load firewall configuration into firwll-0 (e.g. "1" or "0")
+# $2 = Load containers witdebugger images (boolean flag: "1" or "0")
+# $3 = Load firewall configuration into firwll-1 (e.g. "1" or "0")
 #
 baseImageVersion=$1
-enableFirewall=$2
+dbgImageFlag=$2
+enableFirewall=$3
 if ! [[ ${enableFirewall} =~ ^[01]$ ]] ; then
-    echo "ERROR 6: Parameter \$2 = '$2'; needs to be '0' or '1', since it's a boolean flag."
+    echo "ERROR 6: Parameter \$3 = '$3'; needs to be '0' or '1', since it's a boolean flag."
     exit 6
 fi
-imageNameFirewall=cnt-firewall\:1.00
-if [[ $( docker image ls --filter "reference=${imageNameFirewall}" | wc -l ) -lt 2 ]] ; then
-    docker image build -f ./cimages/firewall.containerfile --build-arg ALPINE_VERSION=${baseImageVersion} -t ${imageNameFirewall} ./ 
-fi
-imageNameRouter=cnt-router\:1.00
-if [[ $( docker image ls --filter "reference=${imageNameRouter}" | wc -l ) -lt 2 ]] ; then
-    docker image build -f ./cimages/router.containerfile --build-arg ALPINE_VERSION=${baseImageVersion} -t ${imageNameRouter} ./ 
-fi
-imageNameSwitch=cnt-simple\:1.00
-if [[ $( docker image ls --filter "reference=${imageNameSwitch}" | wc -l ) -lt 2 ]] ; then
-    docker image build -f ./cimages/.containerfile --build-arg ALPINE_VERSION=${baseImageVersion} -t ${imageNameSwitch} ./ 
-fi
-imageNameWorkStation=cnt-simple\:1.00
+imageNameFirewall="`[[ ${dbgImageFlag} == "1" ]] && imageBuilder 'debugger' || imageBuilder 'firewall'`"
+imageNameRouter="`[[ ${dbgImageFlag} == "1" ]] && imageBuilder 'debugger' || imageBuilder 'router'`"
+imageNameSwitch="`[[ ${dbgImageFlag} == "1" ]] && imageBuilder 'debugger' || imageBuilder 'simple'`"
+imageNameWorkStation="`[[ ${dbgImageFlag} == "1" ]] && imageBuilder 'debugger' || imageBuilder 'simple'`"
 echo "-----------------------------------------------" && \
 echo "-----------------NETWORK SETUP-----------------" && \
 echo "-----------------------------------------------"
