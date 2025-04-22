@@ -2,7 +2,7 @@
 
 This project's proposal is to test many common utilities for network diagnosis. It uses Container Images based on Alpine 3.21.2 available at [Docker Hub](https://hub.docker.com/_/alpine/).
 
-Currently, there are 3 scenarios. The following is an execution example of a scenario through a bash CLI:
+Currently, there are 4 scenarios. The following is an execution example of a scenario through a bash CLI:
   ```
   scenarioVersion=1
   bash main.sh $scenarioVersion
