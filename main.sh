@@ -46,7 +46,7 @@ imageBuilder() {
         imageName=cnt-workstation\:1.00
         imageFilepath='./cimages/work-station.containerfile'
     else 
-        echo -e "WARN 4: Container Image Type '${containerImageType}' not supported.\nsimple' type used instead." 1>&2
+        echo -e "WARN 4: Container Image Type '${containerImageType}' not supported.\nType 'simple' will be used instead." 1>&2
         imageName=cnt-simple\:1.00
         imageFilepath='./cimages/.containerfile'
     fi
