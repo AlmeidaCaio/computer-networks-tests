@@ -5,11 +5,9 @@
 # This setup only have layer 3 configurations with static routes.
 #
 # Parameters:
-# $1 = Alpine Version (e.g. "1.1.1")
-# $2 = Load containers witdebugger images (boolean flag: "1" or "0")
+# $1 = Load containers with debugger image (boolean flag: "1" or "0")
 #
-baseImageVersion=$1
-dbgImageFlag=$2
+dbgImageFlag=$1
 imageName="`[[ ${dbgImageFlag} == "1" ]] && imageBuilder 'debugger' || imageBuilder 'simple'`"
 # Networks' configurations
 docker network create --driver bridge --subnet 172.16.0.0/30 --attachable subnet-vlan-001

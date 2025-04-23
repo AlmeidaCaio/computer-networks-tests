@@ -12,15 +12,13 @@
 #    - https://stackoverflow.com/questions/30905674/newer-versions-of-docker-have-cap-add-what-caps-can-be-added
 #
 # Parameters:
-# $1 = Alpine Version (e.g. "1.1.1")
-# $2 = Load containers witdebugger images (boolean flag: "1" or "0")
-# $3 = Load firewall configuration into firwll-1 (e.g. "1" or "0")
+# $1 = Load containers with debugger image (boolean flag: "1" or "0")
+# $2 = Load firewall configuration into firwll-1 (e.g. "1" or "0")
 #
-baseImageVersion=$1
-dbgImageFlag=$2
-enableFirewall=$3
+dbgImageFlag=$1
+enableFirewall=$2
 if ! [[ ${enableFirewall} =~ ^[01]$ ]] ; then
-    echo "ERROR 6: Parameter \$3 = '$3'; needs to be '0' or '1', since it's a boolean flag."
+    echo "ERROR 6: Parameter \$2 = '$2'; needs to be '0' or '1', since it's a boolean flag."
     exit 6
 fi
 imageNameFirewall="`[[ ${dbgImageFlag} == "1" ]] && imageBuilder 'debugger' || imageBuilder 'firewall'`"

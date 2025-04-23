@@ -51,7 +51,7 @@ imageBuilder() {
         imageFilepath='./cimages/.containerfile'
     fi
     if [[ $( docker image ls --filter "reference=${imageName}" | wc -l ) -lt 2 ]] ; then
-        docker image build --quiet -f ${imageFilepath} --build-arg ALPINE_VERSION=${baseImageVersion} -t ${imageName} ./ 1>&2
+        docker image build --quiet -f ${imageFilepath} --build-arg ALPINE_VERSION=${alpineVersion} -t ${imageName} ./ 1>&2
     fi
     echo -n ${imageName}
 }
@@ -98,5 +98,5 @@ loadOptionsArguments() {
 
 # Main program
 loadOptionsArguments ${suplementaryOptions}
-source ./scenario-${scenarioNumber}/scenario-${scenarioNumber}.sh ${alpineVersion} ${dbgFlag} ${fwFlag}
+source ./scenario-${scenarioNumber}/scenario-${scenarioNumber}.sh ${dbgFlag} ${fwFlag}
 exit 0
