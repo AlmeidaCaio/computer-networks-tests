@@ -54,8 +54,8 @@ expectedValues="1|1|1|1|1|1|1|1|1|
 fi
 val=(${expectedValues//\|/\ })
 if [[ ${#val[@]} -lt 81 ]] ; then 
-    echo "ERROR 7: ICMP Ping expected values qty is lower than 81." 1>&2
-    exit 7
+    echo "ERROR 6: ICMP Ping expected values qty is lower than 81." 1>&2
+    exit 6
 fi
 echo -e -n "\nExpected ICMP Pings reachability among hosts:" && \
 echo -e -n "\n                1 => reachable" && \
