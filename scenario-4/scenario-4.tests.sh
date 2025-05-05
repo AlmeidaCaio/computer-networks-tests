@@ -250,4 +250,4 @@ echo -e "\n\n"
 echo "------------------------------------------------" && \
 echo "------------------OBSERVATIONS------------------" && \
 echo "------------------------------------------------" && \
-echo -e "Sometimes, the Network takes a while to stabilize and load all routes;\ntherefore, if any ICMP ping result has given 'FAIL', wait some minutes and re-execute this file;\nsince different results may be obtained."
+echo -e "Sometimes, the Network takes a while to stabilize and load all routes;\ntherefore, if any ICMP ping result has given 'FAIL', wait some minutes and re-execute this file by:\n   bash $0 $1 \nsince different results may be obtained."

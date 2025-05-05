@@ -13,7 +13,7 @@
 #
 # NOTES: 
 #   1) VLANs were used to isolate traffic between eth1, eth2 and eth3 interfaces
-#   2) IPv4 /31 subnets were used for peer-to-peer connections inside a Docker's subnet offered (segmentation)
+#   2) IPv4 /31 subnets were used for peer-to-peer connections inside an offered Docker's subnet (segmentation)
 #
 #
 # Bridge "br0" creation

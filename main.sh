@@ -66,7 +66,7 @@ if ! [[ ${scenarioNumber} =~ ^[1-4]$ ]] ; then
     exit 3
 fi
 
-# Assure WSL2 is enabled for network promiscuity whenever needed
+# Assure WSL2 is enabled for network promiscuity whenever needed (WINDOWS)
 if [[ -d "/mnt/c/Users" ]] && [[ $( find /mnt/c/Users -maxdepth 2 -name '.wslconfig' | wc -l ) -lt 1 ]] ; then
     echo -e "[wsl2]\nnetworkingMode=mirrored" > "/mnt/c/Users/Public/.wslconfig" && \
     echo -e "WARN 1: No .wslconfig file found; therefore, one were created on '/mnt/c/Users/Public/'.\nWSL must be manually restarted for this change to be applied."
