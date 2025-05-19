@@ -24,7 +24,7 @@ echo "-----------------------------------------------" && \
 echo "-----------------NETWORK SETUP-----------------" && \
 echo "-----------------------------------------------"
 hostInterfaceLink="` ip link list | grep 'state UP' | grep 'eth' | head -n 1 | sed -E 's/^[0-9]+:\s*(\w+):.*$/\1/g' `"
-su root -c "ip link set dev ${hostInterfaceLink} promisc on"
+sudo ip link set dev ${hostInterfaceLink} promisc on
 docker network create --driver bridge --subnet 172.20.0.0/30 --gateway 172.20.0.1 --attachable subnet-vlan-001
 docker network create --driver bridge --subnet 172.20.0.8/29 --gateway 172.20.0.9 --attachable p2p-svlans-001-0X1
 docker network create --driver bridge --subnet 172.20.0.16/29 --gateway 172.20.0.17 --attachable p2p-svlans-001-1X1
