@@ -4,28 +4,15 @@
 # * This setup is based on scenario-1 with an addition to a firewall attached to router-1; also workst-1 and workst-2 are behaving as proper Work Stations.
 #
 # Parameters:
-# $1 = Alpine Version (e.g. "1.1.1")
+# $1 = Load containers with debugger image (boolean flag: "1" or "0")
 # $2 = Load firewall configuration into firwll-1 (e.g. "1" or "0")
 #
-baseImageVersion=$1
+dbgImageFlag=$1
 enableFirewall=$2
-if ! [[ ${enableFirewall} =~ ^[01]$ ]] ; then
-    echo "ERROR 6: Parameter \$2 = '$2'; needs to be '0' or '1', since it's a boolean flag."
-    exit 6
-fi
-imageNameFirewall=cnt-firewall\:1.00
-if [[ $( docker image ls --filter "reference=${imageNameFirewall}" | wc -l ) -lt 2 ]] ; then
-    docker image build -f ./cimages/firewall.containerfile --build-arg ALPINE_VERSION=${baseImageVersion} -t ${imageNameFirewall} ./ 
-fi
-imageNameRouter=cnt-simple\:1.00
-imageNameSwitch=cnt-simple\:1.00
-if [[ $( docker image ls --filter "reference=${imageNameSwitch}" | wc -l ) -lt 2 ]] ; then
-    docker image build -f ./cimages/.containerfile --build-arg ALPINE_VERSION=${baseImageVersion} -t ${imageNameSwitch} ./ 
-fi
-imageNameWorkStation=cnt-workstation\:1.00
-if [[ $( docker image ls --filter "reference=${imageNameWorkStation}" | wc -l ) -lt 2 ]] ; then
-    docker image build -f ./cimages/work-station.containerfile --build-arg ALPINE_VERSION=${baseImageVersion} -t ${imageNameWorkStation} ./ 
-fi
+imageNameFirewall="`[[ ${dbgImageFlag} == "1" ]] && imageBuilder 'debugger' || imageBuilder 'firewall'`"
+imageNameRouter="`[[ ${dbgImageFlag} == "1" ]] && imageBuilder 'debugger' || imageBuilder 'simple'`"
+imageNameSwitch="`[[ ${dbgImageFlag} == "1" ]] && imageBuilder 'debugger' || imageBuilder 'simple'`"
+imageNameWorkStation="`[[ ${dbgImageFlag} == "1" ]] && imageBuilder 'debugger' || imageBuilder 'workstation'`"
 # Networks' configurations
 echo "-----------------------------------------------" && \
 echo "-----------------NETWORK SETUP-----------------" && \

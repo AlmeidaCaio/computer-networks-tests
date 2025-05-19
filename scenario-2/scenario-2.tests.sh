@@ -8,12 +8,10 @@
 #    4. Test to validate blockage of smtps requests from VLAN 10 to exterior
 #
 # Parameters:
-# $1 = E-mail address of the sender ("From:")
-# $2 = E-mail address of the recipient ("To:")
-# $3 = SMTP Relay login + password (format "account:password")
+# -
 #
-mySender=$SMTP_MAIL_RECEIVER
-myReceiver=$SMTP_MAIL_SENDER
+mySender=$SMTP_MAIL_SENDER
+myReceiver=$SMTP_MAIL_RECEIVER
 myRelayCredentials=$SMTP_RELAY_CREDENTIALS
 #
 echo "------------------------------------------------" && \

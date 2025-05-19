@@ -54,8 +54,8 @@ expectedValues="1|1|1|1|1|1|1|1|1|
 fi
 val=(${expectedValues//\|/\ })
 if [[ ${#val[@]} -lt 81 ]] ; then 
-    echo "ERROR 7: ICMP Ping expected values qty is lower than 81." 1>&2
-    exit 7
+    echo "ERROR 6: ICMP Ping expected values qty is lower than 81." 1>&2
+    exit 6
 fi
 echo -e -n "\nExpected ICMP Pings reachability among hosts:" && \
 echo -e -n "\n                1 => reachable" && \
@@ -250,4 +250,4 @@ echo -e "\n\n"
 echo "------------------------------------------------" && \
 echo "------------------OBSERVATIONS------------------" && \
 echo "------------------------------------------------" && \
-echo -e "Sometimes, the Network takes a while to stabilize and load all routes;\ntherefore, if any ICMP ping result has given 'FAIL', wait some minutes and re-execute this file;\nsince different results may be obtained."
+echo -e "Sometimes, the Network takes a while to stabilize and load all routes;\ntherefore, if any ICMP ping result has given 'FAIL', wait some minutes and re-execute this file by:\n   bash $0 $1 \nsince different results may be obtained."

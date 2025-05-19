@@ -12,27 +12,14 @@
 #    - https://stackoverflow.com/questions/30905674/newer-versions-of-docker-have-cap-add-what-caps-can-be-added
 #
 # Parameters:
-# $1 = Alpine Version (e.g. "1.1.1")
-# $2 = Load firewall configuration into firwll-0 (e.g. "1" or "0")
+# $1 = Load containers with debugger image (boolean flag: "1" or "0")
+# $2 = Load firewall configuration into firwll-1 (e.g. "1" or "0")
 #
-baseImageVersion=$1
+dbgImageFlag=$1
 enableFirewall=$2
-if ! [[ ${enableFirewall} =~ ^[01]$ ]] ; then
-    echo "ERROR 6: Parameter \$2 = '$2'; needs to be '0' or '1', since it's a boolean flag."
-    exit 6
-fi
-imageNameFirewall=cnt-firewall\:1.00
-if [[ $( docker image ls --filter "reference=${imageNameFirewall}" | wc -l ) -lt 2 ]] ; then
-    docker image build -f ./cimages/firewall.containerfile --build-arg ALPINE_VERSION=${baseImageVersion} -t ${imageNameFirewall} ./ 
-fi
-imageNameSwitch=cnt-switch\:1.00
-if [[ $( docker image ls --filter "reference=${imageNameSwitch}" | wc -l ) -lt 2 ]] ; then
-    docker image build -f ./cimages/switch-l3.containerfile --build-arg ALPINE_VERSION=${baseImageVersion} -t ${imageNameSwitch} ./ 
-fi
-imageNameWorkStation=cnt-simple\:1.00
-if [[ $( docker image ls --filter "reference=${imageNameWorkStation}" | wc -l ) -lt 2 ]] ; then
-    docker image build -f ./cimages/.containerfile --build-arg ALPINE_VERSION=${baseImageVersion} -t ${imageNameWorkStation} ./ 
-fi
+imageNameFirewall="`[[ ${dbgImageFlag} == "1" ]] && imageBuilder 'debugger' || imageBuilder 'firewall'`"
+imageNameSwitch="`[[ ${dbgImageFlag} == "1" ]] && imageBuilder 'debugger' || imageBuilder 'switch'`"
+imageNameWorkStation="`[[ ${dbgImageFlag} == "1" ]] && imageBuilder 'debugger' || imageBuilder 'simple'`"
 echo "-----------------------------------------------" && \
 echo "-----------------NETWORK SETUP-----------------" && \
 echo "-----------------------------------------------"
