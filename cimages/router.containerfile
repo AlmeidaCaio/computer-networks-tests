@@ -1,8 +1,9 @@
 # Container Image with specialized layer 3 utilities - for Routers
-ARG ALPINE_VERSION
+ARG ALPINE_VERSION=3.21.2
 FROM "docker.io/library/alpine:${ALPINE_VERSION}"
-EXPOSE 22 \
-    179
+EXPOSE 22/tcp \
+    161/udp 162/udp \
+    179/tcp
 RUN apk update \
     && apk add quagga \
     && mkdir /var/log/quagga \

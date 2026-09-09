@@ -1,9 +1,10 @@
 # Complete Container Image - for debugging
-ARG ALPINE_VERSION
+ARG ALPINE_VERSION=3.21.2
 FROM "docker.io/library/alpine:${ALPINE_VERSION}"
-EXPOSE 22 \
-    443 \
-    587
+EXPOSE 22/tcp \
+    161/udp 162/udp \
+    443/tcp \
+    587/tcp
 RUN apk update \
     && apk add arp-scan \
         curl \
@@ -14,6 +15,7 @@ RUN apk update \
         iputils-clockdiff \
         iputils-ping \
         iputils-tracepath \
+        net-snmp-tools \
         quagga \
         tcpdump \
     && mkdir /var/log/quagga \

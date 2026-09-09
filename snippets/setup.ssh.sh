@@ -30,5 +30,6 @@ apk add openrc \
     && rc-service sshd start
     ! [ -d /run/openrc ] && { mkdir /run/openrc && touch /run/openrc/softlevel ; } \
     && rc-status --all \
-    && rc-service --verbose sshd restart
+    && rc-service --verbose sshd restart \
+    && rc-update add sshd default
 }

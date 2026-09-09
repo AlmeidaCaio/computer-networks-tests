@@ -7,7 +7,7 @@ scenarioNumber=$1
 suplementaryOptions=$( echo -n $@ | sed -E "s/$1\s*\b//g" )
 
 # Load .env parameters
-alpineVersion="3.21.2"
+alpineVersion="3.24.1"
 dbgFlag=0
 fwFlag=1
 optionsAvailable="'--clear', '--debug' or '--fw-off'"
