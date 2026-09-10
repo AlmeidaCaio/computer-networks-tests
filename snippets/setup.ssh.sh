@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # Code Snippet for SSH Server (OpenSSH) installation inside the Alpine Container
+#    NOTE: test with openssh, e.g. "ssh root@hostname"
 #
 # References:
 #    - https://wiki.alpinelinux.org/wiki/Setting_up_a_SSH_server#Service_commands
@@ -27,9 +28,8 @@ apk add openrc \
     && sh -c "echo -e '\nAllowUsers root' >> /etc/ssh/sshd_config" \
     && sh -c "echo ssh >> /etc/securetty" \
     && sh -c "passwd < <( echo -e -n '\n\n' )" \
-    && rc-service sshd start
+    && rc-service --verbose sshd start
     ! [ -d /run/openrc ] && { mkdir /run/openrc && touch /run/openrc/softlevel ; } \
     && rc-status --all \
-    && rc-service --verbose sshd restart \
-    && rc-update add sshd default
+    && rc-service --verbose sshd restart 
 }
