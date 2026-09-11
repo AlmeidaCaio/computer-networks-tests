@@ -27,6 +27,7 @@ router ospf
  area 0.0.0.2 range 172.22.2.0/24
  area 0.0.0.3 virtual-link 172.20.0.30
 
+agentx
 line vty
 " > /etc/quagga/ospfd.conf \
   && chown quagga\:quagga /etc/quagga/ospfd.conf \

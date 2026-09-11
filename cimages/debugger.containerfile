@@ -15,7 +15,10 @@ RUN apk update \
         iputils-clockdiff \
         iputils-ping \
         iputils-tracepath \
+        net-snmp \
         net-snmp-tools \
+        openrc \
+        openssh \
         quagga \
         tcpdump \
     && mkdir /var/log/quagga \

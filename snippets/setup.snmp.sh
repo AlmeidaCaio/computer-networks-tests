@@ -8,31 +8,36 @@
 #    - https://linux.die.net/man/5/snmpd.conf
 #
 #
-ENABLE_SNMPv3="1"
-myMail=$SNMPV3_MAIL
-snmpAuthAlg=$SNMPV3_AUTHTYPE
-snmpAuthKey=\"${SNMPV3_AUTHPASS}\"
-snmpPrivAlg=$SNMPV3_PRIVTYPE
-snmpPrivKey=\"${SNMPV3_PRIVPASS}\"
-snmpUser=$SNMPV3_USER
+# Parameters:
+# $1 = Expects global parameter from .env named SNMPV3_MAIL
+# $2 = Expects global parameter from .env named SNMPV3_AUTHTYPE
+# $3 = Expects global parameter from .env named SNMPV3_AUTHPASS
+# $4 = Expects global parameter from .env named SNMPV3_PRIVTYPE
+# $5 = Expects global parameter from .env named SNMPV3_PRIVPASS
+# $6 = Expects global parameter from .env named SNMPV3_USER
+#
+myMail=$1
+snmpAuthAlg=$2
+snmpAuthKey=\"$3\"
+snmpPrivAlg=$4
+snmpPrivKey=\"$5\"
+snmpUser=$6
 apk add openrc \
     net-snmp \
-&& [ $ENABLE_SNMPv3 == "1" ] && {
-    rc-service snmpd zap \
-    && sed -E -i 's/^(agentAddress\s+udp:127\.0\.0\.1:161)/#\1/g' /etc/snmp/snmpd.conf \
-    && sed -E -i 's/^#(agentAddress\s+udp:161,udp6:\[::1\]:161)/\1/g' /etc/snmp/snmpd.conf \
-    && sed -E -i "s/^#\\s*createUser\\s+authPrivUser\\s+\\b.*$/createUser ${snmpUser} ${snmpAuthAlg} ${snmpAuthKey} ${snmpPrivAlg} ${snmpPrivKey}/g" /etc/snmp/snmpd.conf \
-    && sed -E -i 's/^\s*#\s*system\s*\+\s*hrSystem\s+groups\s+only.*$/view   systemonly  included   .1.3.6.1.2.1.14/g' /etc/snmp/snmpd.conf \
-    && sed -E -i 's/^\s*(rocommunity\s+public\s+default\s+-V\s+systemonly)/#\1/g' /etc/snmp/snmpd.conf \
-    && sed -E -i "s/^\s*rouser\s+authOnlyUser\s*$/rouser ${snmpUser} priv -V systemonly/g" /etc/snmp/snmpd.conf \
-    && sed -E -i 's/^sysLocation\s+(\b.*)$/sysLocation  "local PC"/g' /etc/snmp/snmpd.conf \
-    && sed -E -i "s/^sysContact\\s+(\\b.*)$/sysContact  Me <${myMail}>/g" /etc/snmp/snmpd.conf \
-    && sed -E -i 's/^sysServices\s+(\b.*)$/sysServices  15/g' /etc/snmp/snmpd.conf \
-    && sed -E -i 's/^\s*(trapsink\s+localhost\s+public)$/#\1/g' /etc/snmp/snmpd.conf \
-    && sed -E -i "s/^\s*iquerySecName\\s+internalUser/iquerySecName ${snmpUser}/g" /etc/snmp/snmpd.conf \
-    && sed -E -i "s/^\s*rouser\\s+internalUser/rouser ${snmpUser}/g" /etc/snmp/snmpd.conf \
-    && rc-service --verbose snmpd start 
-    ! [ -d /run/openrc ] && { mkdir /run/openrc && touch /run/openrc/softlevel ; } \
-    && rc-status --all \
-    && rc-service --verbose snmpd restart
-}
+&& rc-service snmpd zap \
+&& sed -E -i 's/^(agentAddress\s+udp:127\.0\.0\.1:161)/#\1/g' /etc/snmp/snmpd.conf \
+&& sed -E -i 's/^#(agentAddress\s+udp:161,udp6:\[::1\]:161)/\1/g' /etc/snmp/snmpd.conf \
+&& sed -E -i "s/^#\\s*createUser\\s+authPrivUser\\s+\\b.*$/createUser ${snmpUser} ${snmpAuthAlg} ${snmpAuthKey} ${snmpPrivAlg} ${snmpPrivKey}/g" /etc/snmp/snmpd.conf \
+&& sed -E -i 's/^\s*#\s*system\s*\+\s*hrSystem\s+groups\s+only.*$/view   systemonly  included   .1.3.6.1.2.1.14/g' /etc/snmp/snmpd.conf \
+&& sed -E -i 's/^\s*(rocommunity\s+public\s+default\s+-V\s+systemonly)/#\1/g' /etc/snmp/snmpd.conf \
+&& sed -E -i "s/^\s*rouser\s+authOnlyUser\s*$/rouser ${snmpUser} priv -V systemonly/g" /etc/snmp/snmpd.conf \
+&& sed -E -i 's/^sysLocation\s+(\b.*)$/sysLocation  "local PC"/g' /etc/snmp/snmpd.conf \
+&& sed -E -i "s/^sysContact\\s+(\\b.*)$/sysContact  Me <${myMail}>/g" /etc/snmp/snmpd.conf \
+&& sed -E -i 's/^sysServices\s+(\b.*)$/sysServices  15/g' /etc/snmp/snmpd.conf \
+&& sed -E -i 's/^\s*(trapsink\s+localhost\s+public)$/#\1/g' /etc/snmp/snmpd.conf \
+&& sed -E -i "s/^\s*iquerySecName\\s+internalUser/iquerySecName ${snmpUser}/g" /etc/snmp/snmpd.conf \
+&& sed -E -i "s/^\s*rouser\\s+internalUser/rouser ${snmpUser}/g" /etc/snmp/snmpd.conf \
+&& rc-service --verbose snmpd start 
+! [ -d /run/openrc ] && { mkdir /run/openrc && touch /run/openrc/softlevel ; } \
+&& rc-status --all \
+&& rc-service --verbose snmpd restart
