@@ -115,8 +115,9 @@ echo "-----------------ROUTERS SETUP-----------------" && \
 echo "-----------------------------------------------"
 for i in 1 2 3 ; do 
     docker container cp "./$( find . -name setup.snmp.sh -printf '%P' )" router-$i:/ && \
+    docker container exec router-$i mkdir -p /var/agentx && \
+    docker container exec router-$i chmod 755 /var/agentx && \
     docker container exec router-$i sh /setup.snmp.sh $SNMPV3_MAIL $SNMPV3_AUTHTYPE $SNMPV3_AUTHPASS $SNMPV3_PRIVTYPE $SNMPV3_PRIVPASS $SNMPV3_USER && \
-    echo "[router-$i] File '/setup.snmp.sh' loaded successfully." && \
     docker container cp "./$( find . -name scenario-3.router-$i.sh -printf '%P' )" router-$i:/ && \
     docker container exec router-$i sh -v /scenario-3.router-$i.sh && \
     echo "[router-$i] File '/scenario-3.router-$i.sh' loaded successfully." && \

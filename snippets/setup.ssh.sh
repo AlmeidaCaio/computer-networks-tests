@@ -10,9 +10,9 @@
 #
 #
 ENABLE_SSH_WIDEOPEN="1"
-apk add openrc \
-    openssh  \
-&& [ $ENABLE_SSH_WIDEOPEN == "1" ] && {
+! [ $( apk list -I | grep -E '^openrc-.+\s\{openrc\}' | wc -l ) -gt 0 ] && { apk add openrc ; }
+! [ $( apk list -I | grep -E '^openssh-.+\s\{openssh\}' | wc -l ) -gt 0 ] && { apk add openssh ; }
+[ $ENABLE_SSH_WIDEOPEN == "1" ] && {
     rc-service sshd zap \
     && sed -E -i 's/^(Include\s*\/etc\/ssh\/sshd_config\.d)/#\1/g' /etc/ssh/sshd_config \
     && sed -E -i 's/^#(Port\s*22)/\1/g' /etc/ssh/sshd_config \
